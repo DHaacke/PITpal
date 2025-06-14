@@ -11,6 +11,8 @@ struct ContentView: View {
     @Environment(\.scenePhase) var scenePhase
     @Environment(LocationsHandler.self) var locationsHandler
     
+    @AppStorage("darkMode") private var darkMode: Bool = false
+    
     @State private var path = [String]()
     
     var body: some View {
@@ -38,18 +40,19 @@ struct ContentView: View {
                     SettingsView(path: $path)
                         .navigationBarBackButtonHidden(true)
                         .navigationBarHidden(false)
-                        .navigationTitle("Settings")
+                        .navigationTitle("Settings").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                 }
                 else {
                     SettingsView(path: $path)
                         .navigationBarBackButtonHidden(true)
                         .navigationBarHidden(false)
-                        .navigationTitle("Settings")
+                        .navigationTitle("Settings").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                     }
                 }
         }
+        .preferredColorScheme(darkMode == true ? .dark : .light)
         .onChange(of: path) { oldPath, newPath in
             print("Path changed: \(newPath)")
         }

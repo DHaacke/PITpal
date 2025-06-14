@@ -37,9 +37,8 @@ struct PITPalApp: App {
                     LocationDeniedView()
                 }
             }
-//            .environment(\.colorScheme, .dark)
-//            .preferredColorScheme(.dark)
-//            .background(.black)
+            // .environment(\.colorScheme, darkMode == true ? .dark : .light)
+            // .preferredColorScheme(darkMode == true ? .dark : .light)
             .onReceive(launchTimer) { time in
                 isWaitingForLaunchView = false
             }
