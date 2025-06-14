@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct MenuCardView: View {
+    
+    @Binding var path: [String]
 
     var text: String = ""
-
+    
     var body: some View {
-
         GeometryReader { geometry in
             ZStack {
                 RoundedRectangle(cornerRadius: 25)
@@ -25,13 +26,22 @@ struct MenuCardView: View {
                         .font(.system(size: 24, weight: .bold, design: .default))
                 }
                 .multilineTextAlignment(.center)
+                .onTapGesture {
+                    print("Initial path: \(path)")
+                    self.path = [K.MAINMENU, K.SETTINGS]
+                    print("New path: \(path)")
+                }
             }
             .frame(width: geometry.size.width - 40, height: 80)
+            
         }
         .frame(height: 80)
     }
 }
 
 #Preview {
-    MenuCardView(text: "Start a new Tagging Run")
+    @Previewable @State var path: [String] = [K.MAINMENU, K.SETTINGS]
+    MenuCardView(path: $path, text: "Start a new Tagging Run")
+        .environment(LocationsHandler())
 }
+
