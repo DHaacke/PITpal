@@ -1,0 +1,23 @@
+//
+//  Lookups.json
+//  PITPal
+//
+//  Created by Doug Haacke on 6/13/25.
+//
+
+{
+  mapStyle: [
+    {
+        "name": "Standard",
+        "value": "Standard",
+    },
+    {
+        "name": "Hybrid",
+        "value": "Hybrid",
+    },
+  ],
+    
+    
+    
+    
+}

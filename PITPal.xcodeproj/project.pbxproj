@@ -6,13 +6,32 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		91CF0D282DFA8A39006592A8 /* JiggleKit in Frameworks */ = {isa = PBXBuildFile; productRef = 91CF0D272DFA8A39006592A8 /* JiggleKit */; };
+		91D43ACF2DFCC11600067F7D /* notes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 91D43ACE2DFCC10E00067F7D /* notes.txt */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		913BF86F2DFA443F0009BB22 /* PITPal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PITPal.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		91D43ACE2DFCC10E00067F7D /* notes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		91CF0D252DFA89B8006592A8 /* Exceptions for "PITPal" folder in "PITPal" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 913BF86E2DFA443F0009BB22 /* PITPal */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		913BF8712DFA443F0009BB22 /* PITPal */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				91CF0D252DFA89B8006592A8 /* Exceptions for "PITPal" folder in "PITPal" target */,
+			);
 			path = PITPal;
 			sourceTree = "<group>";
 		};
@@ -23,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91CF0D282DFA8A39006592A8 /* JiggleKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -34,6 +54,7 @@
 			children = (
 				913BF8712DFA443F0009BB22 /* PITPal */,
 				913BF8702DFA443F0009BB22 /* Products */,
+				91D43ACE2DFCC10E00067F7D /* notes.txt */,
 			);
 			sourceTree = "<group>";
 		};
@@ -65,6 +86,7 @@
 			);
 			name = PITPal;
 			packageProductDependencies = (
+				91CF0D272DFA8A39006592A8 /* JiggleKit */,
 			);
 			productName = PITPal;
 			productReference = 913BF86F2DFA443F0009BB22 /* PITPal.app */;
@@ -94,6 +116,9 @@
 			);
 			mainGroup = 913BF8662DFA443F0009BB22;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				91CF0D262DFA8A39006592A8 /* XCRemoteSwiftPackageReference "JiggleKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 913BF8702DFA443F0009BB22 /* Products */;
 			projectDirPath = "";
@@ -109,6 +134,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91D43ACF2DFCC11600067F7D /* notes.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +282,13 @@
 				DEVELOPMENT_TEAM = GM5X4JR465;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PITPal/Info.plist;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = NO;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App needs Bluetooth to communicate with the PIT tag Reader";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "App needs Bluetooth to communicate with the PIT tag Reader";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "";
+				INFOPLIST_KEY_NSLocationUsageDescription = "App needs Location Services for geospatial data";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -268,9 +301,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = doughaacke.app.PITPal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
@@ -284,6 +321,13 @@
 				DEVELOPMENT_TEAM = GM5X4JR465;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PITPal/Info.plist;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = NO;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App needs Bluetooth to communicate with the PIT tag Reader";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "App needs Bluetooth to communicate with the PIT tag Reader";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "";
+				INFOPLIST_KEY_NSLocationUsageDescription = "App needs Location Services for geospatial data";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -296,9 +340,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = doughaacke.app.PITPal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
 		};
@@ -324,6 +372,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		91CF0D262DFA8A39006592A8 /* XCRemoteSwiftPackageReference "JiggleKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/visfitness/JiggleKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.5;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		91CF0D272DFA8A39006592A8 /* JiggleKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 91CF0D262DFA8A39006592A8 /* XCRemoteSwiftPackageReference "JiggleKit" */;
+			productName = JiggleKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 913BF8672DFA443F0009BB22 /* Project object */;
 }

@@ -1,0 +1,20 @@
+Needed:
+
+S P A T I A L
+  GPS locations (or polys) of electroshocking survey areas
+  GPS locations of monitored spawning complexes
+
+F I S H
+  What base unit of measurement for fish length?  Assuming mm
+  What base unit of weight?
+  Do you need to know sex of fish?
+  
+W E A T H E R
+  Do you record any weather information? If so, what?
+  
+W A T E R
+  Do you record any water quality information?
+  Do you record any water temperature information?
+  Do you record any water flow information?
+  Do you record any water level/stage information?
+  
