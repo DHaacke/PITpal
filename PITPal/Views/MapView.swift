@@ -15,8 +15,10 @@ struct MapView: View {
     @Environment(LocationsHandler.self) var locationsHandler
 //    @Environment(JSONManager.self) var jsonManager
     
-//    @Binding var path: [String]
+    @Binding var path: [String]
 //    @Binding var isNetworkAvailable: Bool
+    
+    @AppStorage("mapStyle") private var mapStyle: String = "standard"
     
     @State private var headingManager = HeadingManager()
     
@@ -51,14 +53,11 @@ struct MapView: View {
                                         // .foregroundColor(.blue)
                                 }
                             }
-
-                            
-                            
                             .simultaneousGesture(DragGesture().onEnded({_ in
                                 // print("Drag ended on map")
                             }))
                             .mapScope(mapScope)
-                            .mapStyle(.standard(emphasis: .automatic))
+                            .mapStyle(mapStyle == "standard" ? MapStyle.standard(emphasis: .automatic) : MapStyle.hybrid)
                             .mapControls {
                                 MapUserLocationButton()
                                 MapCompass()
@@ -100,5 +99,7 @@ struct MapView: View {
 
 
 #Preview {
-    MapView()
+    @Previewable @State var path: [String] = []
+    MapView(path: .constant([]))
+        .environment(LocationsHandler())
 }
