@@ -18,20 +18,22 @@ struct DoneButton: View {
                 self.path = [nextView]
             }, label: {
                 Text("Done")
-                    .frame(width: 120, height: 50)
+                    .frame(width: 100, height: 50)
                     .font(.system(size: 22, weight: .medium))
                     .foregroundColor(Color("TextForegroundWhite"))
-                    .background(
-                        RoundedRectangle(
-                            cornerRadius: 20,
-                            style: .continuous
-                        )
-                        .stroke(.black, lineWidth: 2)
-                        .background(Color("CardBackground"))
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                    )
+                    .background(.clear)
+//                    .background(
+//                        RoundedRectangle(
+//                            cornerRadius: 20,
+//                            style: .continuous
+//                        )
+//                        .stroke(Color("TextForegroundWhite"), lineWidth: 2)
+//                        .background(Color("CardBackground"))
+//                        .clipShape(RoundedRectangle(cornerRadius: 20))
+//                    )
             })
         }
+        .background(.clear)
         .padding(.bottom, 12)
     }
 }

@@ -26,13 +26,13 @@ struct MenuCardView: View {
                         .font(.system(size: 24, weight: .bold, design: .default))
                 }
                 .multilineTextAlignment(.center)
-                .onTapGesture {
-                    print("Initial path: \(path)")
-                    self.path = [K.MAINMENU, K.SETTINGS]
-                    print("New path: \(path)")
-                }
             }
             .frame(width: geometry.size.width - 40, height: 80)
+            .onTapGesture {
+                // print("Initial path: \(path)")
+                self.path = [K.MAINMENU, K.SETTINGS]
+                // print("New path: \(path)")
+            }
             
         }
         .frame(height: 80)

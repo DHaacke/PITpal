@@ -23,26 +23,29 @@ struct PITPalApp: App {
     var body: some Scene {
         WindowGroup {
             VStack {
-                if locationsHandler.isAuthorized {
-                    if isWaitingForLaunchView == false {
+                if isWaitingForLaunchView == false {
+                    if locationsHandler.isAuthorized {
                         ContentView()
                             .environment(locationsHandler)
     //                        .environment(jsonManager)
     //                        .environment(networkManager)
                     } else {
-                        ProgressView()
+                        LocationDeniedView()
                     }
-                    
                 } else {
-                    LocationDeniedView()
+                    Text("Loading PIT Pal...")
+                    ProgressView()
                 }
             }
             // .environment(\.colorScheme, darkMode == true ? .dark : .light)
             // .preferredColorScheme(darkMode == true ? .dark : .light)
+            .background(Color("AppBackground"))
             .onReceive(launchTimer) { time in
                 isWaitingForLaunchView = false
             }
-            .onAppear {
+            // .onAppear {
+            .task {
+                print("App is starting...")
                 locationsHandler.updatesStarted = true
                 // networkManager.checkNetworkConnection()
             }
@@ -50,3 +53,20 @@ struct PITPalApp: App {
     }
 }
 
+/*
+ VStack {
+     if locationsHandler.isAuthorized {
+         if isWaitingForLaunchView == false {
+             ContentView()
+                 .environment(locationsHandler)
+//                        .environment(jsonManager)
+//                        .environment(networkManager)
+         } else {
+             ProgressView()
+         }
+         
+     } else {
+         LocationDeniedView()
+     }
+ }
+ */

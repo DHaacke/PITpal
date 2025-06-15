@@ -12,7 +12,7 @@ struct LocationDeniedView: View {
         ContentUnavailableView(label: {
             Label("Location Services", systemImage: "gear")
         },
-                               description: {
+        description: {
             Text("""
 1. Tap on the button below to go to "Privacy and Security"
 2. Tap on "Location Services"
@@ -33,6 +33,7 @@ struct LocationDeniedView: View {
             }
             .buttonStyle(.borderedProminent)
         })
+        .background(.black)
     }
 }
 

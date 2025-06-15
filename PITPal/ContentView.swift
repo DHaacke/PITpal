@@ -38,7 +38,7 @@ struct ContentView: View {
                 }
                 else if navigation == K.SETTINGS {
                     SettingsView(path: $path)
-                        .navigationBarBackButtonHidden(true)
+                        .navigationBarBackButtonHidden(false)
                         .navigationBarHidden(false)
                         .navigationTitle("Settings").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
@@ -52,6 +52,7 @@ struct ContentView: View {
                     }
                 }
         }
+        .background(Color("CardBackground"))
         .preferredColorScheme(darkMode == true ? .dark : .light)
         .onChange(of: path) { oldPath, newPath in
             print("Path changed: \(newPath)")
