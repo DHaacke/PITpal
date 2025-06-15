@@ -38,19 +38,13 @@ struct ContentView: View {
                 }
                 else if navigation == K.SETTINGS {
                     SettingsView(path: $path)
+                        .tint(Color("AccentColor"))
                         .navigationBarBackButtonHidden(false)
                         .navigationBarHidden(false)
                         .navigationTitle("Settings").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                 }
-                else {
-                    SettingsView(path: $path)
-                        .navigationBarBackButtonHidden(true)
-                        .navigationBarHidden(false)
-                        .navigationTitle("Settings").foregroundStyle(Color("TextForegroundWhite"))
-                        .navigationBarTitleDisplayMode(.inline)
-                    }
-                }
+            }
         }
         .background(Color("CardBackground"))
         .preferredColorScheme(darkMode == true ? .dark : .light)

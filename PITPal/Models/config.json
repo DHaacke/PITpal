@@ -1,0 +1,91 @@
+{
+    "species" : [
+        {
+            "id": 1,
+            "code": "RB",
+            "description": "Rainbow Trout",
+            "imageName": "rainbow",
+            "color": "green",
+            "sort": 1,
+            "watershed": ["BHR", "XXX"],
+        },
+        {
+            "id": 2,
+            "code": "LL",
+            "description": "Brown Trout",
+            "imageName": "brown",
+            "color" : "brown",
+            "watershed": ["BHR", "XXX"],
+        }
+    ],
+    "gender": [
+        {
+            "id": 1,
+            "code": "M",
+            "description": "Male",
+            "color": "blue"
+        },
+        {
+            "id": 2,
+            "code": "F",
+            "description": "Female",
+            "color": "pink"
+        },
+        {
+            "id": 3,
+            "code": "X",
+            "description": "Unknown",
+            "color": "gray"
+        }
+    ],
+    "season": [
+        {
+            "id": 1,
+            "code": "SP",
+            "description": "Spring",
+            "color": "green"
+        },
+        {
+            "id": 2,
+            "code": "SU",
+            "description": "Summer",
+            "color": "red"
+        },
+        {
+            "id": 3,
+            "code": "FA",
+            "description": "Fall",
+            "color": "yellow"
+        },
+        {
+            "id": 4,
+            "code": "WI",
+            "description": "Winter",
+            "color": "white"
+        }
+    ],
+    "watershed": [
+        {
+            "id": 1,
+            "code": "BHR",
+            "description": "Bighorn River",
+            "geofence": [],
+            "poly": [],
+            "color": "blue"
+        }
+    ],
+    "surveySection": [
+        {
+            "id": 1,
+            "description": "Upper 1",
+            "color": "blue",
+            "location": {
+                "lat": 44.0,
+                "lon": -107.0,
+                "altitude": 0
+            },
+            "radius": 0.25
+        }
+    ],
+
+}

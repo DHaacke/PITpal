@@ -7,30 +7,30 @@
 
 import Foundation
 
-struct Species: Codable {
+struct Species: Codable, Identifiable, Hashable {
+    var id: Int
     var code: String
     var description: String
     var imageName: String
     var color: String
-    var sort: Int
     var watershed: [String] = []
     
     enum CodingKeys: String, CodingKey {
+        case id
         case code
         case description
         case imageName
         case color
-        case sort
         case watershed
     }
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(Int.self, forKey: .id)
         self.code = try container.decode(String.self, forKey: .code)
         self.description = try container.decode(String.self, forKey: .description)
         self.imageName = try container.decode(String.self, forKey: .imageName)
         self.color = try container.decode(String.self, forKey: .color)
-        self.sort = try container.decode(Int.self, forKey: .sort)
         self.watershed = try container.decode([String].self, forKey: .watershed)
     }
 }

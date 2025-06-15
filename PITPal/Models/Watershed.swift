@@ -9,6 +9,7 @@ import SwiftUI
 import CoreLocation
 
 struct Watershed: Codable {
+    var id: Int
     var code: String
     var description: String
     var geofence: [Coordinate]
@@ -16,6 +17,7 @@ struct Watershed: Codable {
     var color: String
     
     enum CodingKeys: String, CodingKey {
+        case id
         case code
         case description
         case geofence
@@ -24,6 +26,7 @@ struct Watershed: Codable {
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(Int.self, forKey: .id)
         self.code = try container.decode(String.self, forKey: .code)
         self.description = try container.decode(String.self, forKey: .description)
         self.geofence = try container.decode([Coordinate].self, forKey: .geofence)

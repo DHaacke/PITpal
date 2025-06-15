@@ -13,9 +13,9 @@ struct PITPalApp: App {
     @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
     
     @State private var locationsHandler = LocationsHandler.shared
-    //    @State private var jsonManager      = JSONManager()
-    //    @State private var networkManager   = NetworkManager()
+    @State private var jsonManager      = JSONManager()
 
+    //    @State private var networkManager   = NetworkManager()
 
     @State private var isWaitingForLaunchView = true
     @State private var launchTimer  = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
