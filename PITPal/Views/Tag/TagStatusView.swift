@@ -21,6 +21,8 @@ struct TagStatusView: View {
     @State private var isLoadingBighornStats: Bool = true
     @State private var bighornStats: [BighornStats] = []
     
+    @State private var date: String = "2025-06-15"
+    
     var body: some View {
         VStack {
             GeometryReader { geometry in
@@ -28,43 +30,64 @@ struct TagStatusView: View {
                     RoundedRectangle(cornerRadius: 25)
                         .fill(Color("CardBackground"))
                         .shadow(radius: 6, x: 1, y: 3)
-                    VStack {
-                        if isLoadingBighornStats == false {
+                    if isLoadingBighornStats == false {
+                        VStack {
                             HStack {
-                                Image(systemName: networkMonitor.isConnected ? "wifi" : "wifi.exclamation")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 50, height: 50)
-                                    .padding(.leading, 10)
-                                    .foregroundStyle(networkMonitor.isConnected ? Color.green : Color.gray)
-                                
-                                BighornStatsValueView(value: self.bighornStats[2].value, suffix: "°", title: "Afterbay").padding(.trailing, 10)
-                                BighornStatsValueView(value: self.bighornStats[3].value, suffix: "°", title: "St. X").padding(.trailing, 10)
-                                BighornStatsValueView(value: self.bighornStats[0].value, suffix: " cfs", title: "River Release")
                                 VStack {
                                     HStack {
-                                        BarChartView(species: "RB", title: "Rainbow trout")
-                                            .padding(.top, 10).padding(.trailing, 10)
-                                        BarChartView(species: "LL", title: "Brown trout")
-                                            .padding(.top, 10)
-                                    }
-                                }.frame(width: 400, height: 120)
-                                Spacer()
-                            }
+                                        Image(systemName: networkMonitor.isConnected ? "wifi" : "wifi.exclamation")
+                                           .resizable()
+                                           .aspectRatio(contentMode: .fit)
+                                           .frame(width: 40, height: 40)
+                                           .padding(.leading, 2)
+                                           .padding(.trailing, 8)
+                                           .foregroundStyle(networkMonitor.isConnected ? Color.green : Color.gray)
 
-                        } else {
-                            Text("Loading...")
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: Color("AccentColor")))
+                                       BighornStatsValueView(value: self.bighornStats[2].value, suffix: "°", title: "Afterbay").padding(.trailing, 10)
+                                       BighornStatsValueView(value: self.bighornStats[3].value, suffix: "°", title: "St. X").padding(.trailing, 10)
+                                       BighornStatsValueView(value: self.bighornStats[0].value, suffix: " cfs", title: "River Release")
+                                    }
+                                    VStack {
+                                        HStack(alignment: .center) {
+                                            Text("Rainbows").font(.system(size: 18, weight: .regular, design: .default))
+                                            Spacer()
+                                            Text("Browns").font(.system(size: 18, weight: .medium, design: .default))
+                                        }.frame(width: 360)
+                                        .padding(.horizontal, 10)
+                                        HStack(alignment: .center) {
+                                            Text("155")
+                                            Spacer()
+                                            Text("305").font(.system(size: 30, weight: .bold, design: .default))
+                                            Spacer()
+                                            Text("150")
+                                        }.frame(width: 360)
+                                        .padding(.horizontal, 10)
+                                    }
+
+                                    Spacer()
+                                }.frame(width: 400, height: 120)
+                                VStack {
+                                    HStack {
+                                        HStack {
+                                            BarChartView(species: "RB", title: "Rainbow trout")
+                                                .padding(.top, 10).padding(.trailing, 10)
+                                            BarChartView(species: "LL", title: "Brown trout")
+                                                .padding(.top, 10)
+                                        }
+                                    }
+                                }.frame(width: 400, height: 130)
+                            }
                         }
-                        Spacer()
-                        
+                        .multilineTextAlignment(.center)
+                    } else {
+                        Text("Loading...")
+                        ProgressView()
                     }
-                    .multilineTextAlignment(.center)
+
                 }
                 .frame(width: geometry.size.width, height: 140)
             }
-
+        
             .onChange(of: networkMonitor.isConnected) {
                 print("Network available changed to: \(networkMonitor.isConnected)")
             }
@@ -92,6 +115,7 @@ struct TagStatusView: View {
             }
         }
         .frame(height: 140)
+        Spacer()
     }
     
     func BighornStatsValueView(value: Double, suffix: String, title: String) -> some View {
