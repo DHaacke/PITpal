@@ -55,7 +55,8 @@ struct BarChartView: View {
             // Chart(viewModel.fishData, id: \.id) { data in
                 BarMark(
                     x: .value("Size", data.sizeGroup),
-                    y: .value("Count", data.count)
+                    y: .value("Count", data.count),
+                    width: 12
                 )
                 .foregroundStyle(species == "RB" ? .green : .yellow)
                 .cornerRadius(8)
@@ -63,22 +64,23 @@ struct BarChartView: View {
             .chartXScale(domain: [6, 24])
             // .chartYScale(domain: [minStockPrice ?? 0, maxStockPrice ?? 0])
             .chartXAxis {
-                AxisMarks(values: [6, 8, 10, 12, 14, 16, 18, 20, 22, 24])
-//                AxisMarks(values: .automatic) { value in
-//                    AxisValueLabel()
-//                        .foregroundStyle(.white)
-//                }
+                AxisMarks(values: [6, 8, 10, 12, 14, 16, 18, 20, 22, 24]) { value in
+                    AxisValueLabel()
+                        .foregroundStyle(.white)
+                }
             }
             .chartYAxis {
                 AxisMarks(values: .automatic) { value in
                     AxisGridLine()
                     AxisValueLabel()
                         .foregroundStyle(.white)
+                        .offset(x: 4)
                 }
             }
             Text(title)
                 .font(.system(size: 12, weight: .light, design: .default))
         }
+        .padding(.trailing, 12)
     }
     
     func filterFish(by species: String) -> [FishData] {

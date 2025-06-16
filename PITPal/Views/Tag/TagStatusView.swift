@@ -40,10 +40,11 @@ struct TagStatusView: View {
                                            .padding(.trailing, 8)
                                            .foregroundStyle(networkMonitor.isConnected ? Color.green : Color.gray)
 
-                                       BighornStatsValueView(value: self.bighornStats[2].value, suffix: "°", title: "Afterbay").padding(.trailing, 10)
-                                       BighornStatsValueView(value: self.bighornStats[3].value, suffix: "°", title: "St. X").padding(.trailing, 10)
+                                       BighornStatsValueView(value: self.bighornStats[2].value, suffix: "°", title: "Afterbay").padding(.trailing, 8)
+                                       BighornStatsValueView(value: self.bighornStats[3].value, suffix: "°", title: "St. X").padding(.trailing, 8)
                                        BighornStatsValueView(value: self.bighornStats[0].value, suffix: " cfs", title: "River Release")
                                     }
+                                    .frame(width: 400)
                                     VStack {
                                         HStack(alignment: .center) {
                                             Text("Rainbows").font(.system(size: 18, weight: .regular, design: .default))
@@ -58,16 +59,16 @@ struct TagStatusView: View {
                                             Spacer()
                                             Text("150")
                                         }.frame(width: 360)
-                                        .padding(.horizontal, 10)
+                                        .padding(.horizontal, 6)
                                     }
-
                                     Spacer()
-                                }.frame(width: 400, height: 120)
+                                }.frame(width: 380, height: 120)
+                                
                                 VStack {
                                     HStack {
                                         HStack {
                                             BarChartView(species: "RB", title: "Rainbow trout")
-                                                .padding(.top, 10).padding(.trailing, 10)
+                                                .padding(.top, 10).padding(.trailing, 6)
                                             BarChartView(species: "LL", title: "Brown trout")
                                                 .padding(.top, 10)
                                         }
@@ -138,7 +139,7 @@ struct TagStatusView: View {
         return VStack {
                     HStack {
                         Text("\(value, specifier: "%.0f")")
-                            .font(.system(size: 40, weight: .bold, design: .default))
+                            .font(.system(size: value > 9999 ? 20: 40, weight: .bold, design: .default))
                             .foregroundStyle(Color("TextForegroundWhite"))
                             .padding(.bottom, 0)
                         Text(suffix)

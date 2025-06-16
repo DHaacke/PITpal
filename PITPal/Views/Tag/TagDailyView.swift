@@ -52,8 +52,8 @@ struct TagDailyView: View {
                                 .tint(Color("TextForegroundWhite"))
                                 .pickerStyle(.menu)
                             } label: {
-                                Text("Survey Section:")
-                            }.frame(width: 350, height: 40)
+                                Text("Current Survey Section:")
+                            }.frame(width: 400, height: 40)
                         }
                         HStack {
                             LabeledContent {
@@ -67,20 +67,21 @@ struct TagDailyView: View {
                                     .font(.footnote)
                             }.frame(width: 320)
                             Spacer()
+                            Text("\(locationsHandler.lastLocation2D.latitude, specifier: "%.4f"), \(locationsHandler.lastLocation2D.longitude, specifier: "%.4f")")
                         }
                     }
+                    .frame(height: 50)
                     .padding()
                     .multilineTextAlignment(.center)
                     
                 }
-                .frame(width: geometry.size.width, height: 100)
+                // .frame(width: geometry.size.width, height: 60)
                 .onAppear {
                     print(jsonManager.config)
                 }
             }
         }
         .frame(height: 100)
-        Spacer()
     }
 }
 
