@@ -8,6 +8,7 @@ F I S H
   What base unit of measurement for fish length?  Assuming mm
   What base unit of weight?
   Do you need to know sex of fish?
+    How do you handle hybrids?
   
 W E A T H E R
   Do you record any weather information? If so, what?
@@ -18,5 +19,6 @@ W A T E R
   Do you record any water flow information?
   Do you record any water level/stage information?
   
-F I S H
-  How do you handle hybrids?
+S U R V E Y   S E C T I O N S
+  Can I have a list of survey sections, theur names and coordinates?
+  

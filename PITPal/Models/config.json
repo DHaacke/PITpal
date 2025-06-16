@@ -80,8 +80,30 @@
             "description": "Upper 1",
             "color": "blue",
             "location": {
-                "lat": 44.0,
-                "lon": -107.0,
+                "lat": 44.01,
+                "lon": -107.01,
+                "altitude": 0
+            },
+            "radius": 0.25
+        },
+        {
+            "id": 2,
+            "description": "Upper 2",
+            "color": "blue",
+            "location": {
+                "lat": 44.02,
+                "lon": -107.02,
+                "altitude": 0
+            },
+            "radius": 0.25
+        },
+        {
+            "id": 3,
+            "description": "Upper 3",
+            "color": "blue",
+            "location": {
+                "lat": 44.03,
+                "lon": -107.03,
                 "altitude": 0
             },
             "radius": 0.25

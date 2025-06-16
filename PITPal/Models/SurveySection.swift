@@ -14,7 +14,16 @@
 
 import Foundation
 
-struct SurveySection: Codable {
+struct SurveySection: Codable, Identifiable, Hashable, Equatable {
+    
+    static func == (lhs: SurveySection, rhs: SurveySection) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+      hasher.combine(id)
+    }
+
     var id: Int
     var description: String
     var color: String

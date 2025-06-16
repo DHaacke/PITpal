@@ -18,7 +18,10 @@ struct TagView: View {
     var body: some View {
         VStack {
             TagStatusView(path: $path)
+            TagDailyView(path: $path)
+            Spacer()
         }
+        
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .background(Color("AppBackground"))
     }

@@ -27,6 +27,7 @@ struct SettingsView: View {
     @AppStorage("technicians") private var technicians: String = ""
     @AppStorage("volunteers") private var volunteers: String = ""
     
+    @AppStorage("usingPitTags") private var usingPitTags: Bool = true
     @AppStorage("pitManufacturer") private var pitManufacturer: String = "Biomark"
     @AppStorage("pitSize") private var pitSize: Double = 8.0
     @AppStorage("pitFrequency") private var pitFrequency: Double = 134.2
@@ -59,10 +60,11 @@ struct SettingsView: View {
                     LabeledContent {
                         Toggle("", isOn: $darkMode)
                             .frame(width: 50, height: 40)
+                            .tint(Color.green)
                             .shadow(radius: 2)
                     } label: {
                         Text("Use Dark Mode")
-                        Text("Dark Mode may help in bright sunlight.")
+                        Text("Enabling Dark Mode may help in bright sunlight.")
                             .font(.footnote)
                     }.frame(width: 500)
                 }
@@ -125,6 +127,17 @@ struct SettingsView: View {
                 
                 // P I T   T A G S
                 Section(header: Text("PIT TAGS").font(.title2).foregroundStyle(.white)) {
+                    LabeledContent {
+                        Toggle("", isOn: $usingPitTags)
+                            .frame(width: 50, height: 40)
+                            .tint(Color.green)
+                            .shadow(radius: 2)
+                    } label: {
+                        Text("Using PIT tags")
+                        Text("Enable this if you are using PIT tags for tagging fish.")
+                            .font(.footnote)
+                    }.frame(width: 500)
+                    
                     LabeledContent {
                         TextField("", text: $pitManufacturer)
                           .textFieldStyle(.roundedBorder)
@@ -230,6 +243,7 @@ struct SettingsView: View {
                     LabeledContent {
                         Toggle("", isOn: $useBluetoothLength)
                             .frame(width: 50, height: 40)
+                            .tint(Color.green)
                             .shadow(radius: 2)
                     } label: {
                         Text("Use Bluetooth Length")
@@ -271,6 +285,7 @@ struct SettingsView: View {
                     LabeledContent {
                         Toggle("", isOn: $useBluetoothWeight)
                             .frame(width: 50, height: 40)
+                            .tint(Color.green)
                             .shadow(radius: 2)
                     } label: {
                         Text("Use Bluetooth Weight")

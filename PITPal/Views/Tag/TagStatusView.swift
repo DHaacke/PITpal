@@ -16,12 +16,9 @@ struct TagStatusView: View {
     @Binding var path: [String]
     
     @State private var fetchManager     = FetchManager()
-    // @State private var networkMonitor   = NetworkMonitor()
     
     @State private var isLoadingBighornStats: Bool = true
     @State private var bighornStats: [BighornStats] = []
-    
-    @State private var date: String = "2025-06-15"
     
     var body: some View {
         VStack {
@@ -115,7 +112,8 @@ struct TagStatusView: View {
             }
         }
         .frame(height: 140)
-        Spacer()
+        .padding(.bottom, 10)
+        // Spacer()
     }
     
     func BighornStatsValueView(value: Double, suffix: String, title: String) -> some View {

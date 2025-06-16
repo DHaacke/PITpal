@@ -14,9 +14,6 @@ struct K {
     static let MAINMENU: String     = "MAINMENU"
     static let SETTINGS: String     = "SETTINGS"
     static let TAG: String          = "TAG"
-    static let RECAP: String        = "RECAP"
-    static let EDITTAG: String      = "EDITTAG"
-    static let EDITRECAP: String    = "EDITRECAP"
     static let OTHER: String        = "OTHER"
     
 }
