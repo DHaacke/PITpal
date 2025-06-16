@@ -11,29 +11,28 @@ struct NumberPadView: View {
     
     @Binding var isPresented: Bool
     @Binding var enteredNumber: String
-    
 
     var body: some View {
         VStack {
             HStack {
-                NumberedCircledButtonView(enteredNumber: $enteredNumber, buttonText: "1")
-                NumberedCircledButtonView(enteredNumber: $enteredNumber, buttonText: "2")
-                NumberedCircledButtonView(enteredNumber: $enteredNumber, buttonText: "3")
+                NumberedButtonView(enteredNumber: $enteredNumber, buttonText: "1")
+                NumberedButtonView(enteredNumber: $enteredNumber, buttonText: "2")
+                NumberedButtonView(enteredNumber: $enteredNumber, buttonText: "3")
             }
             HStack {
-                NumberedCircledButtonView(enteredNumber: $enteredNumber, buttonText: "4")
-                NumberedCircledButtonView(enteredNumber: $enteredNumber, buttonText: "5")
-                NumberedCircledButtonView(enteredNumber: $enteredNumber, buttonText: "6")
+                NumberedButtonView(enteredNumber: $enteredNumber, buttonText: "4")
+                NumberedButtonView(enteredNumber: $enteredNumber, buttonText: "5")
+                NumberedButtonView(enteredNumber: $enteredNumber, buttonText: "6")
             }
             HStack {
-                NumberedCircledButtonView(enteredNumber: $enteredNumber, buttonText: "7")
-                NumberedCircledButtonView(enteredNumber: $enteredNumber, buttonText: "8")
-                NumberedCircledButtonView(enteredNumber: $enteredNumber, buttonText: "9")
+                NumberedButtonView(enteredNumber: $enteredNumber, buttonText: "7")
+                NumberedButtonView(enteredNumber: $enteredNumber, buttonText: "8")
+                NumberedButtonView(enteredNumber: $enteredNumber, buttonText: "9")
             }
             HStack {
-                Spacer()
-                NumberedCircledButtonView(enteredNumber: $enteredNumber, buttonText: "0")
-                Spacer()
+                NumberedButtonView(enteredNumber: $enteredNumber, buttonText: "-")
+                NumberedButtonView(enteredNumber: $enteredNumber, buttonText: "0")
+                NumberedButtonView(enteredNumber: $enteredNumber, buttonText: "<")
             }
             .padding(.bottom, 16)
             
@@ -41,8 +40,11 @@ struct NumberPadView: View {
                 isPresented = false // Dismiss the popover
             }
         }
+        .frame(width: 150, height: 280)
+        .padding()
     }
 }
+
 
 #Preview {
     @Previewable @State var enteredNumber: String = ""
@@ -50,3 +52,4 @@ struct NumberPadView: View {
     NumberPadView(isPresented: $isPresented, enteredNumber: $enteredNumber)
         
 }
+

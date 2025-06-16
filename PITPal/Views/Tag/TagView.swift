@@ -19,7 +19,7 @@ struct TagView: View {
         VStack {
             TagStatusView(path: $path)
             TagDailyView(path: $path)
-            TagPitEntry(path: $path)
+            TagPitEntryView(path: $path)
             Spacer()
         }
         .padding()

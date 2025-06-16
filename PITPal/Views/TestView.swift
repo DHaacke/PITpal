@@ -7,7 +7,31 @@
 
 import SwiftUI
 
+struct TestView: View {
+    @Binding var path: [String]
+    
+    var body: some View {
+        VStack {
+            GeometryReader { geometry in
+                ZStack {
+                    RoundedRectangle(cornerRadius: 25)
+                        .fill(Color("CardBackground"))
+                        .shadow(radius: 6, x: 1, y: 3)
+                    
+                    VStack {
+                        
+                    }
+                }
+            }
+        }
+        .frame(height: 150)
+    }
+}
 
+
+#Preview {
+    TestView(path: .constant([]))
+}
 
 
 /*

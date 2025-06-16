@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct NumberedCircledButtonView: View {
+struct NumberedButtonView: View {
     @Binding var enteredNumber: String
     let buttonText: String
 
@@ -17,12 +17,9 @@ struct NumberedCircledButtonView: View {
             self.enteredNumber = buttonText
         }) {
             ZStack {
-                Circle()
-                    .fill(.blue)
-                    .frame(width: 50, height: 50)
                 Text(buttonText)
                     .foregroundColor(.white)
-                    .font(.title2)
+                    .font(.system(size: 30, weight: .regular, design: .default))
             }
         }
     }
