@@ -1,18 +1,17 @@
 //
-//  MenuCardView.swift
+//  CardView.swift
 //  PITPal
 //
-//  Created by Doug Haacke on 6/13/25.
+//  Created by Doug Haacke on 6/15/25.
 //
 
 import SwiftUI
 
-struct MenuCardView: View {
+struct CardView: View {
     
     @Binding var path: [String]
 
     var text: String = ""
-    var newPath: String = ""
     
     var body: some View {
         GeometryReader { geometry in
@@ -28,13 +27,7 @@ struct MenuCardView: View {
                 }
                 .multilineTextAlignment(.center)
             }
-            .frame(width: geometry.size.width - 40, height: 80)
-            .onTapGesture {
-                // print("Initial path: \(path)")
-                self.path = [K.MAINMENU, newPath]
-                // print("New path: \(path)")
-            }
-            
+            .frame(width: geometry.size.width, height: 80)
         }
         .frame(height: 80)
     }
@@ -42,7 +35,6 @@ struct MenuCardView: View {
 
 #Preview {
     @Previewable @State var path: [String] = [K.MAINMENU, K.SETTINGS]
-    MenuCardView(path: $path, text: "Start a new Tagging Run")
+    CardView(path: $path, text: "Simple Card View")
         .environment(LocationsHandler())
 }
-

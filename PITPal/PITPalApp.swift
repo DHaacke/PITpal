@@ -14,8 +14,7 @@ struct PITPalApp: App {
     
     @State private var locationsHandler = LocationsHandler.shared
     @State private var jsonManager      = JSONManager()
-
-    //    @State private var networkManager   = NetworkManager()
+    @State private var networkMonitor   = NetworkMonitor()
 
     @State private var isWaitingForLaunchView = true
     @State private var launchTimer  = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
@@ -27,8 +26,8 @@ struct PITPalApp: App {
                     if locationsHandler.isAuthorized {
                         ContentView()
                             .environment(locationsHandler)
-    //                        .environment(jsonManager)
-    //                        .environment(networkManager)
+                            .environment(jsonManager)
+                            .environment(networkMonitor)
                     } else {
                         LocationDeniedView()
                     }
@@ -39,34 +38,19 @@ struct PITPalApp: App {
             }
             // .environment(\.colorScheme, darkMode == true ? .dark : .light)
             // .preferredColorScheme(darkMode == true ? .dark : .light)
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
             .background(Color("AppBackground"))
             .onReceive(launchTimer) { time in
                 isWaitingForLaunchView = false
             }
-            // .onAppear {
+            .onAppear {
+            }
             .task {
                 print("App is starting...")
                 locationsHandler.updatesStarted = true
                 // networkManager.checkNetworkConnection()
             }
+            
         }
     }
 }
-
-/*
- VStack {
-     if locationsHandler.isAuthorized {
-         if isWaitingForLaunchView == false {
-             ContentView()
-                 .environment(locationsHandler)
-//                        .environment(jsonManager)
-//                        .environment(networkManager)
-         } else {
-             ProgressView()
-         }
-         
-     } else {
-         LocationDeniedView()
-     }
- }
- */

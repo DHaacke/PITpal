@@ -30,26 +30,24 @@ struct MainMenuView: View {
                     .padding(.bottom, 10)
                 
                 HStack {
-                    MenuCardView(path: $path, text: "Start a new Tagging Run")
-                    Spacer()
-                    MenuCardView(path: $path, text: "Start a new Recapture Run")
+                    MenuCardView(path: $path, text: "Start", newPath: "TAG")
+                        .padding(.horizontal, 120)
                 }
-                    .padding(.horizontal, 30)
-                    .padding(.bottom, 30)
+                    .padding(.bottom, 20)
                 
                 HStack {
-                    MenuCardView(path: $path, text: "View / Edit History of\n Tagging Run")
+                    MenuCardView(path: $path, text: "View / Edit History of\n Tagging Run", newPath: "")
                     Spacer()
-                    MenuCardView(path: $path, text: "View / Edit History of\n Recapture Run")
+                    MenuCardView(path: $path, text: "View / Edit History of\n Recapture Run", newPath: "")
                 }
                     .padding(.horizontal, 30)
-                    .padding(.bottom, 30)
+                    .padding(.bottom, 20)
                 
                 HStack {
-                    MenuCardView(path: $path, text: "Settings")
+                    MenuCardView(path: $path, text: "Settings", newPath: "SETTINGS")
                 }
                     .padding(.horizontal, 30)
-                    .padding(.bottom, 50)
+                    .padding(.bottom, 40)
                 
                 Text("Data Export and Visualization")
                     .font(.system(size: 32, weight: .bold, design: .default))
@@ -58,30 +56,29 @@ struct MainMenuView: View {
                     .padding(.bottom, 10)
                 
                 HStack {
-                    MenuCardView(path: $path, text: "Export Data to MySQL")
+                    MenuCardView(path: $path, text: "Export Data to MySQL", newPath: "")
                     Spacer()
-                    MenuCardView(path: $path, text: "Export Data to Excel")
+                    MenuCardView(path: $path, text: "Export Data to Excel", newPath: "")
                 }
                     .padding(.horizontal, 20)
-                    .padding(.bottom, 30)
+                    .padding(.bottom, 20)
                 HStack {
-                    MenuCardView(path: $path, text: "Export Data to R")
+                    MenuCardView(path: $path, text: "Export Data to R", newPath: "")
                     Spacer()
-                    MenuCardView(path: $path, text: "Export Data to CSV")
+                    MenuCardView(path: $path, text: "Export Data to CSV", newPath: "")
                 }
                     .padding(.horizontal, 20)
-                    .padding(.bottom, 30)
+                    .padding(.bottom, 20)
                 HStack {
-                    MenuCardView(path: $path, text: "Instant Analysis")
+                    MenuCardView(path: $path, text: "Instant Analysis", newPath: "")
                     Spacer()
-                    MenuCardView(path: $path, text: "View / Print / Export Graphs")
+                    MenuCardView(path: $path, text: "View / Print / Export Charts", newPath: "")
                 }
                     .padding(.horizontal, 20)
-                    .padding(.bottom, 30)
+                    .padding(.bottom, 20)
             }
         }
-        .frame(minWidth: 0, maxWidth: .infinity)
-        // .environment(\.colorScheme, .light)
+        .frame(minWidth: 800, maxWidth: .infinity, minHeight: 900, maxHeight: 1200)
         .background(Color("AppBackground"))
     }
 }
@@ -93,3 +90,5 @@ struct MainMenuView: View {
         
 }
 
+
+// .environment(\.colorScheme, .light)

@@ -1,0 +1,161 @@
+//
+//  TagStatusView.swift
+//  PITPal
+//
+//  Created by Doug Haacke on 6/15/25.
+//
+
+import SwiftUI
+
+struct TagStatusView: View {
+    @Environment(LocationsHandler.self) var locationsHandler
+    @Environment(JSONManager.self) var jsonManager
+    @Environment(NetworkMonitor.self) var networkMonitor
+    
+    
+    @Binding var path: [String]
+    
+    @State private var fetchManager     = FetchManager()
+    // @State private var networkMonitor   = NetworkMonitor()
+    
+    @State private var isLoadingBighornStats: Bool = true
+    @State private var bighornStats: [BighornStats] = []
+    
+    var body: some View {
+        VStack {
+            GeometryReader { geometry in
+                ZStack {
+                    RoundedRectangle(cornerRadius: 25)
+                        .fill(Color("CardBackground"))
+                        .shadow(radius: 6, x: 1, y: 3)
+                    VStack {
+                        if isLoadingBighornStats == false {
+                            HStack {
+                                Image(systemName: networkMonitor.isConnected ? "wifi" : "wifi.exclamation")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 50, height: 50)
+                                    .padding(.leading, 10)
+                                    .foregroundStyle(networkMonitor.isConnected ? Color.green : Color.gray)
+                                
+                                BighornStatsValueView(value: self.bighornStats[2].value, suffix: "°", title: "Afterbay").padding(.trailing, 10)
+                                BighornStatsValueView(value: self.bighornStats[3].value, suffix: "°", title: "St. X").padding(.trailing, 10)
+                                BighornStatsValueView(value: self.bighornStats[0].value, suffix: " cfs", title: "River Release")
+                                VStack {
+                                    HStack {
+                                        BarChartView(species: "RB", title: "Rainbow trout")
+                                            .padding(.top, 10).padding(.trailing, 10)
+                                        BarChartView(species: "LL", title: "Brown trout")
+                                            .padding(.top, 10)
+                                    }
+                                }.frame(width: 400, height: 120)
+                                Spacer()
+                            }
+
+                        } else {
+                            Text("Loading...")
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: Color("AccentColor")))
+                        }
+                        Spacer()
+                        
+                    }
+                    .multilineTextAlignment(.center)
+                }
+                .frame(width: geometry.size.width, height: 140)
+            }
+
+            .onChange(of: networkMonitor.isConnected) {
+                print("Network available changed to: \(networkMonitor.isConnected)")
+            }
+                
+            .onAppear {
+                Task {
+                    isLoadingBighornStats = true
+                    print("Network available: \(networkMonitor.isConnected)")
+                    if networkMonitor.isConnected == true {
+                        do {
+                            self.bighornStats = try await fetchManager.fetchBighornStats()
+                        } catch {
+                            print("Error fetching Bighorn stats: \(error)")
+                        }
+                    } else {
+                        self.bighornStats = []
+                        let count = 0...39
+                        for id in count {
+                            self.bighornStats.append(BighornStats(id: id, label: "Bighorn \(id)", value: 0, suffix: "", decimals: 0))
+                        }
+                    }
+                    print(self.bighornStats)
+                    isLoadingBighornStats = false
+                }
+            }
+        }
+        .frame(height: 140)
+    }
+    
+    func BighornStatsValueView(value: Double, suffix: String, title: String) -> some View {
+        if value <= 0 {
+            return VStack {
+                HStack {
+                    Text("N/A)")
+                        .font(.system(size: 40, weight: .bold, design: .default))
+                        .foregroundStyle(Color("TextForegroundWhite"))
+                        .padding(.bottom, 0)
+                    Text("")
+                        .font(.system(size: 20, weight: .light, design: .default))
+                        .foregroundStyle(Color("TextForegroundWhite"))
+                        .padding(.bottom, 0)
+                        .offset(x: -10, y: -10)
+                }
+                Text("Offline")
+                    .offset(y: -5)
+                    .font(.system(size: 12, weight: .light, design: .default))
+           }
+        }
+        return VStack {
+                    HStack {
+                        Text("\(value, specifier: "%.0f")")
+                            .font(.system(size: 40, weight: .bold, design: .default))
+                            .foregroundStyle(Color("TextForegroundWhite"))
+                            .padding(.bottom, 0)
+                        Text(suffix)
+                            .font(.system(size: 20, weight: .light, design: .default))
+                            .foregroundStyle(Color("TextForegroundWhite"))
+                            .padding(.bottom, 0)
+                            .offset(x: -10, y: -10)
+                    }
+                    Text(title)
+                        .offset(y: -5)
+                        .font(.system(size: 12, weight: .light, design: .default))
+             }
+    }
+}
+
+#Preview {
+    @Previewable @State var path: [String] = [K.TAG]
+    TagStatusView(path: $path)
+        .environment(LocationsHandler())
+        .environment(JSONManager())
+        .environment(NetworkMonitor())
+}
+
+
+/*
+
+ Text(text)
+     .font(.title)
+     .foregroundStyle(Color("TextForegroundWhite"))
+     .font(.system(size: 24, weight: .bold, design: .default))
+ 
+ return VStack {
+     Text("N/A")
+         .foregroundStyle(Color.gray)
+         .font(.system(size: 40, weight: .regular, design: .default))
+         .padding(.bottom, 0)
+     Text("Offline")
+         .offset(y: -5)
+         .font(.system(size: 12, weight: .light, design: .default))
+ }
+ 
+ */
