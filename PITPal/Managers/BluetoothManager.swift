@@ -22,17 +22,20 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     private var centralManager: CBCentralManager!
     private var peripherals: [CBPeripheral] = []
     
-    var receivedText: String = ""
+    var pitTagNumber: String = ""
     var isScanning: Bool = false
     var connectionStatus: Int = 6
     var isConnected: Bool = false
     
-//    private var servicesUUID        = [CBUUID(string: "AF30")]
-//    private var characteristicUUID  =  CBUUID(string: "AE02")
+    private var servicesUUID         = [CBUUID(string: "AF30")]  // MedPet $29 scanner
+    private var characteristicsUUID  =  CBUUID(string: "AE02")
     
-    private var servicesUUID        = [CBUUID(string: "AF30")
-                                      ]
-    private var characteristicUUID  =  CBUUID(string: "AE02")
+    // * includes stratux
+    // private var servicesUUID =       [CBUUID(string: "AF30"), CBUUID(string: "180A"), CBUUID(string: "180F"), CBUUID(string: "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"), ]
+    // private var characteristicsUUID = CBUUID(string: "FFE1") // and CBUUID(string: "AE02")
+    
+//    private var servicesUUID         = [CBUUID(string: "AF30")]
+//    private var characteristicsUUID  =  CBUUID(string: "AE02")
     
     override init() {
         super.init()
@@ -132,11 +135,11 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     // didUpdateValueForCharacteristic
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        guard let value = characteristic.value, characteristic.uuid == characteristicUUID else { return }
+        guard let value = characteristic.value, characteristic.uuid == characteristicsUUID else { return }
         // Convert received data to string
         if let text = String(data: value, encoding: .utf8) {
             DispatchQueue.main.async {
-                self.receivedText = text
+                self.pitTagNumber = text
                 print("\(peripheral.name ?? "Unknown"): Updated value for characteristic \(characteristic.uuid): \(text)")
             }
         }
@@ -144,13 +147,14 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
 
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         connectionStatus = K.CONNECTION_FAILED
-        // startScanning()
+        isConnected = false
+        stopScanning()
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         connectionStatus = K.DISCONNECTED
         isConnected = false
-        // startScanning()
+        stopScanning()
     }
     
     func enableBackgroundMode() {

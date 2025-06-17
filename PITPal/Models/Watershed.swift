@@ -8,7 +8,7 @@
 import SwiftUI
 import CoreLocation
 
-struct Watershed: Codable {
+struct Watershed: Codable, Identifiable, Hashable, Equatable {
     var id: Int
     var code: String
     var description: String
@@ -31,5 +31,13 @@ struct Watershed: Codable {
         self.description = try container.decode(String.self, forKey: .description)
         self.geofence = try container.decode([Coordinate].self, forKey: .geofence)
         self.color = try container.decode(String.self, forKey: .color)
+    }
+    
+    static func == (lhs: Watershed, rhs: Watershed) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+      hasher.combine(id)
     }
 }

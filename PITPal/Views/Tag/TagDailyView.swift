@@ -24,6 +24,7 @@ struct TagDailyView: View {
     
     @State private var selectedDate: Date = Date()
     @State private var surveySection: Int = 1
+    @State private var watershed: Int = 1
 
     
     var body: some View {
@@ -43,6 +44,20 @@ struct TagDailyView: View {
                                     displayedComponents: [.date]
                                 ).datePickerStyle(.compact).frame(width: 180)
                             Spacer()
+                            
+                            LabeledContent {
+                                Picker("", selection: $watershed) {
+                                    ForEach(jsonManager.config.watershed, id: \.self) { watershed in
+                                        Text(watershed.description).tag(watershed.id)
+                                    }
+                                }
+                                .tint(Color("TextForegroundWhite"))
+                                .pickerStyle(.menu)
+                            } label: {
+                                Text("Watershed:")
+                            }.frame(width: 250, height: 40)
+                            Spacer()
+                            
                             LabeledContent {
                                 Picker("", selection: $surveySection) {
                                     ForEach(jsonManager.config.surveySection, id: \.self) { section in
@@ -52,8 +67,8 @@ struct TagDailyView: View {
                                 .tint(Color("TextForegroundWhite"))
                                 .pickerStyle(.menu)
                             } label: {
-                                Text("Current Survey Section:")
-                            }.frame(width: 400, height: 40)
+                                Text("Survey Section:")
+                            }.frame(width: 250, height: 40)
                         }
                         HStack {
                             LabeledContent {

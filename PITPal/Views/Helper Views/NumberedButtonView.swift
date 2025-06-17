@@ -20,7 +20,7 @@ struct NumberedButtonView: View {
                 Text(buttonText)
                     .foregroundColor(.white)
                     .font(.system(size: 30, weight: .regular, design: .default))
-            }
+            }.frame(width: 30)
         }
     }
 }

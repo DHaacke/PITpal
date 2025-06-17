@@ -26,5 +26,6 @@ struct K {
     static let SCANNING: Int                 = 6
     static let SCANNING_STOPPED: Int         = 7
     
+    
 }
 

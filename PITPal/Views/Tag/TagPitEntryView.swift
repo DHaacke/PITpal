@@ -39,6 +39,7 @@ struct TagPitEntryView: View {
                                     .disabled(true)
                                     .border(Color.gray, width: 1)
                                     .textFieldStyle(.roundedBorder)
+                                    .modifier(ClearButton(text: $pitTagNumber))
                                     .frame(width: 240)
                                     .multilineTextAlignment(.leading)
                                     .popover(isPresented: $isPresented) {
@@ -46,7 +47,7 @@ struct TagPitEntryView: View {
                                     }
                             } label: {
                                 Text("PIT tag #")
-                            }.frame(width: 340)
+                            }.frame(width: 380)
                             
                             Button {
                                 self.isPresented = true
@@ -60,12 +61,23 @@ struct TagPitEntryView: View {
                             Spacer()
                             
                             VStack {
-                                Image("Bluetooth")
-                                    .resizable()
-                                    .frame(width: 30, height: 30)
-                                    .padding(.trailing, 10)
-                                    .onTapGesture {
+                                Button {
+                                    if [K.BLUETOOTH_OFF, K.BLUETOOTH_UNAUTHORIZED, K.CONNECTION_FAILED, K.DISCONNECTED, K.SCANNING_STOPPED].contains(self.bluetoothManager.connectionStatus) {
+                                        self.bluetoothManager.startScanning()
+                                    } else if [K.CONNECTING, K.SCANNING].contains(self.bluetoothManager.connectionStatus) {
+                                        self.bluetoothManager.stopScanning()
                                     }
+                                } label: {
+                                    Image("Bluetooth")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .shadow(radius: 8)
+                                        .frame(width: 30, height: 30)
+                                        .padding(0)
+                                }
+                                    .buttonStyle(PlainButtonStyle())
+                                    .padding(0)
+
                                 HStack {
                                     if bluetoothManager.connectionStatus == K.SCANNING {
                                         ProgressView()
@@ -76,9 +88,20 @@ struct TagPitEntryView: View {
                                         .font(.system(size: 10, weight: .regular, design: .default))
                                 }
                             }
-                            .frame(width: 100)
+                            .frame(width: 140)
                         }
                         .padding(.horizontal, 20)
+                    }
+                    .onChange(of: bluetoothManager.pitTagNumber) {
+                        self.pitTagNumber = bluetoothManager.pitTagNumber
+                    }
+                    .onChange(of: enteredNumber) {
+                        if enteredNumber == "<" && !pitTagNumber.isEmpty {
+                            pitTagNumber = String(pitTagNumber.dropLast())
+                        } else {
+                            pitTagNumber += enteredNumber
+                        }
+                        enteredNumber = ""
                     }
                 }
             }

@@ -40,7 +40,7 @@ struct NumberPadView: View {
                 isPresented = false // Dismiss the popover
             }
         }
-        .frame(width: 150, height: 280)
+        .frame(width: 180, height: 280)
         .padding()
     }
 }

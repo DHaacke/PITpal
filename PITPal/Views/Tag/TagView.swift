@@ -15,11 +15,16 @@ struct TagView: View {
     
     @Binding var path: [String]
     
+    @AppStorage("usingPitTags") private var usingPitTags: Bool = true
+    
     var body: some View {
         VStack {
             TagStatusView(path: $path)
             TagDailyView(path: $path)
-            TagPitEntryView(path: $path)
+            if usingPitTags {
+                TagPitEntryView(path: $path)
+            }
+            
             Spacer()
         }
         .padding()

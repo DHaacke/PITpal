@@ -16,14 +16,6 @@ import Foundation
 
 struct SurveySection: Codable, Identifiable, Hashable, Equatable {
     
-    static func == (lhs: SurveySection, rhs: SurveySection) -> Bool {
-        return lhs.id == rhs.id
-    }
-    
-    func hash(into hasher: inout Hasher) {
-      hasher.combine(id)
-    }
-
     var id: Int
     var description: String
     var color: String
@@ -45,5 +37,13 @@ struct SurveySection: Codable, Identifiable, Hashable, Equatable {
         self.color = try container.decode(String.self, forKey: .color)
         self.location = try container.decode(Coordinate.self, forKey: .location)
         self.radius = try container.decode(Double.self, forKey: .radius)
+    }
+    
+    static func == (lhs: SurveySection, rhs: SurveySection) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+      hasher.combine(id)
     }
 }
