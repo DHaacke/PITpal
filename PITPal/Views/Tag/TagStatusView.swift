@@ -39,6 +39,7 @@ struct TagStatusView: View {
                                            .padding(.leading, 2)
                                            .padding(.trailing, 8)
                                            .foregroundStyle(networkMonitor.isConnected ? Color.green : Color.gray)
+                                           .shadow(radius: 2, x: 1, y: 1)
 
                                        BighornStatsValueView(value: self.bighornStats[2].value, suffix: "°", title: "Afterbay").padding(.trailing, 8)
                                        BighornStatsValueView(value: self.bighornStats[3].value, suffix: "°", title: "St. X").padding(.trailing, 8)

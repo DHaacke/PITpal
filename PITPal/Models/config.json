@@ -3,18 +3,18 @@
         {
             "id": 1,
             "code": "RB",
-            "description": "Rainbow Trout",
+            "description": "Rainbow",
             "imageName": "rainbow",
-            "color": "green",
+            "color": "TroutGreen",
             "sort": 1,
             "watershed": ["BHR", "XXX"],
         },
         {
             "id": 2,
             "code": "LL",
-            "description": "Brown Trout",
+            "description": "Brown",
             "imageName": "brown",
-            "color" : "brown",
+            "color" : "TroutBrown",
             "watershed": ["BHR", "XXX"],
         }
     ],

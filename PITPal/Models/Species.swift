@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Species: Codable, Identifiable, Hashable {
+struct Species: Codable, Identifiable, Hashable, Equatable {
     var id: Int
     var code: String
     var description: String
@@ -32,6 +32,14 @@ struct Species: Codable, Identifiable, Hashable {
         self.imageName = try container.decode(String.self, forKey: .imageName)
         self.color = try container.decode(String.self, forKey: .color)
         self.watershed = try container.decode([String].self, forKey: .watershed)
+    }
+    
+    static func == (lhs: Species, rhs: Species) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+      hasher.combine(id)
     }
 }
 

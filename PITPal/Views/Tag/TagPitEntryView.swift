@@ -20,6 +20,7 @@ struct TagPitEntryView: View {
     @State private var bluetoothManager = BluetoothManager()
     
     @State private var pitTagNumber: String = ""
+    @State private var species: Int = 0
     @State private var enteredNumber: String = ""
     @State private var isPresented: Bool = false
     @FocusState private var isFocused
@@ -38,16 +39,17 @@ struct TagPitEntryView: View {
                                 TextField("", text: $pitTagNumber)
                                     .disabled(true)
                                     .border(Color.gray, width: 1)
+                                    .foregroundColor(Color("TextForeground"))
                                     .textFieldStyle(.roundedBorder)
                                     .modifier(ClearButton(text: $pitTagNumber))
-                                    .frame(width: 240)
+                                    .frame(width: 300)
                                     .multilineTextAlignment(.leading)
                                     .popover(isPresented: $isPresented) {
                                         NumberPadView(isPresented: $isPresented, enteredNumber: $enteredNumber)
                                     }
                             } label: {
-                                Text("PIT tag #")
-                            }.frame(width: 380)
+                                Text("PIT TAG #")
+                            }.frame(width: 450)
                             
                             Button {
                                 self.isPresented = true
@@ -84,13 +86,21 @@ struct TagPitEntryView: View {
                                             .frame(width: 12, height: 12)
                                     }
                                     Text(getBluetoothStatus())
-                                        .foregroundColor(getBluetoothColor())
+                                        .foregroundColor(Color("TextForegroundWhite"))  // getBluetoothColor()
                                         .font(.system(size: 10, weight: .regular, design: .default))
+                                        .shadow(radius: 3)
                                 }
                             }
                             .frame(width: 140)
+                        }.padding(.horizontal, 20)
+                        
+                        VStack {
+                            HStack {
+                                SegmentedPickerSpecies()
+                            }
                         }
-                        .padding(.horizontal, 20)
+                        .frame(height: 50)
+                        
                     }
                     .onChange(of: bluetoothManager.pitTagNumber) {
                         self.pitTagNumber = bluetoothManager.pitTagNumber
@@ -106,7 +116,8 @@ struct TagPitEntryView: View {
                 }
             }
         }
-        .frame(height: 60)
+        .padding(.vertical, 10)
+        .frame(height: 160)
     }
     
     func getBluetoothStatus() -> String {
@@ -128,7 +139,7 @@ struct TagPitEntryView: View {
             case K.SCANNING_STOPPED:
                 return "Stopped"
             default:
-                return "??"
+                return "\(bluetoothManager.connectionStatus)"
         }
     }
     
@@ -139,17 +150,20 @@ struct TagPitEntryView: View {
             case K.BLUETOOTH_UNAUTHORIZED:
                 return Color.red
             case K.CONNECTING:
-                return Color.blue
+                print("Connecting")
+                return Color.gray
             case K.CONNECTED:
+                print("Connected")
                 return Color.green
             case K.CONNECTION_FAILED:
                 return Color.red
             case K.DISCONNECTED:
-                return Color.red
+                return Color.black
             case K.SCANNING:
-                return Color.blue
+                print("Scanning")
+                return Color.gray
             case K.SCANNING_STOPPED:
-                return Color.red
+                return Color.gray
             default:
                 return Color.clear
         }

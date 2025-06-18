@@ -56,10 +56,15 @@ struct BarChartView: View {
                 BarMark(
                     x: .value("Size", data.sizeGroup),
                     y: .value("Count", data.count),
-                    width: 12
+                    width: 14
                 )
                 .foregroundStyle(species == "RB" ? .green : .yellow)
-                .cornerRadius(8)
+                .annotation(position: .overlay) {
+                           Rectangle()
+                        .stroke(Color.white, lineWidth: 0.75)
+                              .padding(-4)
+                }
+                .cornerRadius(4)
             }
             .chartXScale(domain: [6, 24])
             // .chartYScale(domain: [minStockPrice ?? 0, maxStockPrice ?? 0])

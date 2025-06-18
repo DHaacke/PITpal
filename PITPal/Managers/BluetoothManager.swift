@@ -27,15 +27,15 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     var connectionStatus: Int = 6
     var isConnected: Bool = false
     
-    private var servicesUUID         = [CBUUID(string: "AF30")]  // MedPet $29 scanner
-    private var characteristicsUUID  =  CBUUID(string: "AE02")
-    
-    // * includes stratux
-    // private var servicesUUID =       [CBUUID(string: "AF30"), CBUUID(string: "180A"), CBUUID(string: "180F"), CBUUID(string: "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"), ]
-    // private var characteristicsUUID = CBUUID(string: "FFE1") // and CBUUID(string: "AE02")
-    
-//    private var servicesUUID         = [CBUUID(string: "AF30")]
+//    private var servicesUUID         = [CBUUID(string: "AF30")]  // MedPet $29 scanner
 //    private var characteristicsUUID  =  CBUUID(string: "AE02")
+    
+     // * includes stratux
+//     private var servicesUUID =       [CBUUID(string: "AF30"), CBUUID(string: "180A"), CBUUID(string: "180F"), CBUUID(string: "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"), ]
+//     private var characteristicsUUID = CBUUID(string: "FFE1") // and CBUUID(string: "AE02")
+    
+    private var servicesUUID         = [CBUUID(string: "AF30")]
+    private var characteristicsUUID  =  CBUUID(string: "AE02")
     
     override init() {
         super.init()
