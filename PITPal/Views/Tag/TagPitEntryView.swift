@@ -20,10 +20,21 @@ struct TagPitEntryView: View {
     @State private var bluetoothManager = BluetoothManager()
     
     @State private var pitTagNumber: String = ""
-    @State private var species: Int = 0
     @State private var enteredNumber: String = ""
-    @State private var isPresented: Bool = false
-    @FocusState private var isFocused
+    
+    @State private var species: Int = 0
+    
+    @State private var fishLength: String = "0"
+    @State private var enteredLength: String = ""
+    @State private var fishWeight: String = "0"
+    @State private var enteredWeight: String = ""
+    
+    @State private var isPresentedPitTag: Bool = false
+    @State private var isPresentedLength: Bool = false
+    @State private var isPresentedWeight: Bool = false
+    
+    
+
             
     var body: some View {
         VStack {
@@ -44,15 +55,15 @@ struct TagPitEntryView: View {
                                     .modifier(ClearButton(text: $pitTagNumber))
                                     .frame(width: 300)
                                     .multilineTextAlignment(.leading)
-                                    .popover(isPresented: $isPresented) {
-                                        NumberPadView(isPresented: $isPresented, enteredNumber: $enteredNumber)
+                                    .popover(isPresented: $isPresentedPitTag) {
+                                        NumberPadView(isPresented: $isPresentedPitTag, enteredNumber: $enteredNumber)
                                     }
                             } label: {
                                 Text("PIT TAG #")
                             }.frame(width: 450)
                             
                             Button {
-                                self.isPresented = true
+                                self.isPresentedPitTag = true
                             } label: {
                                 Image(systemName: "keyboard.onehanded.right.fill")
                             }
@@ -99,7 +110,66 @@ struct TagPitEntryView: View {
                                 SegmentedPickerSpecies()
                             }
                         }
-                        .frame(height: 50)
+                            .frame(height: 50)
+                            .padding(.bottom, 10)
+                        
+                        VStack {
+                            HStack {
+                                LabeledContent {
+                                    TextField("", text: $fishLength)
+                                        .disabled(true)
+                                        .border(Color.gray, width: 1)
+                                        .foregroundColor(Color("TextForeground"))
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: 100)
+                                        .multilineTextAlignment(.leading)
+                                        .popover(isPresented: $isPresentedLength) {
+                                            NumberPadView(isPresented: $isPresentedLength, enteredNumber: $enteredLength)
+                                        }
+                                } label: {
+                                    Text("FISH LENGTH: ")
+                                }.frame(width: 260)
+                                
+                                Button {
+                                    self.isPresentedLength = true
+                                } label: {
+                                    Image(systemName: "keyboard.onehanded.right.fill")
+                                }
+                                .foregroundColor(.white)
+                                .background(Color.clear)
+                                .font(.system(size: 28, weight: .regular, design: .default))
+                                .padding(.trailing, 60)
+                                
+                                Spacer()
+                                
+                                LabeledContent {
+                                    TextField("", text: $fishWeight)
+                                        .disabled(true)
+                                        .border(Color.gray, width: 1)
+                                        .foregroundColor(Color("TextForeground"))
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: 100)
+                                        .multilineTextAlignment(.leading)
+                                        .popover(isPresented: $isPresentedWeight) {
+                                            NumberPadView(isPresented: $isPresentedWeight, enteredNumber: $enteredWeight)
+                                        }
+                                } label: {
+                                    Text("FISH WEIGHT: ")
+                                }.frame(width: 260)
+                                
+                                Button {
+                                    self.isPresentedWeight = true
+                                } label: {
+                                    Image(systemName: "keyboard.onehanded.right.fill")
+                                }
+                                .foregroundColor(.white)
+                                .background(Color.clear)
+                                .font(.system(size: 28, weight: .regular, design: .default))
+                                .padding(.trailing, 60)
+                                
+                                Spacer()
+                            }
+                        }.padding(.horizontal, 20)
                         
                     }
                     .onChange(of: bluetoothManager.pitTagNumber) {
@@ -113,11 +183,27 @@ struct TagPitEntryView: View {
                         }
                         enteredNumber = ""
                     }
+                    .onChange(of: enteredLength) {
+                        if enteredLength == "<" && !fishLength.isEmpty {
+                            fishLength = String(fishLength.dropLast())
+                        } else {
+                            fishLength += enteredLength
+                        }
+                        enteredLength = ""
+                    }
+                    .onChange(of: enteredWeight) {
+                        if enteredWeight == "<" && !fishWeight.isEmpty {
+                            fishWeight = String(fishWeight.dropLast())
+                        } else {
+                            fishWeight += enteredWeight
+                        }
+                        enteredWeight = ""
+                    }
                 }
             }
         }
         .padding(.vertical, 10)
-        .frame(height: 160)
+        .frame(height: 200)
     }
     
     func getBluetoothStatus() -> String {
