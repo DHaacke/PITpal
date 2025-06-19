@@ -132,7 +132,6 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
         
 
     }
-    // didUpdateValueForCharacteristic
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         guard let value = characteristic.value, characteristic.uuid == characteristicsUUID else { return }

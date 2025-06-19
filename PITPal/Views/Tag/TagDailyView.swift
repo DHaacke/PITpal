@@ -11,6 +11,7 @@ struct TagDailyView: View {
     @Environment(LocationsHandler.self) var locationsHandler
     @Environment(JSONManager.self) var jsonManager
     @Environment(NetworkMonitor.self) var networkMonitor
+    @Environment(\.colorScheme) var colorScheme
     
     @AppStorage("usingPitTags") private var usingPitTags: Bool = true
     
@@ -51,7 +52,7 @@ struct TagDailyView: View {
                                         Text(watershed.description).tag(watershed.id)
                                     }
                                 }
-                                .tint(Color("TextForegroundWhite"))
+                                .shadow(radius: 3)  // tint removed
                                 .pickerStyle(.menu)
                             } label: {
                                 Text("Watershed:")
@@ -64,7 +65,7 @@ struct TagDailyView: View {
                                         Text(section.description).tag(section.id)
                                     }
                                 }
-                                .tint(Color("TextForegroundWhite"))
+                                .shadow(radius: 3)
                                 .pickerStyle(.menu)
                             } label: {
                                 Text("Survey Section:")

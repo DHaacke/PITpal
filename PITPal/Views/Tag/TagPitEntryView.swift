@@ -59,7 +59,7 @@ struct TagPitEntryView: View {
                                         NumberPadView(isPresented: $isPresentedPitTag, enteredNumber: $enteredNumber)
                                     }
                             } label: {
-                                Text("PIT TAG #")
+                                Text("PIT Tag #")
                             }.frame(width: 450)
                             
                             Button {
@@ -75,10 +75,12 @@ struct TagPitEntryView: View {
                             
                             VStack {
                                 Button {
-                                    if [K.BLUETOOTH_OFF, K.BLUETOOTH_UNAUTHORIZED, K.CONNECTION_FAILED, K.DISCONNECTED, K.SCANNING_STOPPED].contains(self.bluetoothManager.connectionStatus) {
-                                        self.bluetoothManager.startScanning()
-                                    } else if [K.CONNECTING, K.SCANNING].contains(self.bluetoothManager.connectionStatus) {
-                                        self.bluetoothManager.stopScanning()
+                                    if bluetoothManager.isConnected == false {
+                                        if [K.BLUETOOTH_OFF, K.BLUETOOTH_UNAUTHORIZED, K.CONNECTION_FAILED, K.DISCONNECTED, K.SCANNING_STOPPED].contains(self.bluetoothManager.connectionStatus) {
+                                            self.bluetoothManager.startScanning()
+                                        } else if [K.CONNECTING, K.SCANNING].contains(self.bluetoothManager.connectionStatus) {
+                                            self.bluetoothManager.stopScanning()
+                                        }
                                     }
                                 } label: {
                                     Image("Bluetooth")
@@ -121,14 +123,14 @@ struct TagPitEntryView: View {
                                         .border(Color.gray, width: 1)
                                         .foregroundColor(Color("TextForeground"))
                                         .textFieldStyle(.roundedBorder)
-                                        .frame(width: 100)
+                                        .frame(width: 80)
                                         .multilineTextAlignment(.leading)
                                         .popover(isPresented: $isPresentedLength) {
                                             NumberPadView(isPresented: $isPresentedLength, enteredNumber: $enteredLength)
                                         }
                                 } label: {
-                                    Text("FISH LENGTH: ")
-                                }.frame(width: 260)
+                                    Text("Fish Length: ")
+                                }.frame(width: 200)
                                 
                                 Button {
                                     self.isPresentedLength = true
@@ -140,22 +142,20 @@ struct TagPitEntryView: View {
                                 .font(.system(size: 28, weight: .regular, design: .default))
                                 .padding(.trailing, 60)
                                 
-                                Spacer()
-                                
                                 LabeledContent {
                                     TextField("", text: $fishWeight)
                                         .disabled(true)
                                         .border(Color.gray, width: 1)
                                         .foregroundColor(Color("TextForeground"))
                                         .textFieldStyle(.roundedBorder)
-                                        .frame(width: 100)
+                                        .frame(width: 80)
                                         .multilineTextAlignment(.leading)
                                         .popover(isPresented: $isPresentedWeight) {
                                             NumberPadView(isPresented: $isPresentedWeight, enteredNumber: $enteredWeight)
                                         }
                                 } label: {
-                                    Text("FISH WEIGHT: ")
-                                }.frame(width: 260)
+                                    Text("Fish Weight: ")
+                                }.frame(width: 200)
                                 
                                 Button {
                                     self.isPresentedWeight = true
