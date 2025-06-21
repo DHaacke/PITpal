@@ -18,14 +18,19 @@ struct DiscoveredDevice: Identifiable {
 
 @Observable
 class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeripheralDelegate {
+   
     private var discoveredDevices: [DiscoveredDevice] = []
     private var centralManager: CBCentralManager!
     private var peripherals: [CBPeripheral] = []
     
+    var connectedPeripheral: CBPeripheral?
+
+    
     var pitTagNumber: String = ""
     var isScanning: Bool = false
-    var connectionStatus: Int = 6
+    var connectionStatus: Int = K.SCANNING
     var isConnected: Bool = false
+    
     
 //    private var servicesUUID         = [CBUUID(string: "AF30")]  // MedPet $29 scanner
 //    private var characteristicsUUID  =  CBUUID(string: "AE02")
@@ -37,6 +42,7 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     private var servicesUUID         = [CBUUID(string: "AF30")]
     private var characteristicsUUID  =  CBUUID(string: "AE02")
     
+   
     override init() {
         super.init()
         centralManager = CBCentralManager(delegate: self, queue: .main)
@@ -52,37 +58,22 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
                 self.isScanning = true
                 connectionStatus = K.SCANNING
             case .poweredOff:
-                // Inform the user that Bluetooth is off
-                // print("Bluetooth is powered off.")
                 connectionStatus = K.BLUETOOTH_OFF
             case .unauthorized:
-                // Handle lack of permission
                 connectionStatus = K.BLUETOOTH_UNAUTHORIZED
             default:
                 break
         }
     }
    
-    func startScanning() {
-        centralManager.scanForPeripherals(withServices: servicesUUID, options: nil)
-        connectionStatus = K.SCANNING
-        self.isScanning = true
-    }
-    
-    func stopScanning() {
-        centralManager.stopScan()
-        connectionStatus = K.SCANNING_STOPPED
-        self.isScanning = false
-    }
-    
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
         print("Discovered \(peripheral.name ?? "Unknown") at \(RSSI)")
         if !peripherals.contains(where: { $0.identifier == peripheral.identifier }) {
             peripherals.append(peripheral)
             peripheral.delegate = self
             centralManager.connect(peripheral, options: nil)
-            // connectionStatus = "Connecting to \(peripheral.name ?? "Unknown")"
             connectionStatus = K.CONNECTING
+            connectedPeripheral = peripheral
         }
     }
     
@@ -125,12 +116,6 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
                 print("  Contains .notify characteristic: \(characteristic.uuid)")
             }
         }
-        if isConnected {
-            stopScanning()
-            connectionStatus = K.CONNECTED
-        }
-        
-
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
@@ -147,13 +132,26 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         connectionStatus = K.CONNECTION_FAILED
         isConnected = false
-        stopScanning()
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        peripherals.removeAll()
+        discoveredDevices.removeAll()
         connectionStatus = K.DISCONNECTED
         isConnected = false
-        stopScanning()
+    }
+    
+    func restart() {
+        centralManager.stopScan()
+        if let cp = connectedPeripheral {
+          centralManager.cancelPeripheralConnection(cp)
+        }
+        peripherals.removeAll()
+        discoveredDevices.removeAll()
+        centralManager = nil
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            self.centralManager = CBCentralManager(delegate: self, queue: nil)
+        }
     }
     
     func enableBackgroundMode() {

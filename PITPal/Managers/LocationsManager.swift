@@ -79,6 +79,7 @@ class LocationsHandler {
                     }  // End location updates by breaking out of the loop.
                     self.lastUpdate = update
                     if let loc = update.location {
+                        print("Updating location to \(loc.coordinate.latitude), \(loc.coordinate.longitude)")
                         self.isReceivingUpdates = true
                         self.lastLocation = loc
                         self.lastLocation2D = loc.coordinate

@@ -24,7 +24,9 @@ struct K {
     static let CONNECTION_FAILED: Int        = 4
     static let DISCONNECTED: Int             = 5
     static let SCANNING: Int                 = 6
-    static let SCANNING_STOPPED: Int         = 7
+    static let SCANNING_OFF: Int             = 7
+    static let BLUETOOTH_ON: Int             = 8
+    
     
     
 }

@@ -5,6 +5,7 @@
 //  Created by Doug Haacke on 6/11/25.
 //
 
+import SwiftData
 import SwiftUI
 
 @main
@@ -52,5 +53,6 @@ struct PITPalApp: App {
             }
             
         }
+        .modelContainer(for: Trip.self)
     }
 }

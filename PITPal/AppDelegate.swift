@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  AnglerVox
+//  PITPal
 //
-//  Created by Doug Haacke on 3/4/25.
+//  Created by Doug Haacke on 6/20/25.
 //
 
 import Foundation
@@ -12,13 +12,14 @@ import os
 @Observable
 class AppDelegate: NSObject, UIApplicationDelegate {
     
-    let logger = Logger(subsystem: "doughaacke.com.AnglerVox", category: "AppDelegate")
+    let logger = Logger(subsystem: "doughaacke.app.PITPal", category: "AppDelegate")
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         let locationsHandler = LocationsHandler.shared
         
         // If location updates were previously active, restart them after the background launch.
         if locationsHandler.updatesStarted {
+            print("Starting Location Updates")
             self.logger.info("Restart liveUpdates Session")
             locationsHandler.startLocationUpdates()
         }

@@ -16,6 +16,7 @@ struct TagDailyView: View {
     @AppStorage("usingPitTags") private var usingPitTags: Bool = true
     
     @Binding var path: [String]
+    @Binding var trip: Trip
     
     @State private var fetchManager     = FetchManager()
     // @State private var networkMonitor   = NetworkMonitor()
@@ -24,8 +25,8 @@ struct TagDailyView: View {
     @State private var bighornStats: [BighornStats] = []
     
     @State private var selectedDate: Date = Date()
-    @State private var surveySection: Int = 1
-    @State private var watershed: Int = 1
+    @State private var surveySection: Int = -1
+    @State private var watershedId: Int = -1
 
     
     var body: some View {
@@ -47,7 +48,8 @@ struct TagDailyView: View {
                             Spacer()
                             
                             LabeledContent {
-                                Picker("", selection: $watershed) {
+                                Picker("", selection: $watershedId) {
+                                    Text("<Choose>").tag(-1)
                                     ForEach(jsonManager.config.watershed, id: \.self) { watershed in
                                         Text(watershed.description).tag(watershed.id)
                                     }
@@ -61,8 +63,9 @@ struct TagDailyView: View {
                             
                             LabeledContent {
                                 Picker("", selection: $surveySection) {
+                                    Text("<Choose>").tag(-1)
                                     ForEach(jsonManager.config.surveySection, id: \.self) { section in
-                                        Text(section.description).tag(section.id)
+                                        Text(section.description).tag(section.description)
                                     }
                                 }
                                 .shadow(radius: 3)
@@ -93,7 +96,13 @@ struct TagDailyView: View {
                 }
                 // .frame(width: geometry.size.width, height: 60)
                 .onAppear {
-                    print(jsonManager.config)
+                    // print(jsonManager.config)
+                }
+                .onChange(of: watershedId) {
+                    print("Watershed changed to \(self.watershedId)")
+                    self.trip.watershed = jsonManager.config.watershed.first(where: { $0.id == self.watershedId })?.code ?? "N/A"
+                    print(self.trip.toJSON(trip: self.trip))
+                    
                 }
             }
         }
@@ -103,7 +112,8 @@ struct TagDailyView: View {
 
 #Preview {
     @Previewable @State var path: [String] = [K.TAG]
-    TagDailyView(path: $path)
+    @Previewable @State var trip: Trip = Trip()
+    TagDailyView(path: $path, trip: $trip)
         .environment(LocationsHandler())
         .environment(JSONManager())
         .environment(NetworkMonitor())

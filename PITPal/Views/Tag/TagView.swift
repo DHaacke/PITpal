@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TagView: View {
+    @Environment(\.modelContext) var modelContext
     @Environment(LocationsHandler.self) var locationsHandler
     @Environment(JSONManager.self) var jsonManager
     @Environment(NetworkMonitor.self) var networkMonitor
@@ -17,10 +18,12 @@ struct TagView: View {
     
     @AppStorage("usingPitTags") private var usingPitTags: Bool = true
     
+    @State private var trip = Trip()
+    
     var body: some View {
         VStack {
-            TagStatusView(path: $path)
-            TagDailyView(path: $path)
+            TagStatusView(path: $path, trip: $trip)
+            TagDailyView(path: $path, trip: $trip)
             if usingPitTags {
                 TagPitEntryView(path: $path)
             }
@@ -28,6 +31,11 @@ struct TagView: View {
             Spacer()
         }
         .padding()
+        .onChange(of: trip) {
+            print(" -------------------------- ")
+            print(trip)
+            print(" -------------------------- ")
+        }
         
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .background(Color("AppBackground"))

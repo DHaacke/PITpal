@@ -15,9 +15,6 @@ class JSONManager: NSObject {
     var tripInProgress: Bool = false
     var config: Config = Config(gender: [], season: [], species: [], surveySection: [], watershed: [])
     
-//    var trip: Trip = Trip(id: UUID(), date: Date().format(format: "yyyy-MM-dd"), identifier: "", river: "UNK", initialLat: 0.0, initialLon: 0.0, anglers: 2, method: "", transport: "", notes: "", route: [], fish: [])
-//    var trips: [Trip] = []
-    
     override init() {
         super.init()
         Task {

@@ -10,12 +10,15 @@ import SwiftUI
 // @AppStorage("usingPitTags") private var usingPitTags: Bool = true
 
 struct TagPitEntryView: View {
+    @Environment(\.modelContext) var modelContext
     @Environment(LocationsHandler.self) var locationsHandler
     @Environment(JSONManager.self) var jsonManager
     @Environment(NetworkMonitor.self) var networkMonitor
     @Environment(\.scenePhase) var scenePhase
     
     @Binding var path: [String]
+    
+    @AppStorage("usingPitTags") private var usingPitTags: Bool = true
     
     @State private var bluetoothManager = BluetoothManager()
     
@@ -73,38 +76,38 @@ struct TagPitEntryView: View {
                             
                             Spacer()
                             
-                            VStack {
-                                Button {
-                                    if bluetoothManager.isConnected == false {
-                                        if [K.BLUETOOTH_OFF, K.BLUETOOTH_UNAUTHORIZED, K.CONNECTION_FAILED, K.DISCONNECTED, K.SCANNING_STOPPED].contains(self.bluetoothManager.connectionStatus) {
-                                            self.bluetoothManager.startScanning()
-                                        } else if [K.CONNECTING, K.SCANNING].contains(self.bluetoothManager.connectionStatus) {
-                                            self.bluetoothManager.stopScanning()
+                            if usingPitTags {
+                                VStack {
+                                    Button {
+                                        if bluetoothManager.isConnected == false || bluetoothManager.connectionStatus == K.DISCONNECTED {
+                                            print(getBluetoothStatus())
+                                            print("* * Restarting Bluetooth * *")
+                                            bluetoothManager.restart()
                                         }
+                                    } label: {
+                                        Image("Bluetooth")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .shadow(radius: 8)
+                                            .frame(width: 30, height: 30)
+                                            .padding(0)
                                     }
-                                } label: {
-                                    Image("Bluetooth")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .shadow(radius: 8)
-                                        .frame(width: 30, height: 30)
+                                        .buttonStyle(PlainButtonStyle())
                                         .padding(0)
-                                }
-                                    .buttonStyle(PlainButtonStyle())
-                                    .padding(0)
 
-                                HStack {
-                                    if bluetoothManager.connectionStatus == K.SCANNING {
-                                        ProgressView()
-                                            .frame(width: 12, height: 12)
+                                    HStack {
+                                        if bluetoothManager.connectionStatus == K.SCANNING {
+                                            ProgressView()
+                                                .frame(width: 12, height: 12)
+                                        }
+                                        Text(getBluetoothStatus())
+                                            .foregroundColor(Color("TextForegroundWhite"))  // getBluetoothColor()
+                                            .font(.system(size: 10, weight: .regular, design: .default))
+                                            .shadow(radius: 3)
                                     }
-                                    Text(getBluetoothStatus())
-                                        .foregroundColor(Color("TextForegroundWhite"))  // getBluetoothColor()
-                                        .font(.system(size: 10, weight: .regular, design: .default))
-                                        .shadow(radius: 3)
                                 }
+                                .frame(width: 140)
                             }
-                            .frame(width: 140)
                         }.padding(.horizontal, 20)
                         
                         VStack {
@@ -173,9 +176,12 @@ struct TagPitEntryView: View {
                         
                     }
                     .onChange(of: bluetoothManager.pitTagNumber) {
+                        if bluetoothManager.pitTagNumber.isEmpty { return }
                         self.pitTagNumber = bluetoothManager.pitTagNumber
+                        bluetoothManager.pitTagNumber = ""
                     }
                     .onChange(of: enteredNumber) {
+                        print("onChange enteredNumber")
                         if enteredNumber == "<" && !pitTagNumber.isEmpty {
                             pitTagNumber = String(pitTagNumber.dropLast())
                         } else {
@@ -222,7 +228,7 @@ struct TagPitEntryView: View {
                 return "Disconnected"
             case K.SCANNING:
                 return "Scanning..."
-            case K.SCANNING_STOPPED:
+            case K.SCANNING_OFF:
                 return "Stopped"
             default:
                 return "\(bluetoothManager.connectionStatus)"
@@ -248,7 +254,7 @@ struct TagPitEntryView: View {
             case K.SCANNING:
                 print("Scanning")
                 return Color.gray
-            case K.SCANNING_STOPPED:
+            case K.SCANNING_OFF:
                 return Color.gray
             default:
                 return Color.clear

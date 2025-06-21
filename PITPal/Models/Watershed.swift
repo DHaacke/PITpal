@@ -9,6 +9,8 @@ import SwiftUI
 import CoreLocation
 
 struct Watershed: Codable, Identifiable, Hashable, Equatable {
+    @Environment(JSONManager.self) var jsonManager
+    
     var id: Int
     var code: String
     var description: String

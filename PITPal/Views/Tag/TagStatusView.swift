@@ -12,8 +12,8 @@ struct TagStatusView: View {
     @Environment(JSONManager.self) var jsonManager
     @Environment(NetworkMonitor.self) var networkMonitor
     
-    
     @Binding var path: [String]
+    @Binding var trip: Trip
     
     @State private var fetchManager     = FetchManager()
     
@@ -109,13 +109,30 @@ struct TagStatusView: View {
                         }
                     }
                     print(self.bighornStats)
+                    if self.bighornStats.count > 0 {
+                        self.trip.waterTemperature = self.bighornStats[2].value
+                        self.trip.waterFlow = self.bighornStats[0].value
+                    }
                     isLoadingBighornStats = false
+                    self.trip.initialLat = locationsHandler.lastLocation2D.latitude
+                    self.trip.initialLon = locationsHandler.lastLocation2D.longitude
+                    // print(self.trip.toJSON(trip: self.trip))
                 }
             }
         }
         .frame(height: 140)
         .padding(.bottom, 10)
         // Spacer()
+    }
+    
+    func ObjToJSON<T>(object: T) -> String {
+        let prettyPrintedData = try! JSONSerialization.data(
+            withJSONObject: object,
+            options: [.prettyPrinted, .sortedKeys]
+        )
+        let prettyPrintedString = String(data: prettyPrintedData, encoding: .utf8)!
+        print(prettyPrintedString)
+        return prettyPrintedString
     }
     
     func BighornStatsValueView(value: Double, suffix: String, title: String) -> some View {
@@ -158,7 +175,8 @@ struct TagStatusView: View {
 
 #Preview {
     @Previewable @State var path: [String] = [K.TAG]
-    TagStatusView(path: $path)
+    @Previewable @State var trip: Trip = Trip()
+    TagStatusView(path: $path, trip: $trip)
         .environment(LocationsHandler())
         .environment(JSONManager())
         .environment(NetworkMonitor())
