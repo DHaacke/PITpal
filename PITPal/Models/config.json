@@ -1,74 +1,48 @@
 {
     "species" : [
         {
-            "id": 1,
             "code": "RB",
-            "description": "Rainbow",
+            "name": "Rainbow",
             "imageName": "rainbow",
             "color": "TroutGreen",
-            "sort": 1,
-            "watershed": ["BHR", "XXX"],
+            "active" : true
         },
         {
-            "id": 2,
             "code": "LL",
-            "description": "Brown",
+            "name": "Brown",
             "imageName": "brown",
             "color" : "TroutBrown",
-            "watershed": ["BHR", "XXX"],
+            "active" : true
+        },
+        {
+            "code": "YCT",
+            "name": "Y. Cutthroat",
+            "imageName": "yellow",
+            "color" : "TroutYellow",
+            "active" : true
         }
     ],
     "gender": [
         {
-            "id": 1,
             "code": "M",
-            "description": "Male",
+            "name": "Male",
             "color": "blue"
         },
         {
-            "id": 2,
             "code": "F",
-            "description": "Female",
+            "name": "Female",
             "color": "pink"
         },
         {
-            "id": 3,
             "code": "X",
-            "description": "Unknown",
+            "name": "Unknown",
             "color": "gray"
-        }
-    ],
-    "season": [
-        {
-            "id": 1,
-            "code": "SP",
-            "description": "Spring",
-            "color": "green"
-        },
-        {
-            "id": 2,
-            "code": "SU",
-            "description": "Summer",
-            "color": "red"
-        },
-        {
-            "id": 3,
-            "code": "FA",
-            "description": "Fall",
-            "color": "yellow"
-        },
-        {
-            "id": 4,
-            "code": "WI",
-            "description": "Winter",
-            "color": "white"
         }
     ],
     "watershed": [
         {
-            "id": 1,
             "code": "BHR",
-            "description": "Bighorn River",
+            "name": "Bighorn River",
             "geofence": [],
             "poly": [],
             "color": "blue"
@@ -76,8 +50,8 @@
     ],
     "surveySection": [
         {
-            "id": 1,
-            "description": "Upper 1",
+            "code": "U",
+            "name": "Upper",
             "color": "blue",
             "location": {
                 "lat": 44.01,
@@ -87,23 +61,12 @@
             "radius": 0.25
         },
         {
-            "id": 2,
-            "description": "Upper 2",
-            "color": "blue",
+            "code": "L",
+            "name": "Lower",
+            "color": "green",
             "location": {
                 "lat": 44.02,
                 "lon": -107.02,
-                "altitude": 0
-            },
-            "radius": 0.25
-        },
-        {
-            "id": 3,
-            "description": "Upper 3",
-            "color": "blue",
-            "location": {
-                "lat": 44.03,
-                "lon": -107.03,
                 "altitude": 0
             },
             "radius": 0.25

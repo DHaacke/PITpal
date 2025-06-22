@@ -13,7 +13,7 @@ import SwiftUI
 class JSONManager: NSObject {
     var isConfigLoaded: Bool = false
     var tripInProgress: Bool = false
-    var config: Config = Config(gender: [], season: [], species: [], surveySection: [], watershed: [])
+    var config: Config = Config(gender: [], species: [], surveySection: [], watershed: [])
     
     override init() {
         super.init()
@@ -27,7 +27,6 @@ class JSONManager: NSObject {
         self.config = Bundle.main.decodeJson(Config.self, file: "config.json")
         self.isConfigLoaded = true
         print("Config loaded...")
-        print(config)
     }
     
 }

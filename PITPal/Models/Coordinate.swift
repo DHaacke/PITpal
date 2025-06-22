@@ -13,6 +13,12 @@ struct Coordinate: Codable {
     var lon: Double
     var altitude: Double = 0.0
     
+    init(latitude: Double, longitude: Double, altitude: Double = 0.0) {
+        self.lat = latitude
+        self.lon = longitude
+        self.altitude = altitude
+    }
+        
     enum CodingKeys: String, CodingKey {
         case lat
         case lon

@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct TagDailyView: View {
+    @Environment(\.modelContext) var modelContext
     @Environment(LocationsHandler.self) var locationsHandler
     @Environment(JSONManager.self) var jsonManager
     @Environment(NetworkMonitor.self) var networkMonitor
@@ -17,6 +19,7 @@ struct TagDailyView: View {
     
     @Binding var path: [String]
     @Binding var trip: Trip
+    @Binding var surveySection: String
     
     @State private var fetchManager     = FetchManager()
     // @State private var networkMonitor   = NetworkMonitor()
@@ -25,8 +28,13 @@ struct TagDailyView: View {
     @State private var bighornStats: [BighornStats] = []
     
     @State private var selectedDate: Date = Date()
-    @State private var surveySection: Int = -1
-    @State private var watershedId: Int = -1
+    @State private var watershedCode: String = ""
+    @State private var surveySectionCode: String = ""
+    
+    @Query(sort: \Watershed.code) var watersheds: [Watershed]
+    @Query(sort: \SurveySection.code) var surveySections: [SurveySection]
+    
+    //  @Query(sort: [SortDescriptor(\Destination.priority, order: .reverse), SortDescriptor(\Destination.name)]) var destinations: [Destination]
 
     
     var body: some View {
@@ -48,10 +56,10 @@ struct TagDailyView: View {
                             Spacer()
                             
                             LabeledContent {
-                                Picker("", selection: $watershedId) {
-                                    Text("<Choose>").tag(-1)
-                                    ForEach(jsonManager.config.watershed, id: \.self) { watershed in
-                                        Text(watershed.description).tag(watershed.id)
+                                Picker("", selection: $watershedCode) {
+                                    Text("<Choose>").tag("")
+                                    ForEach(watersheds) { watershed in
+                                        Text(watershed.name).tag(watershed.code)
                                     }
                                 }
                                 .shadow(radius: 3)  // tint removed
@@ -62,10 +70,10 @@ struct TagDailyView: View {
                             Spacer()
                             
                             LabeledContent {
-                                Picker("", selection: $surveySection) {
-                                    Text("<Choose>").tag(-1)
-                                    ForEach(jsonManager.config.surveySection, id: \.self) { section in
-                                        Text(section.description).tag(section.description)
+                                Picker("", selection: $surveySectionCode) {
+                                    Text("<Choose>").tag("")
+                                    ForEach(surveySections) { section in
+                                        Text(section.name).tag(section.code)
                                     }
                                 }
                                 .shadow(radius: 3)
@@ -98,11 +106,13 @@ struct TagDailyView: View {
                 .onAppear {
                     // print(jsonManager.config)
                 }
-                .onChange(of: watershedId) {
-                    print("Watershed changed to \(self.watershedId)")
-                    self.trip.watershed = jsonManager.config.watershed.first(where: { $0.id == self.watershedId })?.code ?? "N/A"
-                    print(self.trip.toJSON(trip: self.trip))
-                    
+                .onChange(of: watershedCode) {
+                    print("Watershed changed to \(self.watershedCode)")
+                    self.trip.watershed = self.watershedCode
+                }
+                .onChange(of: surveySectionCode) {
+                    print("surveySection changed to \(self.surveySectionCode)")
+                    self.surveySection = self.surveySectionCode
                 }
             }
         }
@@ -113,7 +123,8 @@ struct TagDailyView: View {
 #Preview {
     @Previewable @State var path: [String] = [K.TAG]
     @Previewable @State var trip: Trip = Trip()
-    TagDailyView(path: $path, trip: $trip)
+    @Previewable @State var surveySection: String = ""
+    TagDailyView(path: $path, trip: $trip, surveySection: $surveySection)
         .environment(LocationsHandler())
         .environment(JSONManager())
         .environment(NetworkMonitor())

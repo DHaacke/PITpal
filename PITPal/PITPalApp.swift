@@ -5,11 +5,13 @@
 //  Created by Doug Haacke on 6/11/25.
 //
 
+import Foundation
 import SwiftData
 import SwiftUI
 
 @main
 struct PITPalApp: App {
+    @Environment(\.modelContext) var modelContext
     
     @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
     
@@ -51,8 +53,12 @@ struct PITPalApp: App {
                 locationsHandler.updatesStarted = true
                 // networkManager.checkNetworkConnection()
             }
-            
         }
-        .modelContainer(for: Trip.self)
+        .modelContainer(for: [Trip.self, Fish.self, Species.self, Gender.self, SurveySection.self, Watershed.self])
+    }
+    
+    func getFileCount(modelContext: ModelContext) -> Int {
+        let descriptor = FetchDescriptor<Species>(predicate: #Predicate { $0.name != "" })
+        return (try? modelContext.fetchCount(descriptor)) ?? 0
     }
 }

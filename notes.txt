@@ -26,7 +26,31 @@ S U R V E Y   S E C T I O N S
   Do you have names of survey sections?
   
   
-  
+@Query(filter: #Predicate<Movie> { movie in
+    movie.director.name == "James Cameron"
+}, sort: \Movie.title) var movies: [Movie]
+
+You can also get more fine-grained control over the sort order, either by
+ asking for it to be reversed:
+
+@Query(sort: \Movie.title, order: .reverse) var movies: [Movie]
+
+Or by providing an array of sort descriptors, where they get applied in order:
+
+@Query(sort: [SortDescriptor(\Movie.title), SortDescriptor(\Movie.release
+
+
+
+
+
+
+
+
+
+
+
+
+
   
 struct Daily: Codable, Identifiable {
     public var id: Int64 = 0
@@ -166,5 +190,6 @@ struct Fishy: Codable, Identifiable {
         self.gender = try container.decode(String.self, forKey: .gender)
     }
 }
+
 
 

@@ -6,15 +6,21 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     @Environment(\.scenePhase) var scenePhase
+    @Environment(\.modelContext) var modelContext
     @Environment(LocationsHandler.self) var locationsHandler
+    @Environment(JSONManager.self) var jsonManager
     @Environment(NetworkMonitor.self) var networkMonitor
     
     @AppStorage("darkMode") private var darkMode: Bool = false
     
     @State private var path = [String]()
+    
+    // TODO
+    @Query(sort: \SurveySection.code) var surveySections: [SurveySection]
     
     var body: some View {
         
@@ -61,6 +67,73 @@ struct ContentView: View {
         .onChange(of: path) { oldPath, newPath in
             print("Path changed: \(newPath)")
         }
+        .task {
+            if jsonManager.isConfigLoaded {
+                await MainActor.run {
+                    try! modelContext.transaction {
+                        for species in jsonManager.config.species {
+                            print("Adding \(species.name)")
+                            modelContext.insert(Species(
+                                code: species.code,
+                                name: species.name,
+                                imageName: species.imageName,
+                                color: species.color,
+                                active: species.active
+                            ))
+                        }
+
+//                        for surveySection in surveySections {
+//                            modelContext.delete(surveySection)
+//                        }
+                        for surveySection in jsonManager.config.surveySection {
+                            print("Adding \(surveySection.name)")
+                            let surveySection = SurveySection(
+                                code: surveySection.code,
+                                name: surveySection.name,
+                                color: surveySection.color,
+                                location: surveySection.location,
+                                radius: surveySection.radius
+                            )
+                            modelContext.insert(surveySection)
+                        }
+                        
+                        for gender in jsonManager.config.gender {
+                            print("Adding \(gender.name)")
+                            let gender = Gender(
+                                code: gender.code,
+                                name: gender.name,
+                                color: gender.color
+                            )
+                            modelContext.insert(gender)
+                        }
+                        
+                        for watershed in jsonManager.config.watershed {
+                            print("Adding \(watershed.name)")
+                            let watershed = Watershed(
+                                code: watershed.code,
+                                name: watershed.name,
+                                geofence: [],
+                                poly: []
+                            )
+                            modelContext.insert(watershed)
+                        }
+                        
+                        do {
+                            try modelContext.save()
+                            print("Total Fish: \(getFileCount(modelContext: modelContext))")
+                        } catch {
+                            print("An error occurred!")
+                        }
+                    }
+                }
+            }
+            try! modelContext.save()
+        }
+    }
+    
+    func getFileCount(modelContext: ModelContext) -> Int {
+        let descriptor = FetchDescriptor<Species>(predicate: #Predicate { $0.name != "" })
+        return (try? modelContext.fetchCount(descriptor)) ?? 0
     }
 }
 

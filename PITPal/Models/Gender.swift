@@ -5,26 +5,43 @@
 //  Created by Doug Haacke on 6/11/25.
 //
 
-import Foundation
+import SwiftUI
+import SwiftData
 
-struct Gender: Codable, Identifiable, Hashable {
-    var id: Int
-    var code: String
-    var description: String
+@Model
+class Gender: Codable {
+    @Attribute(.unique) var code: String
+    var name: String
     var color: String
+    
+    init(
+        code: String = "",
+        name: String = "",
+        color: String = ""
+    ) {
+        self.code = code
+        self.name = name
+        self.color = color
+    }
 
     enum CodingKeys: String, CodingKey {
-        case id
         case code
-        case description
+        case name
         case color
     }
     
-    init(from decoder: any Decoder) throws {
+    required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try container.decode(Int.self, forKey: .id)
         self.code = try container.decode(String.self, forKey: .code)
-        self.description = try container.decode(String.self, forKey: .description)
+        self.name = try container.decode(String.self, forKey: .name)
         self.color = try container.decode(String.self, forKey: .color)
     }
+    
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(code, forKey: .code)
+        try container.encode(name, forKey: .name)
+        try container.encode(color, forKey: .color)
+    }
+    
 }

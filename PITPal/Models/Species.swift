@@ -5,41 +5,63 @@
 //  Created by Doug Haacke on 6/11/25.
 //
 
-import Foundation
+import SwiftUI
+import SwiftData
 
-struct Species: Codable, Identifiable, Hashable, Equatable {
-    var id: Int
-    var code: String
-    var description: String
+@Model
+class Species: Codable, Equatable {
+    @Attribute(.unique) var code: String
+    var name: String
     var imageName: String
     var color: String
-    var watershed: [String] = []
+    var active: Bool
     
-    enum CodingKeys: String, CodingKey {
-        case id
-        case code
-        case description
-        case imageName
-        case color
-        case watershed
+    init(
+        code: String = "",
+        name: String = "",
+        imageName: String = "",
+        color: String = "",
+        active: Bool = true
+    ) {
+        self.code = code
+        self.name = name
+        self.imageName = imageName
+        self.color = color
+        self.active = active
     }
     
-    init(from decoder: any Decoder) throws {
+    enum CodingKeys: String, CodingKey {
+        case code
+        case name
+        case imageName
+        case color
+        case active
+    }
+    
+    required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try container.decode(Int.self, forKey: .id)
         self.code = try container.decode(String.self, forKey: .code)
-        self.description = try container.decode(String.self, forKey: .description)
+        self.name = try container.decode(String.self, forKey: .name)
         self.imageName = try container.decode(String.self, forKey: .imageName)
         self.color = try container.decode(String.self, forKey: .color)
-        self.watershed = try container.decode([String].self, forKey: .watershed)
+        self.active = try container.decode(Bool.self, forKey: .active)
+    }
+    
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(code, forKey: .code)
+        try container.encode(name, forKey: .name)
+        try container.encode(imageName, forKey: .imageName)
+        try container.encode(color, forKey: .color)
+        try container.encode(active, forKey: .active)
     }
     
     static func == (lhs: Species, rhs: Species) -> Bool {
-        return lhs.id == rhs.id
+        return lhs.persistentModelID == rhs.persistentModelID
     }
     
-    func hash(into hasher: inout Hasher) {
-      hasher.combine(id)
-    }
+//    func hash(into hasher: inout Hasher) {
+//      hasher.combine(id)
+//    }
 }
 
