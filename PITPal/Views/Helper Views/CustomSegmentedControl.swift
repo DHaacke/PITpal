@@ -38,7 +38,6 @@ struct CustomSegmentedControl: View {
                             .frame(width: 100)
                             .foregroundStyle(selectedItem == sp ? Color(.black) : Color(.white))
                             .bold(selectedItem == sp)
-                        
                             .background {
                                 ZStack {
                                     if selectedItem == sp {
@@ -47,7 +46,7 @@ struct CustomSegmentedControl: View {
                                             .matchedGeometryEffect(id: "selectedItem", in: animation)
                                     }
                                 }
-                                .animation(.bouncy, value: selectedItem)
+                                .animation(.snappy, value: selectedItem)
                             }
                             .contentShape(.rect)
                             .onTapGesture {

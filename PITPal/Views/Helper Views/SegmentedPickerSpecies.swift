@@ -17,7 +17,12 @@ struct SegmentedPickerSpecies: View {
     
     @State private var selectedItem: String = ""
     
-    @Query(sort: \Species.code) var species: [Species]
+    // @Query(sort: \Species.code) var species: [Species]
+    // @Query(filter: #Predicate<Species> { sp in sp.active == "Y"},  sort: \Species.name) var filteredSpecies: [Species]
+    
+    @Query(filter: #Predicate<Species> { sp in
+        sp.active == "Y"
+    }) var activeSpecies: [Species]
     
     @Namespace private var animation
     
@@ -34,7 +39,7 @@ struct SegmentedPickerSpecies: View {
                             }
                         }.padding(.trailing, 20)
                         
-                        ForEach(species) { sp in
+                        ForEach(activeSpecies) { sp in
                             Text(sp.name)
                                 .padding(.vertical, 10)
                                 .frame(width: 120)

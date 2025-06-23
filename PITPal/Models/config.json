@@ -5,22 +5,44 @@
             "name": "Rainbow",
             "imageName": "rainbow",
             "color": "TroutGreen",
-            "active" : true
+            "active" : "Y"
         },
         {
             "code": "LL",
             "name": "Brown",
             "imageName": "brown",
             "color" : "TroutBrown",
-            "active" : true
+            "active" : "Y"
         },
         {
             "code": "YCT",
             "name": "Y. Cutthroat",
             "imageName": "yellow",
             "color" : "TroutYellow",
-            "active" : true
-        }
+            "active" : "Y"
+        },
+        {
+            "code": "BT",
+            "name": "Brook Trout",
+            "imageName": "gray",
+            "color" : "TroutGray",
+            "active" : "N"
+        },
+        {
+            "code": "BLT",
+            "name": "Bull Trout",
+            "imageName": "yellow",
+            "color" : "TroutBlack",
+            "active" : "N"
+        },
+        {
+            "code": "WST",
+            "name": "Westlope",
+            "imageName": "yellow",
+            "color" : "TroutPurple",
+            "active" : "N"
+        },
+        
     ],
     "gender": [
         {
@@ -46,30 +68,54 @@
             "geofence": [],
             "poly": [],
             "color": "blue"
-        }
+        },
+        {
+            "code": "STW",
+            "name": "Stillwater River",
+            "geofence": [],
+            "poly": [],
+            "color": "blue"
+        },
+        {
+            "code": "ROC",
+            "name": "Rock Creek",
+            "geofence": [],
+            "poly": [],
+            "color": "blue"
+        },
+        {
+            "code": "ERB",
+            "name": "East Rosebud",
+            "geofence": [],
+            "poly": [],
+            "color": "blue"
+        },
+        {
+            "code": "WRB",
+            "name": "West Rosebud",
+            "geofence": [],
+            "poly": [],
+            "color": "blue"
+        },
     ],
     "surveySection": [
         {
             "code": "U",
             "name": "Upper",
             "color": "blue",
-            "location": {
-                "lat": 44.01,
-                "lon": -107.01,
-                "altitude": 0
-            },
-            "radius": 0.25
+            "lat": 44.01,
+            "lon": -107.01,
+            "radius": 0.25,
+            "active": "Y"
         },
         {
             "code": "L",
             "name": "Lower",
             "color": "green",
-            "location": {
-                "lat": 44.02,
-                "lon": -107.02,
-                "altitude": 0
-            },
-            "radius": 0.25
+            "lat": 44.02,
+            "lon": -107.02,
+            "radius": 0.25,
+            "active": "Y"
         }
     ],
 

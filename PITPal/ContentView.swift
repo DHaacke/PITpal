@@ -20,6 +20,7 @@ struct ContentView: View {
     @State private var path = [String]()
     
     // TODO
+    @Query(sort: \Species.code) var speciesList: [Species]
     @Query(sort: \SurveySection.code) var surveySections: [SurveySection]
     
     var body: some View {
@@ -71,6 +72,11 @@ struct ContentView: View {
             if jsonManager.isConfigLoaded {
                 await MainActor.run {
                     try! modelContext.transaction {
+                        
+                        for species in speciesList {
+                            print("Deleting \(species.name)")
+                            modelContext.delete(species)
+                        }
                         for species in jsonManager.config.species {
                             print("Adding \(species.name)")
                             modelContext.insert(Species(
@@ -82,16 +88,18 @@ struct ContentView: View {
                             ))
                         }
 
-//                        for surveySection in surveySections {
-//                            modelContext.delete(surveySection)
-//                        }
+                        for surveySection in surveySections {
+                            print("Deleting \(surveySection.name)")
+                            modelContext.delete(surveySection)
+                        }
                         for surveySection in jsonManager.config.surveySection {
                             print("Adding \(surveySection.name)")
                             let surveySection = SurveySection(
                                 code: surveySection.code,
                                 name: surveySection.name,
                                 color: surveySection.color,
-                                location: surveySection.location,
+                                lat: surveySection.lat,
+                                lon: surveySection.lon,
                                 radius: surveySection.radius
                             )
                             modelContext.insert(surveySection)
@@ -120,7 +128,7 @@ struct ContentView: View {
                         
                         do {
                             try modelContext.save()
-                            print("Total Fish: \(getFileCount(modelContext: modelContext))")
+                            print("Total Fish: \(getRecordCount(modelContext: modelContext))")
                         } catch {
                             print("An error occurred!")
                         }
@@ -131,7 +139,7 @@ struct ContentView: View {
         }
     }
     
-    func getFileCount(modelContext: ModelContext) -> Int {
+    func getRecordCount(modelContext: ModelContext) -> Int {
         let descriptor = FetchDescriptor<Species>(predicate: #Predicate { $0.name != "" })
         return (try? modelContext.fetchCount(descriptor)) ?? 0
     }

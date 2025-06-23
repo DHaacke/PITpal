@@ -73,6 +73,7 @@ struct SettingsView: View {
                 Section(header: Text("Personnel").font(.title2).foregroundStyle(.white)) {
                     LabeledContent {
                         TextField("", text: $boatCaptain)
+                          .foregroundColor(Color("TextForeground"))
                           .border(Color.gray, width: 1)
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 400)
@@ -83,6 +84,7 @@ struct SettingsView: View {
                     
                     LabeledContent {
                         TextField("", text: $biologistPrimary)
+                          .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)
                           .frame(width: 400)
@@ -93,6 +95,7 @@ struct SettingsView: View {
                     
                     LabeledContent {
                         TextField("", text: $biologistSecondary)
+                          .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)
                           .frame(width: 400)
@@ -103,6 +106,7 @@ struct SettingsView: View {
                     
                     LabeledContent {
                         TextField("", text: $technicians)
+                          .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)
                           .frame(width: 400)
@@ -114,6 +118,7 @@ struct SettingsView: View {
                     
                     LabeledContent {
                         TextField("", text: $volunteers)
+                          .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)
                           .frame(width: 400)
@@ -140,6 +145,7 @@ struct SettingsView: View {
                     
                     LabeledContent {
                         TextField("", text: $pitManufacturer)
+                          .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)
                           .frame(width: 400)
@@ -161,6 +167,7 @@ struct SettingsView: View {
                     
                     LabeledContent {
                         TextField("", value: $pitFrequency, formatter: decimalFormatter)
+                          .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 100)
                           .multilineTextAlignment(.trailing)
@@ -180,6 +187,7 @@ struct SettingsView: View {
                     
                     LabeledContent {
                         TextField("", text: $pitTagPrefix)
+                          .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)
                           .frame(width: 120)
@@ -190,6 +198,7 @@ struct SettingsView: View {
 
                     LabeledContent {
                         TextField("", text: $pitTagSuffix)
+                          .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)
                           .frame(width: 120)
@@ -224,6 +233,7 @@ struct SettingsView: View {
                     }.frame(width: 500, height: 40)
                     LabeledContent {
                         TextField("", value: $lengthMin, formatter: NumberFormatter())
+                          .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 100)
                           .multilineTextAlignment(.trailing)
@@ -233,6 +243,7 @@ struct SettingsView: View {
                     }.frame(width: 500)
                     LabeledContent {
                         TextField("", value: $lengthMax, formatter: NumberFormatter())
+                          .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 100)
                           .multilineTextAlignment(.trailing)
@@ -266,6 +277,7 @@ struct SettingsView: View {
                     
                     LabeledContent {
                         TextField("", value: $weightMin, formatter: NumberFormatter())
+                          .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 100)
                           .multilineTextAlignment(.trailing)
@@ -275,6 +287,7 @@ struct SettingsView: View {
                     }.frame(width: 500)
                     LabeledContent {
                         TextField("", value: $weightMax, formatter: NumberFormatter())
+                          .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 100)
                           .multilineTextAlignment(.trailing)
@@ -292,9 +305,21 @@ struct SettingsView: View {
                     }.frame(width: 500)
                 }
                 .listRowBackground(Color("CardBackground"))
+                
+                Section(header: Text("Species").font(.title2).foregroundStyle(.white)) {
+                    SpeciesListView(sort: SortDescriptor(\Species.name))
+                }
+                .listRowBackground(Color("CardBackground"))
+                
+                Section(header: Text("Survey Sections").font(.title2).foregroundStyle(.white)) {
+                    SurveySectionListView(sort: SortDescriptor(\SurveySection.active))
+                }
+                .listRowBackground(Color("CardBackground"))
 
                 
             } // end of form
+            .toolbarBackground(Color("AppBackground"), for: .navigationBar)
+            .toolbarBackground(.automatic, for: .navigationBar)
             .scrollContentBackground(.hidden)
             .background(Color("AppBackground"))
             

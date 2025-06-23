@@ -8,12 +8,14 @@
 import SwiftUI
 import CoreLocation
 
-struct Coordinate: Codable {
+struct Coordinate: Codable, Identifiable {
+    var id: UUID
     var lat: Double
     var lon: Double
     var altitude: Double = 0.0
     
     init(latitude: Double, longitude: Double, altitude: Double = 0.0) {
+        self.id = UUID()
         self.lat = latitude
         self.lon = longitude
         self.altitude = altitude
@@ -27,6 +29,7 @@ struct Coordinate: Codable {
     
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(UUID.self, forKey: .lat)
         self.lat = try container.decode(Double.self, forKey: .lat)
         self.lon = try container.decode(Double.self, forKey: .lon)
         self.altitude = try container.decode(Double.self, forKey: .altitude)

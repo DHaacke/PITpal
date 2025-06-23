@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 // @AppStorage("usingPitTags") private var usingPitTags: Bool = true
 
@@ -28,9 +29,9 @@ struct TagFishEntryView: View {
     @State private var enteredNumber: String = ""
     
     @State private var speciesCode: String = ""
-    @State private var fishLength: String = "0"
+    @State private var fishLength: String = ""
     @State private var enteredLength: String = ""
-    @State private var fishWeight: String = "0"
+    @State private var fishWeight: String = ""
     @State private var enteredWeight: String = ""
     
     @State private var isPresentedPitTag: Bool = false
@@ -42,6 +43,9 @@ struct TagFishEntryView: View {
     @State private var isValidSurveySection: Bool = false
     @State private var isValidLength: Bool = false
     @State private var isValidWeight: Bool = false
+    
+    // @Query(sort: \Species.code) var species: [Species]
+    // @Query(filter: #Predicate<Species> { sp in sp.active == true}, sort: \Species.name) var filteredSpecies: [Species]
           
     var body: some View {
         VStack {

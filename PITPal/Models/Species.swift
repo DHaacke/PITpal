@@ -14,14 +14,14 @@ class Species: Codable, Equatable {
     var name: String
     var imageName: String
     var color: String
-    var active: Bool
+    var active: String
     
     init(
         code: String = "",
         name: String = "",
         imageName: String = "",
         color: String = "",
-        active: Bool = true
+        active: String = "Y"
     ) {
         self.code = code
         self.name = name
@@ -44,7 +44,7 @@ class Species: Codable, Equatable {
         self.name = try container.decode(String.self, forKey: .name)
         self.imageName = try container.decode(String.self, forKey: .imageName)
         self.color = try container.decode(String.self, forKey: .color)
-        self.active = try container.decode(Bool.self, forKey: .active)
+        self.active = try container.decode(String.self, forKey: .active)
     }
     
     func encode(to encoder: any Encoder) throws {

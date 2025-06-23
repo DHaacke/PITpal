@@ -20,30 +20,37 @@ class SurveySection: Codable, Equatable {
     @Attribute(.unique) var code: String
     var name: String
     var color: String
-    var location: Coordinate
+    var lat: Double
+    var lon: Double
     var radius: Double
+    var active: String
     
     init(
         code: String = "",
         name: String = "",
         color: String = "",
-        location: Coordinate = Coordinate(latitude: 0.0, longitude: 0.0, altitude: 0),
+        lat: Double = 0.0,
+        lon: Double = 0.0,
         radius: Double = 0.0,
+        active: String = "Y"
     ) {
         self.code = code
         self.name = name
         self.color = color
-        self.location = location
+        self.lat = lat
+        self.lon = lon
         self.radius = radius
+        self.active = active
     }
     
     enum CodingKeys: String, CodingKey {
-        case id
         case code
         case name
         case color
-        case location
+        case lat
+        case lon
         case radius
+        case active
     }
     
     required init(from decoder: any Decoder) throws {
@@ -51,8 +58,10 @@ class SurveySection: Codable, Equatable {
         self.code = try container.decode(String.self, forKey: .code)
         self.name = try container.decode(String.self, forKey: .name)
         self.color = try container.decode(String.self, forKey: .color)
-        self.location = try container.decode(Coordinate.self, forKey: .location)
+        self.lat = try container.decode(Double.self, forKey: .lat)
+        self.lon = try container.decode(Double.self, forKey: .lon)
         self.radius = try container.decode(Double.self, forKey: .radius)
+        self.active = try container.decode(String.self, forKey: .active)
     }
     
     func encode(to encoder: any Encoder) throws {
@@ -60,8 +69,10 @@ class SurveySection: Codable, Equatable {
         try container.encode(code, forKey: .code)
         try container.encode(name, forKey: .name)
         try container.encode(color, forKey: .color)
-        try container.encode(location, forKey: .location)
+        try container.encode(lat, forKey: .lat)
+        try container.encode(lon, forKey: .lon)
         try container.encode(radius, forKey: .radius)
+        try container.encode(active, forKey: .active)
     }
     
     static func == (lhs: SurveySection, rhs: SurveySection) -> Bool {
