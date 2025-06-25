@@ -20,8 +20,10 @@ class SurveySection: Codable, Equatable {
     @Attribute(.unique) var code: String
     var name: String
     var color: String
-    var lat: Double
-    var lon: Double
+    var latDown: Double
+    var lonDown: Double
+    var latUp: Double
+    var lonUp: Double
     var radius: Double
     var active: String
     
@@ -29,16 +31,20 @@ class SurveySection: Codable, Equatable {
         code: String = "",
         name: String = "",
         color: String = "",
-        lat: Double = 0.0,
-        lon: Double = 0.0,
+        latDown: Double = 45.39395,
+        lonDown: Double = -107.80418,
+        latUp: Double = 45.34681,
+        lonUp: Double = -107.87468,
         radius: Double = 0.0,
         active: String = "Y"
     ) {
         self.code = code
         self.name = name
         self.color = color
-        self.lat = lat
-        self.lon = lon
+        self.latDown = latDown
+        self.lonDown = lonDown
+        self.latUp = latUp
+        self.lonUp = lonUp
         self.radius = radius
         self.active = active
     }
@@ -47,8 +53,10 @@ class SurveySection: Codable, Equatable {
         case code
         case name
         case color
-        case lat
-        case lon
+        case latDown
+        case lonDown
+        case latUp
+        case lonUp
         case radius
         case active
     }
@@ -58,8 +66,10 @@ class SurveySection: Codable, Equatable {
         self.code = try container.decode(String.self, forKey: .code)
         self.name = try container.decode(String.self, forKey: .name)
         self.color = try container.decode(String.self, forKey: .color)
-        self.lat = try container.decode(Double.self, forKey: .lat)
-        self.lon = try container.decode(Double.self, forKey: .lon)
+        self.latDown = try container.decode(Double.self, forKey: .latDown)
+        self.lonDown = try container.decode(Double.self, forKey: .lonDown)
+        self.latUp = try container.decode(Double.self, forKey: .latUp)
+        self.lonUp = try container.decode(Double.self, forKey: .lonUp)
         self.radius = try container.decode(Double.self, forKey: .radius)
         self.active = try container.decode(String.self, forKey: .active)
     }
@@ -69,8 +79,10 @@ class SurveySection: Codable, Equatable {
         try container.encode(code, forKey: .code)
         try container.encode(name, forKey: .name)
         try container.encode(color, forKey: .color)
-        try container.encode(lat, forKey: .lat)
-        try container.encode(lon, forKey: .lon)
+        try container.encode(latDown, forKey: .latDown)
+        try container.encode(lonDown, forKey: .lonDown)
+        try container.encode(latUp, forKey: .latUp)
+        try container.encode(lonUp, forKey: .lonUp)
         try container.encode(radius, forKey: .radius)
         try container.encode(active, forKey: .active)
     }

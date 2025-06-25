@@ -19,12 +19,12 @@ struct SurveySectionListView: View {
         VStack {
             Table(surveySections) {
                 TableColumn("Code") { ss in Text(ss.code) }.width(60)
-                TableColumn("Name", value: \.name)
-                TableColumn("Lat") { ss in Text("\(ss.lat, specifier: "%.4f")") }
-                TableColumn("Lon") { ss in Text("\(ss.lon, specifier: "%.4f")") }
-                TableColumn("Radius") { ss in Text("\(ss.radius, specifier: "%.2f")") }
-                TableColumn("Color", value: \.color)
-                TableColumn("Active", value: \.active)
+                TableColumn("Name", value: \.name).width(160)
+                TableColumn("Lat↓") { ss in Text("\(ss.latDown, specifier: "%.4f")") }
+                TableColumn("Lon↓") { ss in Text("\(ss.lonDown, specifier: "%.4f")") }
+                TableColumn("Lat↑") { ss in Text("\(ss.latUp, specifier: "%.4f")") }
+                TableColumn("Lon↑") { ss in Text("\(ss.lonUp, specifier: "%.4f")") }
+                TableColumn("Active", value: \.active).width(50)
             }
             .scrollContentBackground(.hidden)
             // .background(Color("AppBackground"))
@@ -32,7 +32,6 @@ struct SurveySectionListView: View {
         .tableStyle(.automatic)
         .frame(minWidth: 600, maxWidth: .infinity, minHeight: 160, maxHeight: .infinity  )
         .padding(.top, 8)
-        .padding(.horizontal, 12)
     }
 
     init(sort: SortDescriptor<SurveySection>) {

@@ -114,8 +114,8 @@ struct TagStatusView: View {
                         self.trip.waterFlow = self.bighornStats[0].value
                     }
                     isLoadingBighornStats = false
-                    self.trip.initialLat = locationsHandler.lastLocation2D.latitude
-                    self.trip.initialLon = locationsHandler.lastLocation2D.longitude
+//                    self.trip.initialLat = locationsHandler.lastLocation2D.latitude
+//                    self.trip.initialLon = locationsHandler.lastLocation2D.longitude
                     // print(self.trip.toJSON(trip: self.trip))
                 }
             }

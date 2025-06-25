@@ -98,8 +98,10 @@ struct ContentView: View {
                                 code: surveySection.code,
                                 name: surveySection.name,
                                 color: surveySection.color,
-                                lat: surveySection.lat,
-                                lon: surveySection.lon,
+                                latDown: surveySection.latDown,
+                                lonDown: surveySection.lonDown,
+                                latUp: surveySection.latUp,
+                                lonUp: surveySection.lonUp,
                                 radius: surveySection.radius
                             )
                             modelContext.insert(surveySection)

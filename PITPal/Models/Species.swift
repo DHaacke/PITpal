@@ -11,6 +11,7 @@ import SwiftData
 @Model
 class Species: Codable, Equatable {
     @Attribute(.unique) var code: String
+    var fwp_code: String = ""
     var name: String
     var imageName: String
     var color: String
@@ -18,12 +19,14 @@ class Species: Codable, Equatable {
     
     init(
         code: String = "",
+        fwp_code: String = "",
         name: String = "",
         imageName: String = "",
         color: String = "",
         active: String = "Y"
     ) {
         self.code = code
+        self.fwp_code = fwp_code
         self.name = name
         self.imageName = imageName
         self.color = color
@@ -32,6 +35,7 @@ class Species: Codable, Equatable {
     
     enum CodingKeys: String, CodingKey {
         case code
+        case fwp_code
         case name
         case imageName
         case color
@@ -41,6 +45,7 @@ class Species: Codable, Equatable {
     required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.code = try container.decode(String.self, forKey: .code)
+        self.fwp_code = try container.decode(String.self, forKey: .fwp_code)
         self.name = try container.decode(String.self, forKey: .name)
         self.imageName = try container.decode(String.self, forKey: .imageName)
         self.color = try container.decode(String.self, forKey: .color)
@@ -50,6 +55,7 @@ class Species: Codable, Equatable {
     func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(code, forKey: .code)
+        try container.encode(fwp_code, forKey: .fwp_code)
         try container.encode(name, forKey: .name)
         try container.encode(imageName, forKey: .imageName)
         try container.encode(color, forKey: .color)

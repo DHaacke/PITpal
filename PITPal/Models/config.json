@@ -2,6 +2,7 @@
     "species" : [
         {
             "code": "RB",
+            "fwp_code": "001",
             "name": "Rainbow",
             "imageName": "rainbow",
             "color": "TroutGreen",
@@ -9,6 +10,7 @@
         },
         {
             "code": "LL",
+            "fwp_code": "004",
             "name": "Brown",
             "imageName": "brown",
             "color" : "TroutBrown",
@@ -16,33 +18,36 @@
         },
         {
             "code": "YCT",
+            "fwp_code": "",
             "name": "Y. Cutthroat",
-            "imageName": "yellow",
+            "imageName": "cutthroat",
             "color" : "TroutYellow",
-            "active" : "Y"
+            "active" : "N"
         },
         {
-            "code": "BT",
-            "name": "Brook Trout",
-            "imageName": "gray",
+            "code": "LING",
+            "fwp_code": "026",
+            "name": "Ling",
+            "imageName": "ling",
             "color" : "TroutGray",
             "active" : "N"
         },
         {
-            "code": "BLT",
-            "name": "Bull Trout",
-            "imageName": "yellow",
-            "color" : "TroutBlack",
-            "active" : "N"
+            "code": "SMB",
+            "fwp_code": "073",
+            "name": "Smallmouth Bass",
+            "imageName": "smallmouth",
+            "color" : "TroutYellow",
+            "active" : "Y"
         },
         {
-            "code": "WST",
-            "name": "Westlope",
-            "imageName": "yellow",
+            "code": "TRT",
+            "fwp_code": "118",
+            "name": "Tiger",
+            "imageName": "tiger",
             "color" : "TroutPurple",
             "active" : "N"
         },
-        
     ],
     "gender": [
         {
@@ -101,20 +106,24 @@
     "surveySection": [
         {
             "code": "U",
-            "name": "Upper",
+            "name": "Bighorn (Upper)",
             "color": "blue",
-            "lat": 44.01,
-            "lon": -107.01,
-            "radius": 0.25,
+            "latDown": 45.39395,
+            "lonDown": -107.80418,
+            "latUp": 45.34681,
+            "lonUp": -107.87468,
+            "radius": 3540,
             "active": "Y"
         },
         {
             "code": "L",
-            "name": "Lower",
+            "name": "Bighorn (Lower)",
             "color": "green",
-            "lat": 44.02,
-            "lon": -107.02,
-            "radius": 0.25,
+            "latDown": 45.39395,
+            "lonDown": -107.80418,
+            "latUp": 45.34681,
+            "lonUp": -107.87468,
+            "radius": 3540,
             "active": "Y"
         }
     ],

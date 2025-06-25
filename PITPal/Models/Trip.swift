@@ -10,38 +10,71 @@ import SwiftUI
 
 @Model
 class Trip: Codable {
-    #Unique<Trip>([\.date], [\.watershed])
+    #Unique<Trip>([\.date], [\.tripType], [\.watershed])
     var date: Date
+    var tripType: String  // M or R
+    var surveySection: String
     var watershed: String
-    var initialLat: Double
-    var initialLon: Double
+    var equipment: String
+    var latDown: Double
+    var lonDown: Double
+    var latUp: Double
+    var lonUp: Double
+    var sectionLength: Double  // meters
+    var startTime: String      // 08:35
+    var endTime: String        // 17:10
     var waterTemperature: Double
     var waterFlow: Double
     @Relationship(deleteRule: .cascade) var fish = [Fish]()
     
     init(
         date: Date = Date(),
+        tripType: String = "M",
+        surveySection: String = "",
         watershed: String = "",
-        initialLat: Double = 0.0,
-        initialLon: Double = 0.0,
+        equipment: String = "",
+        latDown: Double = 0.0,
+        lonDown: Double = 0.0,
+        latUp: Double = 0.0,
+        lonUp: Double = 0.0,
+        sectionLength: Double = 0.0,
+        startTime: String = "",
+        endTime: String = "",
         waterTemperature: Double = 0,
         waterFlow: Double = 0,
         fish: [Fish] = []
     ) {
         self.date = date
+        self.tripType = tripType
+        self.surveySection = surveySection
         self.watershed = watershed
-        self.initialLat = initialLat
-        self.initialLon = initialLon
+        self.equipment = equipment
+        self.latDown = latDown
+        self.lonDown = lonDown
+        self.latUp = latUp
+        self.lonUp = lonUp
+        self.sectionLength = sectionLength
+        self.startTime = startTime
+        self.endTime = endTime
         self.waterTemperature = waterTemperature
         self.waterFlow = waterFlow
         self.fish = fish
+        
     }
     
     enum CodingKeys: String, CodingKey {
         case date
+        case tripType
+        case surveySection
         case watershed
-        case initialLat
-        case initialLon
+        case equipment
+        case latDown
+        case lonDown
+        case latUp
+        case lonUp
+        case sectionLength
+        case startTime
+        case endTime
         case waterTemperature
         case waterFlow
         case fish
@@ -50,9 +83,17 @@ class Trip: Codable {
     required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.date = try container.decode(Date.self, forKey: .date)
+        self.tripType = try container.decode(String.self, forKey: .tripType)
+        self.surveySection = try container.decode(String.self, forKey: .surveySection)
         self.watershed = try container.decode(String.self, forKey: .watershed)
-        self.initialLat = try container.decode(Double.self, forKey: .initialLat)
-        self.initialLon = try container.decode(Double.self, forKey: .initialLon)
+        self.equipment = try container.decode(String.self, forKey: .equipment)
+        self.latDown = try container.decode(Double.self, forKey: .latDown)
+        self.lonDown = try container.decode(Double.self, forKey: .lonDown)
+        self.latUp = try container.decode(Double.self, forKey: .latUp)
+        self.lonUp = try container.decode(Double.self, forKey: .lonUp)
+        self.sectionLength = try container.decode(Double.self, forKey: .sectionLength)
+        self.startTime = try container.decode(String.self, forKey: .startTime)
+        self.endTime = try container.decode(String.self, forKey: .endTime)
         self.waterTemperature = try container.decode(Double.self, forKey: .waterTemperature)
         self.waterFlow = try container.decode(Double.self, forKey: .waterFlow)
         self.fish = try container.decode([Fish].self, forKey: .fish)
@@ -61,9 +102,16 @@ class Trip: Codable {
     func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(date, forKey: .date)
+        try container.encode(tripType, forKey: .tripType)
         try container.encode(watershed, forKey: .watershed)
-        try container.encode(initialLat, forKey: .initialLat)
-        try container.encode(initialLon, forKey: .initialLon)
+        try container.encode(equipment, forKey: .equipment)
+        try container.encode(latDown, forKey: .latDown)
+        try container.encode(lonDown, forKey: .lonDown)
+        try container.encode(latUp, forKey: .latUp)
+        try container.encode(lonUp, forKey: .lonUp)
+        try container.encode(sectionLength, forKey: .sectionLength)
+        try container.encode(startTime, forKey: .startTime)
+        try container.encode(endTime, forKey: .endTime)
         try container.encode(waterTemperature, forKey: .waterTemperature)
         try container.encode(waterFlow, forKey: .waterFlow)
         try container.encode(fish, forKey: .fish)
@@ -76,9 +124,16 @@ class Trip: Codable {
         let json = """
         {
             "date" : "\(formatter.string(from: trip.date))",
+            "tripType": "\(trip.tripType)",
             "watershed": "\(trip.watershed)",
-            "initialLat": \(trip.initialLat),
-            "initialLon": \(trip.initialLon),
+            "equipment": "\(trip.equipment)",
+            "latDown": "\(trip.latDown)",
+            "lonDown": "\(trip.lonDown)",
+            "latUp": "\(trip.latUp)",
+            "lonUp": "\(trip.lonUp)",
+            "sectionLength": \(trip.sectionLength),
+            "startTime": "\(trip.startTime)",
+            "endTime": "\(trip.endTime)",
             "waterTemperature": \(waterTemperature),
             "waterFlow": \(waterFlow)
         }
