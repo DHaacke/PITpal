@@ -54,7 +54,7 @@ struct PITPalApp: App {
                 // networkManager.checkNetworkConnection()
             }
         }
-        .modelContainer(for: [Trip.self, Fish.self, Species.self, Gender.self, SurveySection.self, Watershed.self])
+        .modelContainer(for: [Trip.self, Fish.self, Species.self, Gender.self, SurveySection.self, Watershed.self, TripType.self])
     }
     
     func getFileCount(modelContext: ModelContext) -> Int {

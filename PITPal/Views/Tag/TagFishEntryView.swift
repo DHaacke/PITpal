@@ -22,9 +22,7 @@ struct TagFishEntryView: View {
     @AppStorage("usingPitTags") private var usingPitTags: Bool = true
     
     @State private var bluetoothManager = BluetoothManager()
-    
-    @Binding var surveySection: String
-    
+   
     @State private var pitTagNumber: String = ""
     @State private var enteredNumber: String = ""
     
@@ -125,9 +123,10 @@ struct TagFishEntryView: View {
                             }
                             .padding(.horizontal, 20)
                             .frame(height: usingPitTags ? 50 : 0)
-                        } else {
-                            Text("Not using PIT tags")
                         }
+//                        else {
+//                            Text("Not using PIT tags")
+//                        }
 
                         
                         VStack {
@@ -206,8 +205,8 @@ struct TagFishEntryView: View {
                                     print("Save button tapped")
                                 })
                                     .padding(.vertical, 20)
-                                    .opacity(fishLength.isEmpty || fishWeight.isEmpty || speciesCode.isEmpty || surveySection.isEmpty ? 0.2 : 1)
-                                    .disabled(isValidLength || isValidWeight || isValidSpecies || isValidSurveySection || (isValidPitTag && usingPitTags))
+                                    .opacity(fishLength.isEmpty || fishWeight.isEmpty || speciesCode.isEmpty ? 0.2 : 1)
+                                    .disabled(isValidLength || isValidWeight || isValidSpecies || (isValidPitTag && usingPitTags))
                             }
                             HStack {
                                 
@@ -249,7 +248,6 @@ struct TagFishEntryView: View {
                     }
                     .onChange(of: speciesCode) {
                         isValidSpecies = !speciesCode.isEmpty
-                        isValidSurveySection = !surveySection.isEmpty
                     }
                     .onChange(of: pitTagNumber) {
                         isValidPitTag = validatePitTag(tag: pitTagNumber)
@@ -330,8 +328,7 @@ struct TagFishEntryView: View {
 
 #Preview {
     @Previewable @State var path: [String] = [K.TAG]
-    @Previewable @State var surveySection: String = ""
-    TagFishEntryView(path: $path, surveySection: $surveySection)
+    TagFishEntryView(path: $path)
         .environment(LocationsHandler())
         .environment(JSONManager())
         .environment(NetworkMonitor())

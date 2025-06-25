@@ -128,6 +128,15 @@ struct ContentView: View {
                             modelContext.insert(watershed)
                         }
                         
+                        for tripType in jsonManager.config.tripType {
+                            print("Adding \(tripType.name)")
+                            modelContext.insert(TripType(
+                                code: tripType.code,
+                                name: tripType.name,
+                                active: tripType.active
+                            ))
+                        }
+                        
                         do {
                             try modelContext.save()
                             print("Total Fish: \(getRecordCount(modelContext: modelContext))")

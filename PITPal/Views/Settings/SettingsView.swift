@@ -22,10 +22,11 @@ struct SettingsView: View {
     @AppStorage("useBluetoothWeight") private var useBluetoothWeight: Bool = false
     
     @AppStorage("boatCaptain") private var boatCaptain: String = ""
-    @AppStorage("biologistPrimary") private var biologistPrimary: String = ""
-    @AppStorage("biologistSecondary") private var biologistSecondary: String = ""
+    @AppStorage("biologistPrimary") private var biologistPrimary: String = "Shannon Blackburn"
+    @AppStorage("biologistSecondary") private var biologistSecondary: String = "Demi Blythe"
     @AppStorage("technicians") private var technicians: String = ""
-    @AppStorage("volunteers") private var volunteers: String = ""
+    @AppStorage("volunteers") private var volunteers: String = "Doug Haacke"
+    @AppStorage("equipment") private var equipment: String = "Jet Boat- Boom anodes"
     
     @AppStorage("usingPitTags") private var usingPitTags: Bool = true
     @AppStorage("pitManufacturer") private var pitManufacturer: String = "Biomark"
@@ -70,7 +71,7 @@ struct SettingsView: View {
                 }
                 .listRowBackground(Color("CardBackground"))
                 
-                Section(header: Text("Personnel").font(.title2).foregroundStyle(.white)) {
+                Section(header: Text("Personnel and Equipment").font(.title2).foregroundStyle(.white)) {
                     LabeledContent {
                         TextField("", text: $boatCaptain)
                           .foregroundColor(Color("TextForeground"))
@@ -126,6 +127,18 @@ struct SettingsView: View {
                     } label: {
                         Text("Volunteer(s)")
                     }.frame(width: 600)
+                    
+                    LabeledContent {
+                        TextField("", text: $equipment)
+                          .foregroundColor(Color("TextForeground"))
+                          .textFieldStyle(.roundedBorder)
+                          .border(Color.gray, width: 1)
+                          .frame(width: 400)
+                          .multilineTextAlignment(.leading)
+                    } label: {
+                        Text("Equipment")
+                    }.frame(width: 600)
+                    
                 }
                 .listRowBackground(Color("CardBackground"))
                 

@@ -16,8 +16,8 @@ struct SaveButton: View {
                 onSaveButtonTapped()
             }, label: {
                 Text("Save")
-                    .frame(width: 100, height: 50)
-                    .font(.system(size: 24, weight: .heavy))
+                    .frame(width: 80, height: 34)
+                    .font(.system(size: 24, weight: .medium))
                     .foregroundColor(.white)
                     .background(
                         RoundedRectangle(
@@ -34,6 +34,9 @@ struct SaveButton: View {
 }
 
 
-//#Preview {
-//    SaveButton()
-//}
+#Preview {
+
+    SaveButton(onSaveButtonTapped: {
+        print("Save button tapped")
+    })
+}

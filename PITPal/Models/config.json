@@ -35,7 +35,7 @@
         {
             "code": "SMB",
             "fwp_code": "073",
-            "name": "Smallmouth Bass",
+            "name": "Smallmouth",
             "imageName": "smallmouth",
             "color" : "TroutYellow",
             "active" : "Y"
@@ -127,5 +127,16 @@
             "active": "Y"
         }
     ],
-
+  "tripType": [
+      {
+          "code": "M",
+          "name": "Marking",
+          "active": "Y"
+      },
+      {
+          "code": "R",
+          "name": "Recap",
+          "active": "Y"
+      }
+    ]
 }

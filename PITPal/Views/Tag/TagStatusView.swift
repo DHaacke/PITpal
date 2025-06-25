@@ -108,7 +108,7 @@ struct TagStatusView: View {
                             self.bighornStats.append(BighornStats(id: id, label: "Bighorn \(id)", value: 0, suffix: "", decimals: 0))
                         }
                     }
-                    print(self.bighornStats)
+                    // print(self.bighornStats)
                     if self.bighornStats.count > 0 {
                         self.trip.waterTemperature = self.bighornStats[2].value
                         self.trip.waterFlow = self.bighornStats[0].value

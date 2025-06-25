@@ -10,7 +10,7 @@ import SwiftUI
 
 @Model
 class Trip: Codable {
-    #Unique<Trip>([\.date], [\.tripType], [\.watershed])
+    #Unique<Trip>([\.date], [\.tripType], [\.surveySection], [\.watershed])
     var date: Date
     var tripType: String  // M or R
     var surveySection: String

@@ -19,14 +19,12 @@ struct TagView: View {
     // @AppStorage("usingPitTags") private var usingPitTags: Bool = true
     
     @State private var trip = Trip()
-    @State private var surveySection: String = ""
     
     var body: some View {
         VStack {
             TagStatusView(path: $path, trip: $trip)
-            TagDailyView(path: $path, trip: $trip, surveySection: $surveySection)
-            TagFishEntryView(path: $path, surveySection: $surveySection)
-            
+            TagTripView(path: $path, trip: $trip)
+            TagFishEntryView(path: $path)
             Spacer()
         }
         .padding()
