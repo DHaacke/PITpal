@@ -254,12 +254,14 @@ struct TagTripView: View {
     }
 }
 
+/*
 #Preview {
     @Previewable @State var path: [String] = [K.TAG]
     @Previewable @State var trip: Trip = Trip()
+    @Previewable @State var fish: Fish = Fish()
     TagTripView(path: $path, trip: $trip)
         .environment(LocationsHandler())
         .environment(JSONManager())
         .environment(NetworkMonitor())
 }
-
+*/

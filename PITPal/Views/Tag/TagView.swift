@@ -15,10 +15,10 @@ struct TagView: View {
     @Environment(\.scenePhase) var scenePhase
     
     @Binding var path: [String]
-    
+
     // @AppStorage("usingPitTags") private var usingPitTags: Bool = true
     
-    @State private var trip = Trip()
+    @State private var trip : Trip = Trip()
     
     var body: some View {
         VStack {
@@ -29,11 +29,7 @@ struct TagView: View {
         }
         .padding()
         .onChange(of: trip) {
-            print(" -------------------------- ")
-            print(trip)
-            print(" -------------------------- ")
         }
-        
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .background(Color("AppBackground"))
     }

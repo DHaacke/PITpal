@@ -177,6 +177,7 @@ struct TagStatusView: View {
     }
 }
 
+/*
 #Preview {
     @Previewable @State var path: [String] = [K.TAG]
     @Previewable @State var trip: Trip = Trip()
@@ -185,7 +186,7 @@ struct TagStatusView: View {
         .environment(JSONManager())
         .environment(NetworkMonitor())
 }
-
+*/
 
 /*
 

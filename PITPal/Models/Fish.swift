@@ -10,11 +10,11 @@ import SwiftUI
 
 @Model
 final class Fish: Codable {
+    var trip: Trip?
     var date: Date
     var pitTag: String
     var lat: Double
     var lon: Double
-    var surveySection: String
     var species: String
     var fwpSpecies: String
     var weight: Double
@@ -29,7 +29,6 @@ final class Fish: Codable {
         pitTag: String = "",
         lat: Double = 0.0,
         lon: Double = 0.0,
-        surveySection: String = "",
         species: String = "",
         fwpSpecies: String = "",
         weight: Double = 0.0,
@@ -43,7 +42,6 @@ final class Fish: Codable {
         self.pitTag = pitTag
         self.lat = lat
         self.lon = lon
-        self.surveySection = surveySection
         self.species = species
         self.fwpSpecies = fwpSpecies
         self.weight = weight
@@ -59,7 +57,6 @@ final class Fish: Codable {
         case pitTag
         case lat
         case lon
-        case surveySection
         case species
         case fwpSpecies
         case weight
@@ -72,7 +69,7 @@ final class Fish: Codable {
     
     required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
+       
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
@@ -81,7 +78,6 @@ final class Fish: Codable {
         self.pitTag = try container.decode(String.self, forKey: .pitTag)
         self.lat = try container.decode(Double.self, forKey: .lat)
         self.lon = try container.decode(Double.self, forKey: .lon)
-        self.surveySection = try container.decode(String.self, forKey: .surveySection)
         self.species = try container.decode(String.self, forKey: .species)
         self.fwpSpecies = try container.decode(String.self, forKey: .fwpSpecies)
         self.weight = try container.decode(Double.self, forKey: .weight)
@@ -100,7 +96,6 @@ final class Fish: Codable {
         try container.encode(pitTag, forKey: .pitTag)
         try container.encode(lat, forKey: .lat)
         try container.encode(lon, forKey: .lon)
-        try container.encode(surveySection, forKey: .surveySection)
         try container.encode(species, forKey: .species)
         try container.encode(fwpSpecies, forKey: .fwpSpecies)
         try container.encode(weight, forKey: .weight)

@@ -144,11 +144,17 @@ struct ContentView: View {
                             print("Deleting \(trip.date.formatted(date: .numeric, time: .omitted))")
                             modelContext.delete(trip)
                         }
+                        for fish in fishList {
+                            print("Deleting \(fish.species)")
+                            modelContext.delete(fish)
+                        }
+                        try modelContext.save()
+                        
                         
                         print("Inserting \(jsonManager.config.trip.count) Trips")
                         for trip in jsonManager.config.trip {
-                            print("Inserting \(trip.date), \(trip.tripType), \(trip.surveySection), \(trip.watershed)")
-                            modelContext.insert(Trip(
+                            print("Inserting \(trip.date), \(trip.tripType), \(trip.surveySection), \(trip.watershed) with \(trip.fish.count) fish")
+                            let newTrip : Trip = Trip(
                                 date: trip.date,
                                 tripType: trip.tripType,
                                 surveySection: trip.surveySection,
@@ -162,29 +168,28 @@ struct ContentView: View {
                                 startTime: trip.startTime,
                                 endTime: trip.endTime,
                                 waterTemperature: trip.waterTemperature,
-                                waterFlow: trip.waterFlow
-                            ))
-                            try! modelContext.save()
+                                waterFlow: trip.waterFlow,
+                                fish: []
+                            )
+                            print("Here are the fish for this trip:")
+                            for fish in trip.fish {
+                                print("  - \(fish.species)")
+                                let item = Fish(
+                                    date: fish.date,
+                                    pitTag: fish.pitTag,
+                                    lat: fish.lat,
+                                    lon: fish.lon,
+                                    species: fish.species,
+                                    fwpSpecies: fish.fwpSpecies,
+                                    weight: fish.weight,
+                                    length: fish.length,
+                                )
+                                newTrip.fish.append(item)
+                            }
+                            print("Insert")
+                            modelContext.insert(newTrip)
                         }
                         
-//                        for fish in fishList {
-//                            modelContext.delete(fish)
-//                        }
-//                        try modelContext.save()
-                        
-//                        for fish in jsonManager.config.fish {
-//                            modelContext.insert(Fish(
-//                                date: fish.date,
-//                                pitTag: fish.pitTag,
-//                                lat: fish.lat,
-//                                lon: fish.lon,
-//                                surveySection: fish.surveySection,
-//                                species: fish.species,
-//                                fwpSpecies: fish.fwpSpecies,
-//                                weight: fish.weight,
-//                                length: fish.length,
-//                            ))
-//                        }
                             
                         do {
                             try modelContext.save()

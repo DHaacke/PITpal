@@ -47,10 +47,11 @@ struct PITPalApp: App {
                 isWaitingForLaunchView = false
             }
             .onAppear {
-                // print(modelContext.sqliteCommand)
+                
             }
             .task {
                 print("App is starting...")
+                print(modelContext.sqliteCommand)
                 locationsHandler.updatesStarted = true
                 // networkManager.checkNetworkConnection()
             }
