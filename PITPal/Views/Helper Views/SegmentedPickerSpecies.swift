@@ -22,7 +22,7 @@ struct SegmentedPickerSpecies: View {
     
     @Query(filter: #Predicate<Species> { sp in
         sp.active == "Y"
-    }) var activeSpecies: [Species]
+    }, sort: \.name) var activeSpecies: [Species]
     
     @Namespace private var animation
     

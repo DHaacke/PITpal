@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 @Model
-class TripType: Codable, Equatable {
+final class TripType: Codable, Equatable {
     @Attribute(.unique) var code: String
     var name: String
     var active: String

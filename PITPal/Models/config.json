@@ -1,4 +1,40 @@
 {
+    "trip": [
+        {
+          "date": "2024-04-10",
+          "tripType": "M",
+          "surveySection": "U",
+          "watershed": "BHR",
+          "equipment": "Jet Boat- Boom anodes",
+          "latDown": 45.39395000,
+          "lonDown": -107.80418000,
+          "latUp": 45.34681000,
+          "lonUp": 45.34681000,
+          "sectionLength": 7081.1140,
+          "startTime": "8:30",
+          "endTime": "16:20",
+          "waterTemperature": 0.0,
+          "waterFlow": 2250.9
+        },
+        {
+          "date": "2024-04-23",
+          "tripType": "R",
+          "surveySection": "U",
+          "watershed": "BHR",
+          "equipment": "Jet Boat- Boom anodes",
+          "latDown": 45.39395000,
+          "lonDown": -107.80418000,
+          "latUp": 45.34681000,
+          "lonUp": 45.34681000,
+          "sectionLength": 7081.1140,
+          "startTime": "8:30",
+          "endTime": "17:10",
+          "waterTemperature": 71.2,
+          "waterFlow": 2250.9
+        },
+        
+     ],
+    "fish": [],
     "species" : [
         {
             "code": "RB",
@@ -138,5 +174,5 @@
           "name": "Recap",
           "active": "Y"
       }
-    ]
+   ]
 }

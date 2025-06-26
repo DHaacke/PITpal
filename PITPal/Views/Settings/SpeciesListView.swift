@@ -55,6 +55,8 @@ struct SpeciesListView: View {
     }
 }
 
+/*
 #Preview {
     SpeciesListView(sort: SortDescriptor(\Species.active))
 }
+*/

@@ -47,6 +47,7 @@ struct PITPalApp: App {
                 isWaitingForLaunchView = false
             }
             .onAppear {
+                // print(modelContext.sqliteCommand)
             }
             .task {
                 print("App is starting...")

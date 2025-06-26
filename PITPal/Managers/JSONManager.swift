@@ -13,7 +13,7 @@ import SwiftUI
 class JSONManager: NSObject {
     var isConfigLoaded: Bool = false
     var tripInProgress: Bool = false
-    var config: Config = Config(gender: [], species: [], surveySection: [], watershed: [], tripType: [])
+    var config: Config = Config(trip: [], fish: [], species: [], gender: [], surveySection: [], watershed: [], tripType: [] )
     
     override init() {
         super.init()

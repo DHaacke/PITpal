@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 import Charts
 
 struct FishData: Identifiable {
@@ -17,37 +18,19 @@ struct FishData: Identifiable {
 
 @Observable
 class TagChartView {
-    var fishData: [FishData] = [
-        FishData(id: 1,  sizeGroup: 6,  count: 6 , species: "RB"),
-        FishData(id: 2,  sizeGroup: 8,  count: 8 , species: "RB"),
-        FishData(id: 3,  sizeGroup: 10, count: 4 , species: "RB"),
-        FishData(id: 4,  sizeGroup: 12, count: 7 , species: "RB"),
-        FishData(id: 5,  sizeGroup: 14, count: 18, species: "RB"),
-        FishData(id: 6,  sizeGroup: 16, count: 24, species: "RB"),
-        FishData(id: 7,  sizeGroup: 18, count: 37, species: "RB"),
-        FishData(id: 8,  sizeGroup: 20, count: 20, species: "RB"),
-        FishData(id: 9,  sizeGroup: 22, count: 9 , species: "RB"),
-        FishData(id: 10, sizeGroup: 24, count: 5 , species: "RB"),
-        
-        FishData(id: 11, sizeGroup: 6,  count: 8 ,  species: "LL"),
-        FishData(id: 12, sizeGroup: 8,  count: 13 , species: "LL"),
-        FishData(id: 13, sizeGroup: 10, count: 11 , species: "LL"),
-        FishData(id: 14, sizeGroup: 12, count: 7 ,  species: "LL"),
-        FishData(id: 15, sizeGroup: 14, count: 15,  species: "LL"),
-        FishData(id: 16, sizeGroup: 16, count: 39,  species: "LL"),
-        FishData(id: 17, sizeGroup: 18, count: 37,  species: "LL"),
-        FishData(id: 18, sizeGroup: 20, count: 35,  species: "LL"),
-        FishData(id: 19, sizeGroup: 22, count: 11 , species: "LL"),
-        FishData(id: 20, sizeGroup: 24, count: 8 ,  species: "LL")
-
-    ]
+    var fishData: [FishData] = []
 }
 
 struct BarChartView: View {
+    @Environment(\.modelContext) var modelContext
+    
     @State private var viewModel = TagChartView()
     
     var species: String = ""
     var title:   String = ""
+    
+    @Query(filter: #Predicate<Fish> { fish in fish.species == "RB" && fish.length > 0}) var rainbows: [Fish]
+    @Query(filter: #Predicate<Fish> { fish in fish.species == "LL" && fish.length > 0}) var browns: [Fish]
     
     var body: some View {
         VStack {
@@ -69,7 +52,7 @@ struct BarChartView: View {
             .chartXScale(domain: [6, 24])
             // .chartYScale(domain: [minStockPrice ?? 0, maxStockPrice ?? 0])
             .chartXAxis {
-                AxisMarks(values: [6, 8, 10, 12, 14, 16, 18, 20, 22, 24]) { value in
+                AxisMarks(values: [6, 8, 10, 12, 14, 16, 18, 20]) { value in
                     AxisValueLabel()
                         .foregroundStyle(.white)
                 }
@@ -89,6 +72,28 @@ struct BarChartView: View {
     }
     
     func filterFish(by species: String) -> [FishData] {
+        viewModel.fishData.removeAll()
+        if species == "RB" && rainbows.count > 0 {
+            viewModel.fishData.append(FishData(id:  1,  sizeGroup:  6,  count: rainbows.filter { $0.length <= 125}.count , species: "RB"))
+            viewModel.fishData.append(FishData(id:  2,  sizeGroup:  8,  count: rainbows.filter { $0.length >  125 && $0.length <= 203 }.count , species: "RB"))
+            viewModel.fishData.append(FishData(id:  3,  sizeGroup: 10,  count: rainbows.filter { $0.length >  203 && $0.length <= 253 }.count , species: "RB"))
+            viewModel.fishData.append(FishData(id:  4,  sizeGroup: 12,  count: rainbows.filter { $0.length >  253 && $0.length <= 305 }.count , species: "RB"))
+            viewModel.fishData.append(FishData(id:  5,  sizeGroup: 14,  count: rainbows.filter { $0.length >  305 && $0.length <= 355 }.count , species: "RB"))
+            viewModel.fishData.append(FishData(id:  6,  sizeGroup: 16,  count: rainbows.filter { $0.length >  355 && $0.length <= 406 }.count , species: "RB"))
+            viewModel.fishData.append(FishData(id:  7,  sizeGroup: 18,  count: rainbows.filter { $0.length >  406 && $0.length <= 458 }.count , species: "RB"))
+            viewModel.fishData.append(FishData(id:  8,  sizeGroup: 20,  count: rainbows.filter { $0.length >  458 }.count , species: "RB"))
+        } else if species == "LL" && browns.count > 0 {
+            viewModel.fishData.append(FishData(id: 10, sizeGroup:  6,  count: browns.filter { $0.length <= 125}.count , species: "LL"))
+            viewModel.fishData.append(FishData(id: 12, sizeGroup:  8,  count: browns.filter { $0.length >  125 && $0.length <= 203 }.count , species: "LL"))
+            viewModel.fishData.append(FishData(id: 13, sizeGroup: 10,  count: browns.filter { $0.length >  203 && $0.length <= 253 }.count , species: "LL"))
+            viewModel.fishData.append(FishData(id: 14, sizeGroup: 12,  count: browns.filter { $0.length >  253 && $0.length <= 305 }.count , species: "LL"))
+            viewModel.fishData.append(FishData(id: 15, sizeGroup: 14,  count: browns.filter { $0.length >  305 && $0.length <= 355 }.count , species: "LL"))
+            viewModel.fishData.append(FishData(id: 16, sizeGroup: 16,  count: browns.filter { $0.length >  355 && $0.length <= 406 }.count , species: "LL"))
+            viewModel.fishData.append(FishData(id: 17, sizeGroup: 18,  count: browns.filter { $0.length >  406 && $0.length <= 458 }.count , species: "LL"))
+            viewModel.fishData.append(FishData(id: 18, sizeGroup: 20,  count: browns.filter { $0.length >  458 }.count , species: "LL"))
+        }
+        
+        
         return viewModel.fishData.filter { $0.species == species }
     }
 }
@@ -97,13 +102,20 @@ struct BarChartView: View {
 
 
 
+/*
+#Preview {
+    TagChartView()
+        .environment(.modelContext)
+}
+*/
 
-//struct TagChartView: View {
-//    var body: some View {
-//        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-//    }
-//}
-//
-//#Preview {
-//    TagChartView()
-//}
+/*
+150
+203
+253
+305
+255
+406
+458
+507
+*/

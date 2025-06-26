@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 @Model
-class Species: Codable, Equatable {
+final class Species: Codable, Equatable {
     @Attribute(.unique) var code: String
     var fwp_code: String = ""
     var name: String

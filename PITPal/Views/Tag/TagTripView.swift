@@ -211,7 +211,7 @@ struct TagTripView: View {
                                 .disabled(isValidWatershed || isValidTripType || isValidSurveySection || isValidStartTime || isValidEndTime)
 
                             Spacer()
-                            Text("\(locationsHandler.lastLocation2D.latitude, specifier: "%.4f"), \(locationsHandler.lastLocation2D.longitude, specifier: "%.4f")")
+                            // Text("\(locationsHandler.lastLocation2D.latitude, specifier: "%.4f"), \(locationsHandler.lastLocation2D.longitude, specifier: "%.4f")")
 
                         }
                         .padding(.horizontal, 10)

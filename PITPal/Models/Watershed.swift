@@ -10,7 +10,7 @@ import SwiftData
 import CoreLocation
 
 @Model
-class Watershed: Codable, Equatable {
+final class Watershed: Codable, Equatable {
     @Attribute(.unique) var code: String
     var name: String
     var geofence: [Coordinate]

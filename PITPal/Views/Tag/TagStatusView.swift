@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct TagStatusView: View {
     @Environment(LocationsHandler.self) var locationsHandler
@@ -19,6 +20,9 @@ struct TagStatusView: View {
     
     @State private var isLoadingBighornStats: Bool = true
     @State private var bighornStats: [BighornStats] = []
+    
+    @Query(filter: #Predicate<Fish> { fish in fish.species == "RB" && fish.length > 0}) var rainbows: [Fish]
+    @Query(filter: #Predicate<Fish> { fish in fish.species == "LL" && fish.length > 0}) var browns: [Fish]
     
     var body: some View {
         VStack {
@@ -54,11 +58,11 @@ struct TagStatusView: View {
                                         }.frame(width: 360)
                                         .padding(.horizontal, 10)
                                         HStack(alignment: .center) {
-                                            Text("155")
+                                            Text("\(rainbows.count)")  // .font(.system(size: 18, weight: .regular, design: .default))
                                             Spacer()
-                                            Text("305").font(.system(size: 30, weight: .bold, design: .default))
+                                            Text("\(rainbows.count + browns.count)").font(.system(size: 30, weight: .bold, design: .default))
                                             Spacer()
-                                            Text("150")
+                                            Text("\(browns.count)")  // .font(.system(size: 18, weight: .regular, design: .default))
                                         }.frame(width: 360)
                                         .padding(.horizontal, 6)
                                     }

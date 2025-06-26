@@ -1,11 +1,4 @@
 //
-//  Section.swift
-//  PITPal
-//
-//  Created by Doug Haacke on 6/13/25.
-//
-
-//
 //  Season.swift
 //  PITPal
 //
@@ -16,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 @Model
-class SurveySection: Codable, Equatable {
+final class SurveySection: Codable, Equatable {
     @Attribute(.unique) var code: String
     var name: String
     var color: String

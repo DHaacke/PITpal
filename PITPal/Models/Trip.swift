@@ -9,8 +9,7 @@ import SwiftData
 import SwiftUI
 
 @Model
-class Trip: Codable {
-    #Unique<Trip>([\.date], [\.tripType], [\.surveySection], [\.watershed])
+final class Trip: Codable {
     var date: Date
     var tripType: String  // M or R
     var surveySection: String
@@ -25,7 +24,7 @@ class Trip: Codable {
     var endTime: String        // 17:10
     var waterTemperature: Double
     var waterFlow: Double
-    @Relationship(deleteRule: .cascade) var fish = [Fish]()
+    // #Unique<Trip>([\.date], [\.tripType], [\.surveySection], [\.watershed])
     
     init(
         date: Date = Date(),
@@ -42,7 +41,6 @@ class Trip: Codable {
         endTime: String = "",
         waterTemperature: Double = 0,
         waterFlow: Double = 0,
-        fish: [Fish] = []
     ) {
         self.date = date
         self.tripType = tripType
@@ -58,8 +56,6 @@ class Trip: Codable {
         self.endTime = endTime
         self.waterTemperature = waterTemperature
         self.waterFlow = waterFlow
-        self.fish = fish
-        
     }
     
     enum CodingKeys: String, CodingKey {
@@ -77,12 +73,15 @@ class Trip: Codable {
         case endTime
         case waterTemperature
         case waterFlow
-        case fish
     }
     
     required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.date = try container.decode(Date.self, forKey: .date)
+        let dateFormatter = DateFormatter()
+        
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = try container.decode(String.self, forKey: .date)
+        self.date = dateFormatter.date(from: dateString)!
         self.tripType = try container.decode(String.self, forKey: .tripType)
         self.surveySection = try container.decode(String.self, forKey: .surveySection)
         self.watershed = try container.decode(String.self, forKey: .watershed)
@@ -96,7 +95,6 @@ class Trip: Codable {
         self.endTime = try container.decode(String.self, forKey: .endTime)
         self.waterTemperature = try container.decode(Double.self, forKey: .waterTemperature)
         self.waterFlow = try container.decode(Double.self, forKey: .waterFlow)
-        self.fish = try container.decode([Fish].self, forKey: .fish)
     }
     
     func encode(to encoder: any Encoder) throws {
@@ -114,7 +112,6 @@ class Trip: Codable {
         try container.encode(endTime, forKey: .endTime)
         try container.encode(waterTemperature, forKey: .waterTemperature)
         try container.encode(waterFlow, forKey: .waterFlow)
-        try container.encode(fish, forKey: .fish)
     }
     
     func toJSON(trip: Trip) -> String {

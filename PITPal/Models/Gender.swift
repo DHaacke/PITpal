@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 @Model
-class Gender: Codable {
+final class Gender: Codable {
     @Attribute(.unique) var code: String
     var name: String
     var color: String
