@@ -130,12 +130,6 @@ struct TagStatusView: View {
                         print(self.bighornStats)
                     }
                     isLoadingBighornStats = false
-                    
-                    var buffer = ""
-                    for trip in trips {
-                        buffer += trip.toJSON() + ",\n"
-                    }
-                    print(buffer)
                    
                     rainbows = getRainbows(trip: trip)
                     browns   = getBrowns(trip: trip)

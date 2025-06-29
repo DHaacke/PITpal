@@ -26,7 +26,8 @@ struct ExportButton: View {
                             style: .continuous
                         )
                         .stroke(Color.white, lineWidth: 2)
-                        .background(Color("ButtonBackground"))
+                        // .background(Color("ButtonBackground"))
+                        .background(.clear)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                     )
             })

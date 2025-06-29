@@ -21,6 +21,7 @@ struct ExportView: View {
     
     @State private var startDate: Date = Date()
     @State private var endDate:   Date = Date()
+    @State private var selectedFormat: String = K.EXPORT_JSON
     @State private var selectedWatershed: String = ""
     @State private var selectedTripType: String = ""
     @State private var selectedSurveySection: String = ""
@@ -29,6 +30,13 @@ struct ExportView: View {
     @State private var selectedMaxWeight: Int = 0
     @State private var selectedMinLength: Int = 0
     @State private var selectedMaxLength: Int = 0
+    
+    @State private var exportedTrips: [Trip] = []
+    @State private var exportFilename: String = ""
+    @State private var isExporting: Bool = false
+    @State private var isShowingExportError: Bool = false
+    @State private var exportingMessage: String = ""
+    
     
     @AppStorage("tripTripType") private var tripTripType: String = "M"
     @AppStorage("tripSurveySection") private var tripSurveySection: String = "U"
@@ -42,10 +50,10 @@ struct ExportView: View {
     @AppStorage("uomFishWeight") private var uomFishWeight: String = "gm"
     
     @Query(filter: #Predicate<Species> { sp in sp.active == "Y"},  sort: \Species.name) var speciesList: [Species]
-    // @Query(sort: \Species.name, order: .forward) var speciesList: [Species]
     @Query(sort: \TripType.name, order: .forward) var tripTypeList: [TripType]
     @Query(sort: \SurveySection.name, order: .forward) var surveySectionList: [SurveySection]
     @Query(sort: \Watershed.name, order: .forward) var watershedList: [Watershed]
+    @Query(sort: \Trip.date, order: .forward) var tripList: [Trip]
     
     var body: some View {
         VStack {
@@ -67,6 +75,20 @@ struct ExportView: View {
             .padding(.bottom, 40)
             
             VStack(alignment: .leading) {
+                
+                HStack() {
+                    LabeledContent {
+                        Picker("", selection: $selectedFormat) {
+                            Text(K.EXPORT_CSV).tag("CSV")
+                                .frame(width: 400)
+                            Text(K.EXPORT_JSON).tag("JSON")
+                                .frame(width: 400)
+                        }.tint(Color("TextForegroundWhite"))
+                    } label: {
+                        Text("File format:")
+                    }.frame(width: 400, height: 40)
+                    Spacer()
+                }
                 
                 HStack() {
                     LabeledContent {
@@ -171,16 +193,42 @@ struct ExportView: View {
                     } label: {
                         Text("Max Length")
                     }.frame(width: 250)
-                }.padding(.bottom, 180)
+                }.padding(.bottom, 50)
+                
+                HStack {
+                    LabeledContent {
+                        TextField("", text: $exportFilename)
+                          .foregroundColor(Color("TextForeground"))
+                          .border(Color.gray, width: 1)
+                          .textFieldStyle(.roundedBorder)
+                          .frame(width: 400)
+                          .multilineTextAlignment(.leading)
+                    } label: {
+                        Text("Exported Filename:")
+                    }.frame(width: 600).padding(.bottom, 60)
+                }
                 
                 HStack(alignment: .center) {
                     Spacer()
                     ExportButton(onExportButtonTapped: {
                         print("Export Button Tapped")
+                        if selectedFormat == K.EXPORT_JSON {
+                            exportJSON()
+                        } else if selectedFormat == K.EXPORT_CSV {
+                        }
                     })
                     Spacer()
                 }
+                if isExporting {
+                    HStack(alignment: .center) {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                }
                 Spacer()
+                Text(exportingMessage)
+                    .foregroundColor(isShowingExportError ? .red : Color("TextForegroundWhite"))
             }
             .padding(.horizontal, 100)
         }
@@ -207,10 +255,125 @@ struct ExportView: View {
             selectedWatershed = tripWatershed
             selectedTripType  = tripTripType
             selectedSurveySection = tripSurveySection
-          
+            
+            updateFilename()
         }
+        .onChange(of: startDate) {
+            updateFilename()
+        }
+        .onChange(of: endDate) {
+            updateFilename()
+        }
+        .onChange(of: selectedWatershed) {
+            updateFilename()
+        }
+        .onChange(of: selectedTripType) {
+            updateFilename()
+        }
+        .onChange(of: selectedSurveySection) {
+            updateFilename()
+        }
+        
+            
+            
+    }
+    
+    func updateFilename() {
+        self.exportFilename = ""
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd"
+        let startDateString = dateFormatter.string(from: self.startDate)
+        let endDateString   = dateFormatter.string(from: self.endDate)
+        self.exportFilename = "\(startDateString)-\(endDateString)_"
+        if !self.selectedWatershed.isEmpty {
+            self.exportFilename += "\(self.selectedWatershed)_"
+        }
+        if !self.selectedTripType.isEmpty {
+            self.exportFilename += "\(self.selectedTripType)_"
+        }
+        if !self.selectedSurveySection.isEmpty {
+            self.exportFilename += "\(self.selectedSurveySection)_"
+        }
+        self.exportFilename += "\(tripList.count)_trips"
+    }
+    
+    func exportJSON() {
+        // Implement JSON export logic here
+        print("Exporting JSON... \(self.tripList.count)")
+        print(URL.documentsDirectory.path)
+        
+        self.exportedTrips.removeAll()
+        
+        // Filter trips based on selected criteria
+        let filteredTrips = filterTrips()
+        
+        self.isExporting = true
+        
+        // Create the json folder if it doesn't exist
+        let folderURL = URL.documentsDirectory.appending(path: "JSON", directoryHint: .isDirectory)
+        do {
+            try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            print("Error creating JSON directory (or directory already exists): \(error)")
+        }
+        
+        var buffer = ""
+
+        for trip in filteredTrips {
+            buffer += trip.toJSON() + ",\n"
+        }
+        let jsonData = buffer.data(using: .utf8)
+        let jsonURL = URL.documentsDirectory.appending(path: "JSON", directoryHint: .isDirectory).appending(path: "\(self.exportFilename).json")
+        do {
+            try jsonData?.write(to: jsonURL, options: [.atomic, .completeFileProtection])
+            self.exportingMessage = "JSON exported successfully to \(jsonURL.path)"
+            self.isShowingExportError = false
+        } catch {
+            print("JSON: \(error.localizedDescription)")
+            self.exportingMessage = "Error exporting JSON: \(error.localizedDescription)"
+            self.isShowingExportError = true
+        }
+        self.isExporting = false
+    }
+    
+    
+    func filterTrips() -> [Trip] {
+        // Filter trips based on selected criteria
+        print("Trips: \(tripList.count)")
+        var filteredTrips = tripList.filter { trip in (startDate...endDate).contains(trip.date) }
+
+        if !selectedWatershed.isEmpty {
+            filteredTrips = filteredTrips.filter { $0.watershed == selectedWatershed }
+        }
+
+        if !selectedTripType.isEmpty {
+            filteredTrips = filteredTrips.filter { $0.tripType == selectedTripType }
+        }
+
+        if !selectedSurveySection.isEmpty {
+            filteredTrips = filteredTrips.filter { $0.surveySection == selectedSurveySection }
+        }
+
+        if !selectedSpecies.isEmpty {
+            var filteredFish = [Fish]()
+            for trip in filteredTrips {
+                filteredFish = trip.fish.filter { $0.species == selectedSpecies }
+                trip.fish = filteredFish
+            }
+        }
+
+        return filteredTrips
     }
 }
+
+/*
+ @State private var selectedSpecies: String = ""
+ @State private var selectedMinWeight: Int = 0
+ @State private var selectedMaxWeight: Int = 0
+ @State private var selectedMinLength: Int = 0
+ @State private var selectedMaxLength: Int = 0
+
+ */
 
 #Preview {
     ExportView(path: .constant([]))

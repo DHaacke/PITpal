@@ -28,6 +28,10 @@ struct K {
     static let SCANNING_OFF: Int             = 7
     static let BLUETOOTH_ON: Int             = 8
     
+    // export formats
+    static let EXPORT_CSV: String            = "CSV"
+    static let EXPORT_JSON: String           = "JSON"
+    
     
     
 }
