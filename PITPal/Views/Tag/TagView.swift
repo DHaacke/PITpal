@@ -47,29 +47,3 @@ struct TagView: View {
 }
 */
 
-
-/*
- 
- struct TagScheme<Content: View>: View {
-     @ViewBuilder var content: Content
-     var body: some View {
-         VStack {
-            statusView
-         }
-     }
-     
-     var statusView : some View {
-         VStack {
-             Text("Hello, Status!")
-                 .font(.title)
-         }
-     }
- }
- 
- var body: some View {
-     TagScheme {
-         CardView(path: $path)
-     }
-}
- 
-*/

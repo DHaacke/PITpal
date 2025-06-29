@@ -62,6 +62,14 @@ struct ContentView: View {
                         .navigationTitle("Tag / Recap").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                 }
+                else if navigation == K.EXPORT {
+                    ExportView(path: $path)
+                        .tint(Color("AccentColor"))
+                        .navigationBarBackButtonHidden(false)
+                        .navigationBarHidden(false)
+                        .navigationTitle("Export Data").foregroundStyle(Color("TextForegroundWhite"))
+                        .navigationBarTitleDisplayMode(.inline)
+                }
             }
         }
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)

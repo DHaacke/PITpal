@@ -14,6 +14,7 @@ struct K {
     static let MAINMENU: String     = "MAINMENU"
     static let SETTINGS: String     = "SETTINGS"
     static let TAG: String          = "TAG"
+    static let EXPORT: String       = "EXPORT"
     static let OTHER: String        = "OTHER"
     
     // bluetooth

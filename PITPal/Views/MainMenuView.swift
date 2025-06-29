@@ -36,12 +36,18 @@ struct MainMenuView: View {
                     .padding(.bottom, 20)
                 
                 HStack {
-                    MenuCardView(path: $path, text: "View / Edit History of\n Tagging Run", newPath: "")
-                    Spacer()
-                    MenuCardView(path: $path, text: "View / Edit History of\n Recapture Run", newPath: "")
+                    MenuCardView(path: $path, text: "Export Trip/Fish Data", newPath: "EXPORT")
+                        .padding(.horizontal, 120)
                 }
-                    .padding(.horizontal, 30)
                     .padding(.bottom, 20)
+                
+//                HStack {
+//                    MenuCardView(path: $path, text: "View / Edit History of\n Tagging Run", newPath: "")
+//                    Spacer()
+//                    MenuCardView(path: $path, text: "View / Edit History of\n Recapture Run", newPath: "")
+//                }
+//                    .padding(.horizontal, 30)
+//                    .padding(.bottom, 20)
                 
                 HStack {
                     MenuCardView(path: $path, text: "Settings", newPath: "SETTINGS")
