@@ -1,0 +1,62 @@
+//
+//  Queries.swift
+//  PITPal
+//
+//  Created by Doug Haacke on 6/27/25.
+//
+
+
+import SwiftUI
+import SwiftData
+
+final class Queries {
+    
+    func fetchNameFromCode(context: ModelContext, model: String, code: String) -> String {
+        switch(model) {
+            case "SurveySection":
+                let descriptor = FetchDescriptor<SurveySection>(
+                    predicate: #Predicate { section in
+                        section.code == code
+                    }
+                )
+                do {
+                    let sections : [SurveySection] = try context.fetch(descriptor)
+                    var section: SurveySection? { sections.first }
+                    return section?.name ?? "N/A"
+                } catch {
+                    print("Error fetching SurveySection name: \(error)")
+                    return "N/A" // Handle the error appropriately
+                }
+            case "Species":
+                let descriptor = FetchDescriptor<Species>(
+                    predicate: #Predicate { species in
+                        species.code == code
+                    }
+                )
+                do {
+                    let species : [Species] = try context.fetch(descriptor)
+                    var specie: Species? { species.first }
+                    return specie?.name ?? "N/A"
+                } catch {
+                    print("Error fetching Species name: \(error)")
+                    return "N/A" // Handle the error appropriately
+                }
+            case "TripType":
+                let descriptor = FetchDescriptor<TripType>(
+                    predicate: #Predicate { type in
+                        type.code == code
+                    }
+                )
+                do {
+                    let types : [TripType] = try context.fetch(descriptor)
+                    var type: TripType? { types.first }
+                    return type?.name ?? "N/A"
+                } catch {
+                    print("Error fetching TripType name: \(error)")
+                    return "N/A" // Handle the error appropriately
+                }
+            default:
+                return ""
+        }
+    }
+}

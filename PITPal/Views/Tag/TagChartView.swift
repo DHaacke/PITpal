@@ -19,13 +19,20 @@ struct FishData: Identifiable {
 struct BarChartView: View {
     @Environment(\.modelContext) var modelContext
     
+    @Binding var trip: Trip
+    
     @State private var fishData: [FishData] = []
     
     var species: String = ""
     var title:   String = ""
     
-    @Query(filter: #Predicate<Fish> { fish in fish.species == "RB" && fish.length > 0}) var rainbows: [Fish]
-    @Query(filter: #Predicate<Fish> { fish in fish.species == "LL" && fish.length > 0}) var browns: [Fish]
+//    @Query(filter: #Predicate<Fish> { fish in fish.species == "RB" && fish.length > 0}) var rainbows: [Fish]
+//    @Query(filter: #Predicate<Fish> { fish in fish.species == "LL" && fish.length > 0}) var browns: [Fish]
+    
+    @State private var rainbows: [Fish] = []
+    @State private var browns:   [Fish] = []
+    
+    @Query var fish: [Fish]
     
     var body: some View {
         VStack {
@@ -64,6 +71,10 @@ struct BarChartView: View {
                 .font(.system(size: 12, weight: .light, design: .default))
         }
         .padding(.trailing, 12)
+        .onAppear {
+            rainbows = getRainbows(trip: trip)
+            browns   = getBrowns(trip: trip)
+        }
     }
     
     func filterFish(by species: String) -> [FishData] {
@@ -91,7 +102,24 @@ struct BarChartView: View {
         }
         return fishData.filter { $0.species == species }
     }
+    
+    func getRainbows(trip: Trip) -> [Fish] {
+        return fish.filter( { $0.species == "RB" && $0.length > 0 && isSameDay(tripDate: trip.date, fishDate: $0.date) } )
+    }
+    
+    func getBrowns(trip: Trip) -> [Fish] {
+        return fish.filter( { $0.species == "LL" && $0.length > 0  && isSameDay(tripDate: trip.date, fishDate: $0.date) } )
+    }
+    
+    func isSameDay(tripDate: Date, fishDate: Date) -> Bool {
+        var calender = Calendar.current
+        calender.timeZone = TimeZone.current
+        let result = calender.compare(tripDate, to: fishDate, toGranularity: .day)
+        return result == .orderedSame
+    }
 }
+
+
 
 
 

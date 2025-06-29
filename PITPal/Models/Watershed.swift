@@ -56,7 +56,19 @@ final class Watershed: Codable, Equatable {
         return lhs.persistentModelID == rhs.persistentModelID
     }
     
-//    func hash(into hasher: inout Hasher) {
-//      hasher.combine(id)
-//    }
+    func fetchNameFromCode(context: ModelContext, code: String) -> String {
+        let descriptor = FetchDescriptor<Watershed>(
+            predicate: #Predicate { water in
+                water.code == code
+            }
+        )
+        do {
+            let waters : [Watershed] = try context.fetch(descriptor)
+            var water: Watershed? { waters.first }
+            return water?.name ?? "N/A"
+        } catch {
+            print("Error fetching Watershed name: \(error)")
+            return "N/A" // Handle the error appropriately
+        }
+    }
 }

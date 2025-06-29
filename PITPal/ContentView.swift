@@ -19,10 +19,10 @@ struct ContentView: View {
     
     @State private var path = [String]()
     
-    // TODO
+    // TODO, these are here to help populate the database
+    @Query(sort: \Trip.date) var tripList: [Trip]
     @Query(sort: \Species.code) var speciesList: [Species]
     @Query(sort: \SurveySection.code) var surveySections: [SurveySection]
-    @Query(sort: \Trip.date) var tripList: [Trip]
     @Query(sort: \Fish.pitTag) var fishList: [Fish]
     
     var body: some View {
@@ -72,9 +72,9 @@ struct ContentView: View {
         }
         .task {
             if jsonManager.isConfigLoaded {
-                await MainActor.run {
-                    try! modelContext.transaction {
-                        
+//                await MainActor.run {
+//                    try! modelContext.transaction {
+//                        
 //                        for species in speciesList {
 //                            print("Deleting \(species.name)")
 //                            modelContext.delete(species)
@@ -138,68 +138,71 @@ struct ContentView: View {
 //                                active: tripType.active
 //                            ))
 //                        }
-                        
-                        
-                        for trip in tripList {
-                            print("Deleting \(trip.date.formatted(date: .numeric, time: .omitted))")
-                            modelContext.delete(trip)
-                        }
-                        for fish in fishList {
-                            print("Deleting \(fish.species)")
-                            modelContext.delete(fish)
-                        }
-                        try modelContext.save()
-                        
-                        
-                        print("Inserting \(jsonManager.config.trip.count) Trips")
-                        for trip in jsonManager.config.trip {
-                            print("Inserting \(trip.date), \(trip.tripType), \(trip.surveySection), \(trip.watershed) with \(trip.fish.count) fish")
-                            let newTrip : Trip = Trip(
-                                date: trip.date,
-                                tripType: trip.tripType,
-                                surveySection: trip.surveySection,
-                                watershed: trip.watershed,
-                                equipment: trip.equipment,
-                                latDown: 0,
-                                lonDown: 0,
-                                latUp: 0,
-                                lonUp: 0,
-                                sectionLength: trip.sectionLength,
-                                startTime: trip.startTime,
-                                endTime: trip.endTime,
-                                waterTemperature: trip.waterTemperature,
-                                waterFlow: trip.waterFlow,
-                                fish: []
-                            )
-                            print("Here are the fish for this trip:")
-                            for fish in trip.fish {
-                                print("  - \(fish.species)")
-                                let item = Fish(
-                                    date: fish.date,
-                                    pitTag: fish.pitTag,
-                                    lat: fish.lat,
-                                    lon: fish.lon,
-                                    species: fish.species,
-                                    fwpSpecies: fish.fwpSpecies,
-                                    weight: fish.weight,
-                                    length: fish.length,
-                                )
-                                newTrip.fish.append(item)
-                            }
-                            print("Insert")
-                            modelContext.insert(newTrip)
-                        }
-                        
-                            
-                        do {
-                            try modelContext.save()
-                            print("Total Trips: \(getTripCount(modelContext: modelContext))")
-                            print("Total Fish:  \(getFishCount(modelContext: modelContext))")
-                        } catch {
-                            print("An error occurred!")
-                        }
-                    }
-                }
+//                        
+//                        
+//                        for trip in tripList {
+//                            print("Deleting \(trip.date.formatted(date: .numeric, time: .omitted))")
+//                            modelContext.delete(trip)
+//                        }
+//                        for fish in fishList {
+//                            print("Deleting \(fish.species)")
+//                            modelContext.delete(fish)
+//                        }
+//                        try modelContext.save()
+//                        
+//                        
+//                        print("Inserting \(jsonManager.config.trip.count) Trips")
+//                        for trip in jsonManager.config.trip {
+//                            print("Inserting \(trip.date), \(trip.tripType), \(trip.surveySection), \(trip.watershed) with \(trip.fish.count) fish")
+//                            let newTrip : Trip = Trip(
+//                                date: trip.date,
+//                                tripType: trip.tripType,
+//                                surveySection: trip.surveySection,
+//                                watershed: trip.watershed,
+//                                equipment: trip.equipment,
+//                                latDown: 0,
+//                                lonDown: 0,
+//                                latUp: 0,
+//                                lonUp: 0,
+//                                sectionLength: trip.sectionLength,
+//                                startTime: trip.startTime,
+//                                endTime: trip.endTime,
+//                                waterTemperature: trip.waterTemperature,
+//                                waterFlow: trip.waterFlow,
+//                                fish: []
+//                            )
+//                            // print("Here are the fish for this trip:")
+//                            for fish in trip.fish {
+//                                print("  - \(fish.species)")
+//                                let item = Fish(
+//                                    date: fish.date,
+//                                    pitTag: fish.pitTag,
+//                                    lat: fish.lat,
+//                                    lon: fish.lon,
+//                                    species: fish.species,
+//                                    fwpSpecies: fish.fwpSpecies,
+//                                    weight: fish.weight,
+//                                    length: fish.length,
+//                                    gender: fish.gender,
+//                                    doa: fish.doa,
+//                                    hookScar: fish.hookScar,
+//                                    comment: fish.comment
+//                                )
+//                                newTrip.fish.append(item)
+//                            }
+//                            // print("Insert")
+//                            modelContext.insert(newTrip)
+//                        }
+//                            
+//                        do {
+//                            try modelContext.save()
+//                            print("Total Trips: \(getTripCount(modelContext: modelContext))")
+//                            print("Total Fish:  \(getFishCount(modelContext: modelContext))")
+//                        } catch {
+//                            print("An error occurred!")
+//                        }
+//                    }
+//                }
             }
             try! modelContext.save()
         }
@@ -216,11 +219,11 @@ struct ContentView: View {
     }
 }
 
-/*
+
 #Preview {
     @Previewable @State var path: [String] = []
     ContentView()
         .environment(LocationsHandler())
         .environment(NetworkMonitor())
 }
-*/
+

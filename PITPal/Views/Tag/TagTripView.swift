@@ -26,12 +26,9 @@ struct TagTripView: View {
     @State private var isLoadingBighornStats: Bool = true
     @State private var bighornStats: [BighornStats] = []
     
-    @State private var selectedDate: Date = Date()
-    @State private var watershed: String = ""
-    @State private var surveySection: String = ""
     @State private var selectedStartTime: Date = Date()
     @State private var selectedEndTime: Date = Date()
-    @State private var tripType: String = ""
+
     @State private var tripLatDown: String = "0.0"
     @State private var tripLonDown: String = "0.0"
     @State private var tripLatUp: String = "0.0"
@@ -64,13 +61,13 @@ struct TagTripView: View {
                             // Text("Date is \(birthDate.formatted(date: .long, time: .omitted))")
                             DatePicker(
                                     "Date:",
-                                    selection: $selectedDate,
+                                    selection: $trip.date,
                                     displayedComponents: [.date]
                                 ).datePickerStyle(.compact).frame(width: 180)
                             Spacer()
                             
                             LabeledContent {
-                                Picker("", selection: $watershed) {
+                                Picker("", selection: $trip.watershed) {
                                     Text("<Choose>").tag("")
                                     ForEach(watersheds) { watershed in
                                         Text(watershed.name).tag(watershed.code)
@@ -84,7 +81,7 @@ struct TagTripView: View {
                             Spacer()
                             
                             LabeledContent {
-                                Picker("", selection: $surveySection) {
+                                Picker("", selection: $trip.surveySection) {
                                     Text("<Choose>").tag("")
                                     ForEach(surveySections) { section in
                                         Text(section.name).tag(section.code)
@@ -100,7 +97,7 @@ struct TagTripView: View {
                         
                         HStack {
                             LabeledContent {
-                                Picker("", selection: $tripType) {
+                                Picker("", selection: $trip.tripType) {
                                     Text("<Choose>").tag("")
                                     ForEach(tripTypes) { type in
                                         Text(type.name).tag(type.code)
@@ -220,29 +217,24 @@ struct TagTripView: View {
                     
                 }  // ZStack
                 .onAppear {
-                    print("width: \(geometry.size.width)")
+                    // print("width: \(geometry.size.width)")
                 }
-                .onChange(of: watershed) {
-                    print("Watershed changed to [\(self.watershed)]")
-                    if self.watershed.isEmpty {
-                        print("Invalid Watershed")
+                .onChange(of: trip.watershed) {
+                    if trip.watershed.isEmpty {
                         isValidWatershed = false
                     } else {
-                        print("Valid Watershed")
                         isValidWatershed = true
                     }
                 }
-                .onChange(of: surveySection) {
-                    print("surveySection changed to \(self.surveySection)")
-                    if self.surveySection.isEmpty {
+                .onChange(of: trip.surveySection) {
+                    if trip.surveySection.isEmpty {
                         isValidSurveySection = false
                     } else {
                         isValidSurveySection = true
                     }
                 }
-                .onChange(of: tripType) {
-                    print("tripType changed to \(self.tripType)")
-                    if self.tripType.isEmpty {
+                .onChange(of: trip.tripType) {
+                    if trip.tripType.isEmpty {
                         isValidTripType = false
                     } else {
                         isValidTripType = true

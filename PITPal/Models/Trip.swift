@@ -24,7 +24,8 @@ final class Trip: Codable {
     var endTime: String        // 17:10
     var waterTemperature: Double
     var waterFlow: Double
-    var fish: [Fish]
+    @Relationship(deleteRule: .cascade, inverse: \Fish.trip) var fish: [Fish]
+    // var fish: [Fish]
     // #Unique<Trip>([\.date], [\.tripType], [\.surveySection], [\.watershed])
     
     init(
@@ -83,7 +84,7 @@ final class Trip: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let dateFormatter = DateFormatter()
         
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         let dateString = try container.decode(String.self, forKey: .date)
         self.date = dateFormatter.date(from: dateString)!
         self.tripType = try container.decode(String.self, forKey: .tripType)
@@ -106,6 +107,7 @@ final class Trip: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(date, forKey: .date)
         try container.encode(tripType, forKey: .tripType)
+        try container.encode(surveySection, forKey: .surveySection)
         try container.encode(watershed, forKey: .watershed)
         try container.encode(equipment, forKey: .equipment)
         try container.encode(latDown, forKey: .latDown)
@@ -120,28 +122,68 @@ final class Trip: Codable {
         try container.encode(fish, forKey: .fish)
     }
     
-    func toJSON(trip: Trip) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm"
-        formatter.timeZone = TimeZone.current
-        let json = """
-        {
-            "date" : "\(formatter.string(from: trip.date))",
-            "tripType": "\(trip.tripType)",
-            "watershed": "\(trip.watershed)",
-            "equipment": "\(trip.equipment)",
-            "latDown": "\(trip.latDown)",
-            "lonDown": "\(trip.lonDown)",
-            "latUp": "\(trip.latUp)",
-            "lonUp": "\(trip.lonUp)",
-            "sectionLength": \(trip.sectionLength),
-            "startTime": "\(trip.startTime)",
-            "endTime": "\(trip.endTime)",
-            "waterTemperature": \(waterTemperature),
-            "waterFlow": \(waterFlow)
+    func toJSON() -> String {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        do {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd HH:mm"
+            formatter.timeZone = TimeZone.current
+            encoder.dateEncodingStrategy = .formatted(formatter)
+            let jsonData = try! encoder.encode(self)
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                return jsonString
+            } else {
+                return "{}"
+            }
         }
-        """
-        return json
+    }
+    
+//    func toJSON(trip: Trip) -> String {
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+//        formatter.timeZone = TimeZone.current
+//        let json = """
+//        {
+//            "date" : "\(formatter.string(from: trip.date))",
+//            "tripType": "\(trip.tripType)",
+//            "watershed": "\(trip.watershed)",
+//            "equipment": "\(trip.equipment)",
+//            "latDown": \(trip.latDown),
+//            "lonDown": \(trip.lonDown),
+//            "latUp": \(trip.latUp),
+//            "lonUp": \(trip.lonUp),
+//            "sectionLength": \(trip.sectionLength),
+//            "startTime": "\(trip.startTime)",
+//            "endTime": "\(trip.endTime)",
+//            "waterTemperature": \(waterTemperature),
+//            "waterFlow": \(waterFlow),
+//            "fish": \(trip.fish.map {
+//                """
+//                {
+//                    "date" : "\(formatter.string(from: $0.date))",
+//                    "pitTag: "\($0.pitTag))",
+//                    "lat": \($0.lat)),
+//                    "lon": \($0.lon)),
+//                    "species": "\($0.species)")",
+//                    "fwpSpecies": "\($0.fwpSpecies)")",
+//                    "weight": \($0.weight)),
+//                    "length": \($0.length)),
+//                    "gender": "\($0.gender))",
+//                    "doa": "\($0.doa)")",
+//                    "hookScar": "\($0.hookScar)")",
+//                    "comment": "\($0.comment)")"
+//                },
+//               """
+//            })
+//        }
+//        """
+//        return json
+//    }
+    
+    func getRecordCount(modelContext: ModelContext) -> Int {
+        let descriptor = FetchDescriptor<Trip>(predicate: #Predicate { $0.tripType != "" })
+        return (try? modelContext.fetchCount(descriptor)) ?? 0
     }
 
 }

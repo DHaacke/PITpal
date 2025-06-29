@@ -71,7 +71,7 @@ final class Fish: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
        
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         
         let dateString = try container.decode(String.self, forKey: .date)
         self.date = dateFormatter.date(from: dateString)!
@@ -83,10 +83,8 @@ final class Fish: Codable {
         self.weight = try container.decode(Double.self, forKey: .weight)
         self.length = try container.decode(Double.self, forKey: .length)
         self.gender = try container.decode(String.self, forKey: .gender)
-        let doaInt = try container.decode(Int.self, forKey: .doa)
-        self.doa = doaInt == 1 ? true : false
-        let hookScarInt = try container.decode(Int.self, forKey: .hookScar)
-        self.hookScar = hookScarInt == 1 ? true : false
+        self.doa = try container.decode(Bool.self, forKey: .doa)
+        self.hookScar = try container.decode(Bool.self, forKey: .hookScar)
         self.comment = try container.decode(String.self, forKey: .comment)
     }
     
@@ -106,6 +104,57 @@ final class Fish: Codable {
         try container.encode(comment, forKey: .comment)
     }
     
+    func getFishCount(modelContext: ModelContext, speciesCode: String) -> Int {
+        let descriptor = FetchDescriptor<Fish>(predicate: #Predicate { $0.species == speciesCode })
+        return (try? modelContext.fetchCount(descriptor)) ?? 0
+    }
+    
+    func toJSON() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        formatter.timeZone = TimeZone.current
+        let json = """
+        {
+            "date" : "\(formatter.string(from: self.date))",
+            "pitTag: "\(self.pitTag))",
+            "lat": \(self.lat)),
+            "lon": \(self.lon)),
+            "species": "\(self.species)")",
+            "fwpSpecies": "\(self.fwpSpecies)")",
+            "weight": \(self.weight)),
+            "length": \(self.length)),
+            "gender": "\(self.gender))",
+            "doa": "\(self.doa)")",
+            "hookScar": "\(self.hookScar)")",
+            "comment": "\(self.comment)")"
+        },
+        """
+        return json
+    }
+    
+//    func toJSON(fish: Fish) -> String {
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+//        formatter.timeZone = TimeZone.current
+//        let json = """
+//        {
+//            "date" : "\(formatter.string(from: fish.date))",
+//            "pitTag: "\(fish.pitTag))",
+//            "lat": \(fish.lat)),
+//            "lon": \(fish.lon)),
+//            "species": "\(fish.species)")",
+//            "fwpSpecies": "\(fish.fwpSpecies)")",
+//            "weight": \(fish.weight)),
+//            "length": \(fish.length)),
+//            "gender": "\(fish.gender))",
+//            "doa": "\(fish.doa)")",
+//            "hookScar": "\(fish.hookScar)")",
+//            "comment": "\(fish.comment)")"
+//        },
+//        """
+//        return json
+//    }
+        
 }
 
 
@@ -121,5 +170,9 @@ final class Fish: Codable {
  } catch {
      print("Error decoding JSON: \(error)")
  }
+ 
+ 
+ 
+
  
 */

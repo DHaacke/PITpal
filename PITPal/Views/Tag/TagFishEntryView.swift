@@ -18,6 +18,7 @@ struct TagFishEntryView: View {
     @Environment(\.scenePhase) var scenePhase
     
     @Binding var path: [String]
+    @Binding var trip: Trip
     
     @AppStorage("usingPitTags") private var usingPitTags: Bool = true
     
@@ -326,12 +327,12 @@ struct TagFishEntryView: View {
 }
 
 
+/*
 #Preview {
     @Previewable @State var path: [String] = [K.TAG]
-    TagFishEntryView(path: $path)
+    TagFishEntryView(path: $path, trip: $trip)
         .environment(LocationsHandler())
         .environment(JSONManager())
         .environment(NetworkMonitor())
 }
-
-
+*/

@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct TagStatusView: View {
+    @Environment(\.modelContext) var modelContext
     @Environment(LocationsHandler.self) var locationsHandler
     @Environment(JSONManager.self) var jsonManager
     @Environment(NetworkMonitor.self) var networkMonitor
@@ -21,8 +22,17 @@ struct TagStatusView: View {
     @State private var isLoadingBighornStats: Bool = true
     @State private var bighornStats: [BighornStats] = []
     
-    @Query(filter: #Predicate<Fish> { fish in fish.species == "RB" && fish.length > 0}) var rainbows: [Fish]
-    @Query(filter: #Predicate<Fish> { fish in fish.species == "LL" && fish.length > 0}) var browns: [Fish]
+    @State private var rainbows: [Fish] = []
+    @State private var browns:   [Fish] = []
+    
+    @Query var fish: [Fish]
+    @Query(sort: \Trip.date, order: .reverse) var trips: [Trip]  //  used for JSON export
+    
+    
+//    @Query(filter: #Predicate<Fish> { fish in fish.species == "RB" && fish.length > 0 && fish.date == trip.date} ) var rainbows: [Fish]
+//    @Query(filter: #Predicate<Fish> { fish in fish.species == "LL" && fish.length > 0}) var browns:   [Fish]
+    
+//    @Query private var fish: [Fish]
     
     var body: some View {
         VStack {
@@ -45,8 +55,8 @@ struct TagStatusView: View {
                                            .foregroundStyle(networkMonitor.isConnected ? Color.green : Color.gray)
                                            .shadow(radius: 2, x: 1, y: 1)
 
-                                       BighornStatsValueView(value: self.bighornStats[2].value, suffix: "°", title: "Afterbay").padding(.trailing, 8)
-                                       BighornStatsValueView(value: self.bighornStats[3].value, suffix: "°", title: "St. X").padding(.trailing, 8)
+                                       BighornStatsValueView(value: self.bighornStats[2].value, suffix: "°",    title: "Afterbay").padding(.trailing, 8)
+                                       BighornStatsValueView(value: self.bighornStats[3].value, suffix: "°",    title: "St. X").padding(.trailing, 8)
                                        BighornStatsValueView(value: self.bighornStats[0].value, suffix: " cfs", title: "River Release")
                                     }
                                     .frame(width: 400)
@@ -72,9 +82,9 @@ struct TagStatusView: View {
                                 VStack {
                                     HStack {
                                         HStack {
-                                            BarChartView(species: "RB", title: "Rainbow trout")
+                                            BarChartView(trip: $trip, species: "RB", title: "Rainbow trout")
                                                 .padding(.top, 10).padding(.trailing, 6)
-                                            BarChartView(species: "LL", title: "Brown trout")
+                                            BarChartView(trip: $trip, species: "LL", title: "Brown trout")
                                                 .padding(.top, 10)
                                         }
                                     }
@@ -112,31 +122,29 @@ struct TagStatusView: View {
                             self.bighornStats.append(BighornStats(id: id, label: "Bighorn \(id)", value: 0, suffix: "", decimals: 0))
                         }
                     }
-                    // print(self.bighornStats)
                     if self.bighornStats.count > 0 {
                         self.trip.waterTemperature = self.bighornStats[2].value
                         self.trip.waterFlow = self.bighornStats[0].value
+
+                        print("\n\n")
+                        print(self.bighornStats)
                     }
                     isLoadingBighornStats = false
-//                    self.trip.initialLat = locationsHandler.lastLocation2D.latitude
-//                    self.trip.initialLon = locationsHandler.lastLocation2D.longitude
-                    // print(self.trip.toJSON(trip: self.trip))
+                    
+                    var buffer = ""
+                    for trip in trips {
+                        buffer += trip.toJSON() + ",\n"
+                    }
+                    print(buffer)
+                   
+                    rainbows = getRainbows(trip: trip)
+                    browns   = getBrowns(trip: trip)
                 }
             }
         }
         .frame(height: 140)
         .padding(.bottom, 10)
         // Spacer()
-    }
-    
-    func ObjToJSON<T>(object: T) -> String {
-        let prettyPrintedData = try! JSONSerialization.data(
-            withJSONObject: object,
-            options: [.prettyPrinted, .sortedKeys]
-        )
-        let prettyPrintedString = String(data: prettyPrintedData, encoding: .utf8)!
-        print(prettyPrintedString)
-        return prettyPrintedString
     }
     
     func BighornStatsValueView(value: Double, suffix: String, title: String) -> some View {
@@ -175,6 +183,22 @@ struct TagStatusView: View {
                         .font(.system(size: 12, weight: .light, design: .default))
              }
     }
+    
+    func getRainbows(trip: Trip) -> [Fish] {
+        return fish.filter( { $0.species == "RB" && $0.length > 0 && isSameDay(tripDate: trip.date, fishDate: $0.date) } )
+    }
+    
+    func getBrowns(trip: Trip) -> [Fish] {
+        return fish.filter( { $0.species == "LL" && $0.length > 0  && isSameDay(tripDate: trip.date, fishDate: $0.date) } )
+    }
+    
+    func isSameDay(tripDate: Date, fishDate: Date) -> Bool {
+        var calender = Calendar.current
+        calender.timeZone = TimeZone.current
+        let result = calender.compare(tripDate, to: fishDate, toGranularity: .day)
+        return result == .orderedSame
+    }
+    
 }
 
 /*
@@ -204,5 +228,13 @@ struct TagStatusView: View {
          .offset(y: -5)
          .font(.system(size: 12, weight: .light, design: .default))
  }
+ 
+ _quakes = Query(
+     filter: Quake.predicate(
+         searchText: searchText,
+         searchDate: searchDate),
+     sort: \.magnitude,
+     order: .reverse
+ )
  
  */

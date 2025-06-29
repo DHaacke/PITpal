@@ -16,16 +16,19 @@ struct TagView: View {
     
     @Binding var path: [String]
 
-    // @AppStorage("usingPitTags") private var usingPitTags: Bool = true
-    
+    @State private var isChoosingTrip: Bool = true
     @State private var trip : Trip = Trip()
     
     var body: some View {
         VStack {
-            TagStatusView(path: $path, trip: $trip)
-            TagTripView(path: $path, trip: $trip)
-            TagFishEntryView(path: $path)
-            Spacer()
+            if !isChoosingTrip {
+                TagStatusView(path: $path, trip: $trip)
+                TagTripView(path: $path, trip: $trip)
+                TagFishEntryView(path: $path, trip: $trip)
+                Spacer()
+            } else {
+                ChooseTripView(path: $path, trip: $trip, isChoosingTrip: $isChoosingTrip)
+            }
         }
         .padding()
         .onChange(of: trip) {
@@ -35,13 +38,14 @@ struct TagView: View {
     }
 }
 
+/*
 #Preview {
     TagView(path: .constant([]))
         .environment(LocationsHandler())
         .environment(JSONManager())
         .environment(NetworkMonitor())
 }
-
+*/
 
 
 /*

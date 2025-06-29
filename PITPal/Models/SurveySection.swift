@@ -84,7 +84,19 @@ final class SurveySection: Codable, Equatable {
         return lhs.persistentModelID == rhs.persistentModelID
     }
     
-//    func hash(into hasher: inout Hasher) {
-//      hasher.combine(id)
-//    }
+    func fetchNameFromCode(context: ModelContext, code: String) -> String {
+        let descriptor = FetchDescriptor<SurveySection>(
+            predicate: #Predicate { section in
+                section.code == code
+            }
+        )
+        do {
+            let sections : [SurveySection] = try context.fetch(descriptor)
+            var section: SurveySection? { sections.first }
+            return section?.name ?? "N/A"
+        } catch {
+            print("Error fetching SurveySection name: \(error)")
+            return "N/A" // Handle the error appropriately
+        }
+    }
 }

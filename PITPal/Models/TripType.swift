@@ -48,7 +48,4 @@ final class TripType: Codable, Equatable {
         return lhs.persistentModelID == rhs.persistentModelID
     }
     
-//    func hash(into hasher: inout Hasher) {
-//      hasher.combine(id)
-//    }
 }
