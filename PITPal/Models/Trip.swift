@@ -139,6 +139,37 @@ final class Trip: Codable {
         }
     }
     
+    func getCSVHeader() -> String {
+        return "date,type,section,watershed,equipment,lat_down,lon_down,lat_up,long_up,length,start,end,temp,cfs,date,pitTag,lat,lon,species,fwpSpecies,weight,length,gender,doa,hookScar,comment"
+    }
+    
+    func toCSV() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone.current
+        
+        var buffer = ""
+        
+        buffer += "\(formatter.string(from: self.date)),"
+        buffer += "\(self.tripType),"
+        buffer += "\(self.watershed),"
+        buffer += "\(self.surveySection),"
+        buffer += "\(self.equipment),"
+        buffer += "\(self.latDown),"
+        buffer += "\(self.lonDown),"
+        buffer += "\(self.latUp),"
+        buffer += "\(self.lonUp),"
+        buffer += "\(self.sectionLength),"
+        buffer += "\(self.startTime),"
+        buffer += "\(self.endTime),"
+        buffer += "\(self.waterTemperature),"
+        buffer += "\(self.waterFlow),"
+
+        return buffer
+    }
+
+    
+    
 //    func toJSON(trip: Trip) -> String {
 //        let formatter = DateFormatter()
 //        formatter.dateFormat = "yyyy-MM-dd HH:mm"

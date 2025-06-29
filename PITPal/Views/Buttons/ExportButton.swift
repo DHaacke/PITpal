@@ -20,17 +20,9 @@ struct ExportButton: View {
                     .frame(width: 120, height: 38)
                     .font(.system(size: 24, weight: .medium))
                     .foregroundColor(.white)
-                    .background(
-                        RoundedRectangle(
-                            cornerRadius: 20,
-                            style: .continuous
-                        )
-                        .stroke(Color.white, lineWidth: 2)
-                        // .background(Color("ButtonBackground"))
-                        .background(.clear)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                    )
+                    .shadow(color: Color(.black), radius: 3, x: 1, y: 2)
             })
+            // .border(Color.gray, width: 2)
         }
     }
 }
@@ -42,3 +34,15 @@ struct ExportButton: View {
         print("Export button tapped")
     })
 }
+
+/*
+Button(action: {
+    onExportButtonTapped()
+}, label: {
+    Text("Export")
+        .frame(width: 120, height: 38)
+        .font(.system(size: 24, weight: .medium))
+        .foregroundColor(.white)
+})
+.shadow(color: Color(.gray), radius: 4, x: 2, y: 3)
+*/

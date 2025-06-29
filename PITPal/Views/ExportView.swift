@@ -16,6 +16,7 @@ struct ExportView: View {
     @Environment(JSONManager.self) var jsonManager
     @Environment(NetworkMonitor.self) var networkMonitor
     @Environment(\.scenePhase) var scenePhase
+    @Environment(\.colorScheme) var colorScheme
     
     @Binding var path: [String]
     
@@ -36,7 +37,6 @@ struct ExportView: View {
     @State private var isExporting: Bool = false
     @State private var isShowingExportError: Bool = false
     @State private var exportingMessage: String = ""
-    
     
     @AppStorage("tripTripType") private var tripTripType: String = "M"
     @AppStorage("tripSurveySection") private var tripSurveySection: String = "U"
@@ -83,7 +83,9 @@ struct ExportView: View {
                                 .frame(width: 400)
                             Text(K.EXPORT_JSON).tag("JSON")
                                 .frame(width: 400)
-                        }.tint(Color("TextForegroundWhite"))
+                        }
+                        .tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                        // .tint(Color("TextForegroundWhite"))
                     } label: {
                         Text("File format:")
                     }.frame(width: 400, height: 40)
@@ -98,7 +100,7 @@ struct ExportView: View {
                                 Text(water.name)
                                     .frame(width: 400)
                             }
-                        }.tint(Color("TextForegroundWhite"))
+                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
                     } label: {
                         Text("Watershed:")
                     }.frame(width: 400, height: 40)
@@ -113,7 +115,7 @@ struct ExportView: View {
                                 Text(type.name)
                                     .frame(width: 400)
                             }
-                        }.tint(Color("TextForegroundWhite"))
+                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
                     } label: {
                         Text("Trip Type:")
                     }.frame(width: 400, height: 40)
@@ -127,7 +129,7 @@ struct ExportView: View {
                                 Text(section.name)
                                     .frame(width: 400)
                             }
-                        }.tint(Color("TextForegroundWhite"))
+                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
                     } label: {
                         Text("Survey Section:")
                     }.frame(width: 400, height: 40)
@@ -141,7 +143,7 @@ struct ExportView: View {
                                 Text(species.name)
                                     .frame(width: 400)
                             }
-                        }.tint(Color("TextForegroundWhite"))
+                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
                     } label: {
                         Text("Species:")
                     }.frame(width: 400, height: 40)
@@ -215,10 +217,14 @@ struct ExportView: View {
                         if selectedFormat == K.EXPORT_JSON {
                             exportJSON()
                         } else if selectedFormat == K.EXPORT_CSV {
+                            exportCSV()
                         }
                     })
+                        .frame(width: 140, height: 45)
                     Spacer()
                 }
+                
+                            
                 if isExporting {
                     HStack(alignment: .center) {
                         Spacer()
@@ -232,6 +238,7 @@ struct ExportView: View {
             }
             .padding(.horizontal, 100)
         }
+        
         .padding(.horizontal, 20)
         .frame(minWidth: 600, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .background(Color("AppBackground"))
@@ -240,7 +247,6 @@ struct ExportView: View {
             dateComponents.month = 3 // Add 3 months
             let calendar = Calendar.current
             if let futureDate = calendar.date(byAdding: dateComponents, to: self.startDate) {
-                print("endDate after adding 3 months: \(endDate)")
                 self.endDate = futureDate
             } else {
                 print("Error calculating future date.")
@@ -273,6 +279,9 @@ struct ExportView: View {
         .onChange(of: selectedSurveySection) {
             updateFilename()
         }
+        .onChange(of: selectedSpecies) {
+            updateFilename()
+        }
         
             
             
@@ -294,18 +303,22 @@ struct ExportView: View {
         if !self.selectedSurveySection.isEmpty {
             self.exportFilename += "\(self.selectedSurveySection)_"
         }
-        self.exportFilename += "\(tripList.count)_trips"
+        if !self.selectedSpecies.isEmpty {
+            self.exportFilename += "\(self.selectedSpecies)"
+        }
+        // self.exportFilename += "\(tripList.count)_trips"
     }
     
     func filterTrips() -> [Trip] {
         // Filter trips based on selected criteria
-        print("Trips: \(tripList.count)")
-        var filteredTrips = tripList.filter { trip in (startDate...endDate).contains(trip.date) }
+        var filteredTrips : [Trip] = tripList
+
+        filteredTrips = tripList.filter { trip in (startDate.millisecondsSince1970...endDate.millisecondsSince1970).contains(trip.date.millisecondsSince1970) }
 
         if !selectedWatershed.isEmpty {
             filteredTrips = filteredTrips.filter { $0.watershed == selectedWatershed }
         }
-
+        
         if !selectedTripType.isEmpty {
             filteredTrips = filteredTrips.filter { $0.tripType == selectedTripType }
         }
@@ -315,7 +328,7 @@ struct ExportView: View {
         }
 
         if !selectedSpecies.isEmpty {
-            var filteredFish = [Fish]()
+            var filteredFish : [Fish] = []
             for trip in filteredTrips {
                 filteredFish = trip.fish.filter { $0.species == selectedSpecies }
                 trip.fish = filteredFish
@@ -327,13 +340,11 @@ struct ExportView: View {
     
     func exportJSON() {
         // Implement JSON export logic here
-        print("Exporting JSON... \(self.tripList.count)")
-        print(URL.documentsDirectory.path)
-        
         self.exportedTrips.removeAll()
         
         // Filter trips based on selected criteria
         let filteredTrips = filterTrips()
+        print("Exporting JSON... \(filteredTrips.count)")
         
         self.isExporting = true
         
@@ -365,24 +376,44 @@ struct ExportView: View {
     }
     
     func exportCSV() {
+        self.exportedTrips.removeAll()
+        let filteredTrips = filterTrips()
         var buffer = ""
-        // Implement CSV export logic here
         
+        print("Exporting CSV... \(filteredTrips.count)")
         
+        self.isExporting = true
+        
+        buffer += "date,type,section,watershed,equipment,lat_down,lon_down,lat_up,long_up,length,start,end,temp,cfs,date,pitTag,lat,lon,species,fwpSpecies,weight,length,gender,doa,hookScar,comment\n"
+        for trip in filteredTrips {
+            print("Exporting \(trip.fish.count) fish for trip \(trip.id)")
+            for fish in trip.fish {
+                buffer += trip.toCSV() + fish.toCSV() + "\n"
+            }
+        }
+        
+        // Create the csv folder if it doesn't exist
+        let folderURL = URL.documentsDirectory.appending(path: "CSV", directoryHint: .isDirectory)
+        do {
+            try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            print("Error creating CSV directory (or directory already exists): \(error)")
+        }
+        
+        let csvData = buffer.data(using: .utf8)
+        let csvURL = URL.documentsDirectory.appending(path: "CSV", directoryHint: .isDirectory).appending(path: "\(self.exportFilename).csv")
+        do {
+            try csvData?.write(to: csvURL, options: [.atomic, .completeFileProtection])
+            self.exportingMessage = "CSV exported successfully to \(csvURL.path)"
+            self.isShowingExportError = false
+        } catch {
+            print("CSV: \(error.localizedDescription)")
+            self.exportingMessage = "Error exporting CSV: \(error.localizedDescription)"
+            self.isShowingExportError = true
+        }
+        self.isExporting = false
     }
-    
-    
-    
 }
-
-/*
- @State private var selectedSpecies: String = ""
- @State private var selectedMinWeight: Int = 0
- @State private var selectedMaxWeight: Int = 0
- @State private var selectedMinLength: Int = 0
- @State private var selectedMaxLength: Int = 0
-
- */
 
 #Preview {
     ExportView(path: .constant([]))

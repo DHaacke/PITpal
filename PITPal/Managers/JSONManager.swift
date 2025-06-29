@@ -24,7 +24,7 @@ class JSONManager: NSObject {
     
     func loadConfig() async {
         print("Loading config.json...")
-        self.config = Bundle.main.decodeJson(Config.self, file: "config.json")
+        self.config = Bundle.main.decodeJson(Config.self, file: "config-master.json")
         self.isConfigLoaded = true
         print("Config loaded...")
     }

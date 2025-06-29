@@ -132,6 +132,34 @@ final class Fish: Codable {
         return json
     }
     
+    func toCSVHeader() -> String {
+        return "date,pitTag,lat,lon,species,fwpSpecies,weight,length,gender,doa,hookScar,comment"
+    }
+    
+    func toCSV() -> String {
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone.current
+        
+        var buffer = ""
+        
+        buffer += "\(formatter.string(from: self.date)),"
+        buffer += "\(self.pitTag),"
+        buffer += "\(self.lat),"
+        buffer += "\(self.lon),"
+        buffer += "\(self.species),"
+        buffer += "\(self.fwpSpecies),"
+        buffer += "\(self.weight),"
+        buffer += "\(self.length),"
+        buffer += "\(self.gender),"
+        buffer += "\(self.doa ? "Y" : "N"),"
+        buffer += "\(self.hookScar ? "Y" : "N"),"
+        buffer += "\"\(self.comment)\""
+        
+        return buffer
+    
+    }
 //    func toJSON(fish: Fish) -> String {
 //        let formatter = DateFormatter()
 //        formatter.dateFormat = "yyyy-MM-dd HH:mm"
