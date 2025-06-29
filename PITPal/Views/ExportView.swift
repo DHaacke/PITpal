@@ -297,6 +297,34 @@ struct ExportView: View {
         self.exportFilename += "\(tripList.count)_trips"
     }
     
+    func filterTrips() -> [Trip] {
+        // Filter trips based on selected criteria
+        print("Trips: \(tripList.count)")
+        var filteredTrips = tripList.filter { trip in (startDate...endDate).contains(trip.date) }
+
+        if !selectedWatershed.isEmpty {
+            filteredTrips = filteredTrips.filter { $0.watershed == selectedWatershed }
+        }
+
+        if !selectedTripType.isEmpty {
+            filteredTrips = filteredTrips.filter { $0.tripType == selectedTripType }
+        }
+
+        if !selectedSurveySection.isEmpty {
+            filteredTrips = filteredTrips.filter { $0.surveySection == selectedSurveySection }
+        }
+
+        if !selectedSpecies.isEmpty {
+            var filteredFish = [Fish]()
+            for trip in filteredTrips {
+                filteredFish = trip.fish.filter { $0.species == selectedSpecies }
+                trip.fish = filteredFish
+            }
+        }
+
+        return filteredTrips
+    }
+    
     func exportJSON() {
         // Implement JSON export logic here
         print("Exporting JSON... \(self.tripList.count)")
@@ -336,34 +364,15 @@ struct ExportView: View {
         self.isExporting = false
     }
     
-    
-    func filterTrips() -> [Trip] {
-        // Filter trips based on selected criteria
-        print("Trips: \(tripList.count)")
-        var filteredTrips = tripList.filter { trip in (startDate...endDate).contains(trip.date) }
-
-        if !selectedWatershed.isEmpty {
-            filteredTrips = filteredTrips.filter { $0.watershed == selectedWatershed }
-        }
-
-        if !selectedTripType.isEmpty {
-            filteredTrips = filteredTrips.filter { $0.tripType == selectedTripType }
-        }
-
-        if !selectedSurveySection.isEmpty {
-            filteredTrips = filteredTrips.filter { $0.surveySection == selectedSurveySection }
-        }
-
-        if !selectedSpecies.isEmpty {
-            var filteredFish = [Fish]()
-            for trip in filteredTrips {
-                filteredFish = trip.fish.filter { $0.species == selectedSpecies }
-                trip.fish = filteredFish
-            }
-        }
-
-        return filteredTrips
+    func exportCSV() {
+        var buffer = ""
+        // Implement CSV export logic here
+        
+        
     }
+    
+    
+    
 }
 
 /*
