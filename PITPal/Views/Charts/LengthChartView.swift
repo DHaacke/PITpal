@@ -8,6 +8,8 @@
 import Foundation
 import SwiftUI
 import SwiftData
+import Charts
+
 
 
 struct LengthChartView: View {
@@ -29,16 +31,15 @@ struct LengthChartView: View {
     @State private var selectedSpecies: String = ""
     @State private var selectedMinLength: Int = 0
     @State private var selectedMaxLength: Int = 0
+    @State private var title: String = "Fish Size Distribution"
     
     @State private var filteredTrips: [Trip] = []
-    @State private var isCharting: Bool = false
-    @State private var isShowingChartError: Bool = false
-    @State private var chartMessage: String = ""
+    @State private var filteredFish: [Fish] = []
+    @State private var isChartReady: Bool = false
     
     @AppStorage("tripTripType") private var tripTripType: String = "M"
     @AppStorage("tripSurveySection") private var tripSurveySection: String = "U"
     @AppStorage("tripWatershed") private var tripWatershed: String = "BHR"
-    
     @AppStorage("lengthMin") private var lengthMin: Int = 0
     @AppStorage("lengthMax") private var lengthMax: Int = 2000
     @AppStorage("uomFishLength") private var uomFishLength: String = "mm"
@@ -117,7 +118,7 @@ struct LengthChartView: View {
                 HStack {
                     LabeledContent {
                         Picker("", selection: $selectedSpecies) {
-                            Text("All Species").tag("")
+                            Text("<Choose>").tag("")
                             ForEach(speciesList, id: \.code) { species in
                                 Text(species.name)
                                     .frame(width: 400)
@@ -155,21 +156,20 @@ struct LengthChartView: View {
                 HStack(alignment: .center) {
                     Spacer()
                     ChartButton(onChartButtonTapped: {
-                        // process chart
+                        filteredFish = filterFish()
+                        print("Filtered Fish Found: \(filteredFish.count)")
+                        self.isChartReady = filteredFish.count > 0 ? true : false
                     })
                     Spacer()
                 }
-                
-                if isCharting {
-                    HStack(alignment: .center) {
-                        Spacer()
-                        ProgressView()
-                        Spacer()
+                if isChartReady {
+                    VStack {
+                        LengthBarChartView(filteredFish: $filteredFish, title: $title, species: $selectedSpecies)
+                            .padding(.top, 20)
+                            .padding(.bottom, 20)
                     }
                 }
                 Spacer()
-                Text(chartMessage)
-                    .foregroundColor(isShowingChartError ? .red : Color("TextForegroundWhite"))
             }
             .padding(.horizontal, 100)
         }
@@ -191,7 +191,6 @@ struct LengthChartView: View {
         }
         .onAppear {
             print("LengthChartView appeared")
-            
             selectedMinLength = lengthMin
             selectedMaxLength = lengthMax
             
@@ -202,36 +201,29 @@ struct LengthChartView: View {
     }
 
     
-    func filterTrips() -> [Trip] {
-        // Filter trips based on selected criteria
+    func filterFish() -> [Fish] {
+        // Filter fish based on selected criteria
         var filteredTrips : [Trip] = tripList
+        var filteredFish : [Fish] = []
 
         filteredTrips = tripList.filter { trip in (startDate.millisecondsSince1970...endDate.millisecondsSince1970).contains(trip.date.millisecondsSince1970) }
-
         if !selectedWatershed.isEmpty {
             filteredTrips = filteredTrips.filter { $0.watershed == selectedWatershed }
         }
-        
         if !selectedTripType.isEmpty {
             filteredTrips = filteredTrips.filter { $0.tripType == selectedTripType }
         }
-
         if !selectedSurveySection.isEmpty {
             filteredTrips = filteredTrips.filter { $0.surveySection == selectedSurveySection }
         }
-
         if !selectedSpecies.isEmpty {
-            var filteredFish : [Fish] = []
             for trip in filteredTrips {
-                filteredFish = trip.fish.filter { $0.species == selectedSpecies }
+                filteredFish = trip.fish.filter { $0.species == selectedSpecies && $0.length >= Double(selectedMinLength) && Double($0.length) <= Double(selectedMaxLength) }
                 trip.fish = filteredFish
             }
         }
-
-        return filteredTrips
+        return filteredFish
     }
-    
-    
 }
 
 #Preview {
@@ -241,3 +233,80 @@ struct LengthChartView: View {
         .environment(NetworkMonitor())
 }
 
+struct LengthBarChartView: View {
+    @Environment(\.modelContext) var modelContext
+    
+    @Binding var filteredFish: [Fish]
+    @Binding var title: String
+    @Binding var species: String
+    
+    @State private var fishData: [FishData] = []
+    
+    var body: some View {
+        VStack {
+            Chart(fishData, id: \.id) { data in
+                BarMark(
+                    x: .value("Size", data.sizeGroup),
+                    y: .value("Count", data.count),
+                    width: 30                )
+                .foregroundStyle(.green)
+                .annotation(position: .overlay) {
+                    Rectangle()
+                        .stroke(Color.white, lineWidth: 0.75)
+                        .padding(-4)
+                }
+                .cornerRadius(4)
+            }
+            .padding(.horizontal, 20)
+            .chartXScale(domain: [6, 24])
+            // .chartYScale(domain: [minStockPrice ?? 0, maxStockPrice ?? 0])
+            .chartXAxis {
+                AxisMarks(values: [6, 8, 10, 12, 14, 16, 18, 20]) { value in
+                    AxisValueLabel()
+                        .foregroundStyle(.white)
+                }
+            }
+            .chartYAxis {
+                AxisMarks(values: .automatic) { value in
+                    AxisGridLine()
+                    AxisValueLabel()
+                        .foregroundStyle(.white)
+                        .offset(x: 4)
+                }
+            }
+            Text(title)
+                .font(.system(size: 12, weight: .light, design: .default))
+        }
+        .frame(minWidth: 600, maxWidth: .infinity, minHeight: 200, maxHeight: 350)
+
+        .padding(.trailing, 12)
+        .background(Color.black)
+        .onAppear {
+            fishData = buildMatrix(species: species)
+        }
+    }
+    
+    func buildMatrix(species: String) -> [FishData] {
+        DispatchQueue.main.async {
+            fishData.removeAll()
+            fishData.append(FishData(id:  1,  sizeGroup:  6,  count: filteredFish.filter { $0.length <= 125}.count, species: species))
+            fishData.append(FishData(id:  2,  sizeGroup:  8,  count: filteredFish.filter { $0.length >  125 && $0.length <= 203 }.count ,species: species))
+            fishData.append(FishData(id:  3,  sizeGroup: 10,  count: filteredFish.filter { $0.length >  203 && $0.length <= 253 }.count ,species: species))
+            fishData.append(FishData(id:  4,  sizeGroup: 12,  count: filteredFish.filter { $0.length >  253 && $0.length <= 305 }.count ,species: species))
+            fishData.append(FishData(id:  5,  sizeGroup: 14,  count: filteredFish.filter { $0.length >  305 && $0.length <= 355 }.count ,species: species))
+            fishData.append(FishData(id:  6,  sizeGroup: 16,  count: filteredFish.filter { $0.length >  355 && $0.length <= 406 }.count ,species: species))
+            fishData.append(FishData(id:  7,  sizeGroup: 18,  count: filteredFish.filter { $0.length >  406 && $0.length <= 458 }.count ,species: species))
+            fishData.append(FishData(id:  8,  sizeGroup: 20,  count: filteredFish.filter { $0.length >  458 }.count, species: species))
+        }
+        return fishData
+    }
+}
+    
+    /*
+     struct FishData: Identifiable {
+     var id: Int
+     var sizeGroup: Int
+     var count: Int
+     var species: String
+     }
+    */

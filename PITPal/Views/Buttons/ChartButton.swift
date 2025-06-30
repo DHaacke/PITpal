@@ -15,7 +15,7 @@ struct ChartButton: View {
 
         ZStack {
             Button(action: {
-                // onChartButtonTapped()
+                onChartButtonTapped()
             }, label: {
                 Text("Chart")
                     .font(.system(size: 24, weight: .medium))

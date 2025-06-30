@@ -17,7 +17,7 @@ struct AddTripButton: View {
                 self.isAddingTrip.toggle()
             }, label: {
                 Text("Add New Trip")
-                    .frame(width: 100, height: 34)
+                    .frame(width: 170, height: 34)
                     .font(.system(size: 24, weight: .medium))
                     .foregroundColor(.white)
                     .shadow(color: Color(.black), radius: 2, x: 1, y: 2)
