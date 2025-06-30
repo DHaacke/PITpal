@@ -1,15 +1,16 @@
 //
-//  ExportView.swift
+//  LengthChartView.swift
 //  PITPal
 //
-//  Created by Doug Haacke on 6/28/25.
+//  Created by Doug Haacke on 6/29/25.
 //
 
 import Foundation
 import SwiftUI
 import SwiftData
 
-struct ExportView: View {
+
+struct LengthChartView: View {
     
     @Environment(\.modelContext) var modelContext
     @Environment(LocationsHandler.self) var locationsHandler
@@ -22,21 +23,17 @@ struct ExportView: View {
     
     @State private var startDate: Date = Date()
     @State private var endDate:   Date = Date()
-    @State private var selectedFormat: String = K.EXPORT_JSON
     @State private var selectedWatershed: String = ""
     @State private var selectedTripType: String = ""
     @State private var selectedSurveySection: String = ""
     @State private var selectedSpecies: String = ""
-    @State private var selectedMinWeight: Int = 0
-    @State private var selectedMaxWeight: Int = 0
     @State private var selectedMinLength: Int = 0
     @State private var selectedMaxLength: Int = 0
     
-    @State private var exportedTrips: [Trip] = []
-    @State private var exportFilename: String = ""
-    @State private var isExporting: Bool = false
-    @State private var isShowingExportError: Bool = false
-    @State private var exportingMessage: String = ""
+    @State private var filteredTrips: [Trip] = []
+    @State private var isCharting: Bool = false
+    @State private var isShowingChartError: Bool = false
+    @State private var chartMessage: String = ""
     
     @AppStorage("tripTripType") private var tripTripType: String = "M"
     @AppStorage("tripSurveySection") private var tripSurveySection: String = "U"
@@ -44,8 +41,6 @@ struct ExportView: View {
     
     @AppStorage("lengthMin") private var lengthMin: Int = 0
     @AppStorage("lengthMax") private var lengthMax: Int = 2000
-    @AppStorage("weightMin") private var weightMin: Int = 0
-    @AppStorage("weightMax") private var weightMax: Int = 1000
     @AppStorage("uomFishLength") private var uomFishLength: String = "mm"
     @AppStorage("uomFishWeight") private var uomFishWeight: String = "gm"
     
@@ -75,22 +70,6 @@ struct ExportView: View {
             .padding(.bottom, 40)
             
             VStack(alignment: .leading) {
-                
-                HStack() {
-                    LabeledContent {
-                        Picker("", selection: $selectedFormat) {
-                            Text(K.EXPORT_CSV).tag("CSV")
-                                .frame(width: 400)
-                            Text(K.EXPORT_JSON).tag("JSON")
-                                .frame(width: 400)
-                        }
-                        .tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
-                        // .tint(Color("TextForegroundWhite"))
-                    } label: {
-                        Text("File format:")
-                    }.frame(width: 400, height: 40)
-                    Spacer()
-                }
                 
                 HStack() {
                     LabeledContent {
@@ -151,30 +130,6 @@ struct ExportView: View {
                 
                 HStack {
                     LabeledContent {
-                        TextField("", value: $selectedMinWeight, formatter: NumberFormatter())
-                          .foregroundColor(Color("TextForeground"))
-                          .textFieldStyle(.roundedBorder)
-                          .frame(width: 70)
-                          .multilineTextAlignment(.trailing)
-                        Text(uomFishWeight).frame(width: 40, alignment: .leading)
-                    } label: {
-                        Text("Min Weight")
-                    }.frame(width: 250).padding(.trailing, 60)
-                    
-                    LabeledContent {
-                        TextField("", value: $selectedMaxWeight, formatter: NumberFormatter())
-                          .foregroundColor(Color("TextForeground"))
-                          .textFieldStyle(.roundedBorder)
-                          .frame(width: 70)
-                          .multilineTextAlignment(.trailing)
-                        Text(uomFishWeight).frame(width: 40, alignment: .leading)
-                    } label: {
-                        Text("Max Weight")
-                    }.frame(width: 250)
-                }
-                
-                HStack {
-                    LabeledContent {
                         TextField("", value: $selectedMinLength, formatter: NumberFormatter())
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
@@ -197,34 +152,15 @@ struct ExportView: View {
                     }.frame(width: 250)
                 }.padding(.bottom, 50)
                 
-                HStack {
-                    LabeledContent {
-                        TextField("", text: $exportFilename)
-                          .foregroundColor(Color("TextForeground"))
-                          .border(Color.gray, width: 1)
-                          .textFieldStyle(.roundedBorder)
-                          .frame(width: 400)
-                          .multilineTextAlignment(.leading)
-                    } label: {
-                        Text("Exported Filename:")
-                    }.frame(width: 600).padding(.bottom, 60)
-                }
-                
                 HStack(alignment: .center) {
                     Spacer()
-                    ExportButton(onExportButtonTapped: {
-                        if selectedFormat == K.EXPORT_JSON {
-                            exportJSON()
-                        } else if selectedFormat == K.EXPORT_CSV {
-                            exportCSV()
-                        }
+                    ChartButton(onChartButtonTapped: {
+                        // process chart
                     })
-                        
                     Spacer()
                 }
                 
-                            
-                if isExporting {
+                if isCharting {
                     HStack(alignment: .center) {
                         Spacer()
                         ProgressView()
@@ -232,8 +168,8 @@ struct ExportView: View {
                     }
                 }
                 Spacer()
-                Text(exportingMessage)
-                    .foregroundColor(isShowingExportError ? .red : Color("TextForegroundWhite"))
+                Text(chartMessage)
+                    .foregroundColor(isShowingChartError ? .red : Color("TextForegroundWhite"))
             }
             .padding(.horizontal, 100)
         }
@@ -254,61 +190,17 @@ struct ExportView: View {
             }
         }
         .onAppear {
-            selectedMinWeight = weightMin
-            selectedMaxWeight = weightMax
+            print("LengthChartView appeared")
+            
             selectedMinLength = lengthMin
             selectedMaxLength = lengthMax
             
             selectedWatershed = tripWatershed
             selectedTripType  = tripTripType
             selectedSurveySection = tripSurveySection
-            
-            updateFilename()
         }
-        .onChange(of: startDate) {
-            updateFilename()
-        }
-        .onChange(of: endDate) {
-            updateFilename()
-        }
-        .onChange(of: selectedWatershed) {
-            updateFilename()
-        }
-        .onChange(of: selectedTripType) {
-            updateFilename()
-        }
-        .onChange(of: selectedSurveySection) {
-            updateFilename()
-        }
-        .onChange(of: selectedSpecies) {
-            updateFilename()
-        }
-        
-            
-            
     }
-    
-    func updateFilename() {
-        self.exportFilename = ""
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyyMMdd"
-        let startDateString = dateFormatter.string(from: self.startDate)
-        let endDateString   = dateFormatter.string(from: self.endDate)
-        self.exportFilename = "\(startDateString)-\(endDateString)"
-        if !self.selectedWatershed.isEmpty {
-            self.exportFilename += "_\(self.selectedWatershed)"
-        }
-        if !self.selectedTripType.isEmpty {
-            self.exportFilename += "_\(self.selectedTripType)"
-        }
-        if !self.selectedSurveySection.isEmpty {
-            self.exportFilename += "_\(self.selectedSurveySection)"
-        }
-        if !self.selectedSpecies.isEmpty {
-            self.exportFilename += "_\(self.selectedSpecies)"
-        }
-        self.exportFilename += "_\(tripList.count)T"
-    }
+
     
     func filterTrips() -> [Trip] {
         // Filter trips based on selected criteria
@@ -339,86 +231,13 @@ struct ExportView: View {
         return filteredTrips
     }
     
-    func exportJSON() {
-        // Implement JSON export logic here
-        self.exportedTrips.removeAll()
-        
-        // Filter trips based on selected criteria
-        let filteredTrips = filterTrips()
-        print("Exporting JSON... \(filteredTrips.count)")
-        
-        self.isExporting = true
-        
-        // Create the json folder if it doesn't exist
-        let folderURL = URL.documentsDirectory.appending(path: "JSON", directoryHint: .isDirectory)
-        do {
-            try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
-        } catch {
-            print("Error creating JSON directory (or directory already exists): \(error)")
-        }
-        
-        var buffer = ""
-
-        for trip in filteredTrips {
-            buffer += trip.toJSON() + ",\n"
-        }
-        let jsonData = buffer.data(using: .utf8)
-        let jsonURL = URL.documentsDirectory.appending(path: "JSON", directoryHint: .isDirectory).appending(path: "\(self.exportFilename).json")
-        do {
-            try jsonData?.write(to: jsonURL, options: [.atomic, .completeFileProtection])
-            self.exportingMessage = "JSON exported successfully to \(jsonURL.path)"
-            self.isShowingExportError = false
-        } catch {
-            print("JSON: \(error.localizedDescription)")
-            self.exportingMessage = "Error exporting JSON: \(error.localizedDescription)"
-            self.isShowingExportError = true
-        }
-        self.isExporting = false
-    }
     
-    func exportCSV() {
-        self.exportedTrips.removeAll()
-        let filteredTrips = filterTrips()
-        var buffer = ""
-        
-        print("Exporting CSV... \(filteredTrips.count)")
-        
-        self.isExporting = true
-        
-        buffer += "date,type,section,watershed,equipment,lat_down,lon_down,lat_up,long_up,length,start,end,temp,cfs,date,pitTag,lat,lon,species,fwpSpecies,weight,length,gender,doa,hookScar,comment\n"
-        for trip in filteredTrips {
-            print("Exporting \(trip.fish.count) fish for trip \(trip.id)")
-            for fish in trip.fish {
-                buffer += trip.toCSV() + fish.toCSV() + "\n"
-            }
-        }
-        
-        // Create the csv folder if it doesn't exist
-        let folderURL = URL.documentsDirectory.appending(path: "CSV", directoryHint: .isDirectory)
-        do {
-            try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
-        } catch {
-            print("Error creating CSV directory (or directory already exists): \(error)")
-        }
-        
-        let csvData = buffer.data(using: .utf8)
-        let csvURL = URL.documentsDirectory.appending(path: "CSV", directoryHint: .isDirectory).appending(path: "\(self.exportFilename).csv")
-        do {
-            try csvData?.write(to: csvURL, options: [.atomic, .completeFileProtection])
-            self.exportingMessage = "CSV exported successfully to \(csvURL.path)"
-            self.isShowingExportError = false
-        } catch {
-            print("CSV: \(error.localizedDescription)")
-            self.exportingMessage = "Error exporting CSV: \(error.localizedDescription)"
-            self.isShowingExportError = true
-        }
-        self.isExporting = false
-    }
 }
 
 #Preview {
-    ExportView(path: .constant([]))
+    LengthChartView(path: .constant([]))
         .environment(LocationsHandler())
         .environment(JSONManager())
         .environment(NetworkMonitor())
 }
+

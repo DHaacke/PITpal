@@ -20,8 +20,8 @@ final class Fish: Codable {
     var weight: Double
     var length: Double
     var gender: String
-    var doa: Bool = false
-    var hookScar: Bool = false
+    var doa: String = "N"
+    var hookScar: String = "N"
     var comment: String = ""
     
     init(
@@ -34,8 +34,8 @@ final class Fish: Codable {
         weight: Double = 0.0,
         length: Double = 0.0,
         gender: String = "",
-        doa: Bool = false,
-        hookScar: Bool = false,
+        doa: String = "N",
+        hookScar: String = "N",
         comment: String = "",
     ) {
         self.date = date
@@ -71,7 +71,7 @@ final class Fish: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
        
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+        dateFormatter.dateFormat = "yyyy-MM-dd"
         
         let dateString = try container.decode(String.self, forKey: .date)
         self.date = dateFormatter.date(from: dateString)!
@@ -83,8 +83,8 @@ final class Fish: Codable {
         self.weight = try container.decode(Double.self, forKey: .weight)
         self.length = try container.decode(Double.self, forKey: .length)
         self.gender = try container.decode(String.self, forKey: .gender)
-        self.doa = try container.decode(Bool.self, forKey: .doa)
-        self.hookScar = try container.decode(Bool.self, forKey: .hookScar)
+        self.doa = try container.decode(String.self, forKey: .doa)
+        self.hookScar = try container.decode(String.self, forKey: .hookScar)
         self.comment = try container.decode(String.self, forKey: .comment)
     }
     
@@ -153,8 +153,8 @@ final class Fish: Codable {
         buffer += "\(self.weight),"
         buffer += "\(self.length),"
         buffer += "\(self.gender),"
-        buffer += "\(self.doa ? "Y" : "N"),"
-        buffer += "\(self.hookScar ? "Y" : "N"),"
+        buffer += "\(self.doa),"
+        buffer += "\(self.hookScar ),"
         buffer += "\"\(self.comment)\""
         
         return buffer

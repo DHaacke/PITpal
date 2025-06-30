@@ -70,6 +70,14 @@ struct ContentView: View {
                         .navigationTitle("Export Data").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                 }
+                else if navigation == K.LENGTH_CHART {
+                    LengthChartView(path: $path)
+                        .tint(Color("AccentColor"))
+                        .navigationBarBackButtonHidden(false)
+                        .navigationBarHidden(false)
+                        .navigationTitle("Length Chart").foregroundStyle(Color("TextForegroundWhite"))
+                        .navigationBarTitleDisplayMode(.inline)
+                }
             }
         }
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
@@ -177,11 +185,11 @@ struct ContentView: View {
 //                                endTime: trip.endTime,
 //                                waterTemperature: trip.waterTemperature,
 //                                waterFlow: trip.waterFlow,
+//                                isClosed: trip.isClosed,
 //                                fish: []
 //                            )
 //                            // print("Here are the fish for this trip:")
 //                            for fish in trip.fish {
-//                                print("  - \(fish.species)")
 //                                let item = Fish(
 //                                    date: fish.date,
 //                                    pitTag: fish.pitTag,
@@ -211,6 +219,8 @@ struct ContentView: View {
 //                        }
 //                    }
 //                }
+                
+                
             }
             try! modelContext.save()
         }

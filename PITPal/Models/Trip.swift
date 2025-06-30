@@ -24,6 +24,7 @@ final class Trip: Codable {
     var endTime: String        // 17:10
     var waterTemperature: Double
     var waterFlow: Double
+    var isClosed: String
     @Relationship(deleteRule: .cascade, inverse: \Fish.trip) var fish: [Fish]
     // var fish: [Fish]
     // #Unique<Trip>([\.date], [\.tripType], [\.surveySection], [\.watershed])
@@ -43,6 +44,7 @@ final class Trip: Codable {
         endTime: String = "",
         waterTemperature: Double = 0,
         waterFlow: Double = 0,
+        isClosed: String = "Y",
         fish: [Fish] = []
     ) {
         self.date = date
@@ -59,6 +61,7 @@ final class Trip: Codable {
         self.endTime = endTime
         self.waterTemperature = waterTemperature
         self.waterFlow = waterFlow
+        self.isClosed = isClosed
         self.fish = fish
     }
     
@@ -77,6 +80,7 @@ final class Trip: Codable {
         case endTime
         case waterTemperature
         case waterFlow
+        case isClosed
         case fish
     }
     
@@ -84,7 +88,7 @@ final class Trip: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let dateFormatter = DateFormatter()
         
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+        dateFormatter.dateFormat = "yyyy-MM-dd"  // was "yyyy-MM-dd HH:mm"
         let dateString = try container.decode(String.self, forKey: .date)
         self.date = dateFormatter.date(from: dateString)!
         self.tripType = try container.decode(String.self, forKey: .tripType)
@@ -100,6 +104,7 @@ final class Trip: Codable {
         self.endTime = try container.decode(String.self, forKey: .endTime)
         self.waterTemperature = try container.decode(Double.self, forKey: .waterTemperature)
         self.waterFlow = try container.decode(Double.self, forKey: .waterFlow)
+        self.isClosed = try container.decode(String.self, forKey: .isClosed)
         self.fish = try container.decodeIfPresent([Fish].self, forKey: .fish) ?? []
     }
     
@@ -119,6 +124,7 @@ final class Trip: Codable {
         try container.encode(endTime, forKey: .endTime)
         try container.encode(waterTemperature, forKey: .waterTemperature)
         try container.encode(waterFlow, forKey: .waterFlow)
+        try container.encode(isClosed, forKey: .isClosed)
         try container.encode(fish, forKey: .fish)
     }
     

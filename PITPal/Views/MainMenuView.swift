@@ -62,23 +62,23 @@ struct MainMenuView: View {
                     .padding(.bottom, 10)
                 
                 HStack {
-                    MenuCardView(path: $path, text: "Export Data to MySQL", newPath: "")
+                    MenuCardView(path: $path, text: "Size Charts", newPath: "LENGTH_CHART")
                     Spacer()
-                    MenuCardView(path: $path, text: "Export Data to Excel", newPath: "")
+                    MenuCardView(path: $path, text: "Weight Charts", newPath: "WEIGHT_CHART")
                 }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 20)
                 HStack {
-                    MenuCardView(path: $path, text: "Export Data to R", newPath: "")
+                    MenuCardView(path: $path, text: "Section Analysis", newPath: "")
                     Spacer()
-                    MenuCardView(path: $path, text: "Export Data to CSV", newPath: "")
+                    MenuCardView(path: $path, text: "Species Analysis", newPath: "")
                 }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 20)
                 HStack {
-                    MenuCardView(path: $path, text: "Instant Analysis", newPath: "")
                     Spacer()
-                    MenuCardView(path: $path, text: "View / Print / Export Charts", newPath: "")
+                    MenuCardView(path: $path, text: "Lincoln-Petersen Estimator", newPath: "")
+                    Spacer()
                 }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 20)

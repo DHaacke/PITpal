@@ -16,9 +16,9 @@ struct ChooseTripView: View {
     @Binding var path: [String]
     @Binding var trip: Trip
     @Binding var isChoosingTrip: Bool
+    @Binding var isAddingTrip: Bool
     
     @State private var tripSelection: Trip?
-    @State private var isAddingNewTrip: Bool = false
     
     let q = Queries()
     
@@ -41,7 +41,7 @@ struct ChooseTripView: View {
                             tripSelection = trip
                         }
                 }
-                AddTripButton(isAddingNewTrip: $isAddingNewTrip)
+                AddTripButton(isAddingTrip: $isAddingTrip)
             }
             .frame(minWidth: 0, maxWidth: 500, minHeight: 0, maxHeight: 600)
             // .background(Color("CardBackground"))
@@ -55,8 +55,8 @@ struct ChooseTripView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 20))
             )
         
-            .onChange(of: isAddingNewTrip) {
-                if isAddingNewTrip {
+            .onChange(of: isAddingTrip) {
+                if isAddingTrip {
                     print("Adding new trip...")
                     self.trip = Trip(
                         date: Date(),
@@ -76,7 +76,7 @@ struct ChooseTripView: View {
                         fish: []
                     )
                     self.isChoosingTrip.toggle()
-                    self.isAddingNewTrip.toggle()
+                    self.isAddingTrip.toggle()
                 }
             }
             .onChange(of: tripSelection) {

@@ -12,24 +12,24 @@ struct ExportButton: View {
     var onExportButtonTapped: () -> Void
    
     var body: some View {
-        VStack {
+
+        ZStack {
             Button(action: {
                 onExportButtonTapped()
             }, label: {
                 Text("Export")
-                    .frame(width: 120, height: 38)
                     .font(.system(size: 24, weight: .medium))
+                    .frame(width: 100, height: 38)
                     .foregroundColor(.white)
-                    .shadow(color: Color(.black), radius: 3, x: 1, y: 2)
-            })
-            // .border(Color.gray, width: 2)
+                    .shadow(color: Color(.black), radius: 2, x: 1, y: 2)
+            }).frame(width: 100, height: 38)
         }
+        .shadow(color: Color(.black), radius: 2, x: 1, y: 2)
     }
 }
 
 
 #Preview {
-
     ExportButton(onExportButtonTapped: {
         print("Export button tapped")
     })

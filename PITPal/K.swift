@@ -15,6 +15,8 @@ struct K {
     static let SETTINGS: String     = "SETTINGS"
     static let TAG: String          = "TAG"
     static let EXPORT: String       = "EXPORT"
+    static let LENGTH_CHART: String = "LENGTH_CHART"
+    static let WEIGHT_CHART: String = "WEIGHT_CHART"
     static let OTHER: String        = "OTHER"
     
     // bluetooth
@@ -31,8 +33,9 @@ struct K {
     // export formats
     static let EXPORT_CSV: String            = "CSV"
     static let EXPORT_JSON: String           = "JSON"
+    static let EXPORT_MYSQL: String          = "MYSQL"
     
-    
+    // charts
     
 }
 

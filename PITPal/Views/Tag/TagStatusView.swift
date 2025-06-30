@@ -53,7 +53,7 @@ struct TagStatusView: View {
                                            .padding(.leading, 2)
                                            .padding(.trailing, 8)
                                            .foregroundStyle(networkMonitor.isConnected ? Color.green : Color.gray)
-                                           .shadow(radius: 2, x: 1, y: 1)
+                                           .shadow(color: .black, radius: 3, x: 2, y: 3)
 
                                        BighornStatsValueView(value: self.bighornStats[2].value, suffix: "°",    title: "Afterbay").padding(.trailing, 8)
                                        BighornStatsValueView(value: self.bighornStats[3].value, suffix: "°",    title: "St. X").padding(.trailing, 8)
@@ -165,6 +165,7 @@ struct TagStatusView: View {
                         Text("\(value, specifier: "%.0f")")
                             .font(.system(size: value > 9999 ? 20: 40, weight: .bold, design: .default))
                             .foregroundStyle(Color("TextForegroundWhite"))
+                            // .shadow(color: .black, radius: 3, x: 2, y: 3)
                             .padding(.bottom, 0)
                         Text(suffix)
                             .font(.system(size: 20, weight: .light, design: .default))

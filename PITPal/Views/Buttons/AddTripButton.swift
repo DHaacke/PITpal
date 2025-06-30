@@ -9,26 +9,27 @@ import SwiftUI
 
 struct AddTripButton: View {
     
-    @Binding var isAddingNewTrip: Bool
+    @Binding var isAddingTrip: Bool
     
     var body: some View {
         VStack {
             Button(action: {
-                self.isAddingNewTrip.toggle()
+                self.isAddingTrip.toggle()
             }, label: {
                 Text("Add New Trip")
-                    .frame(width: 200, height: 30)
-                    .font(.system(size: 22, weight: .medium))
-                    .foregroundColor(Color("TextForegroundWhite"))
-//                     .background(.clear)
+                    .frame(width: 100, height: 34)
+                    .font(.system(size: 24, weight: .medium))
+                    .foregroundColor(.white)
+                    .shadow(color: Color(.black), radius: 2, x: 1, y: 2)
                     .background(
                         RoundedRectangle(
-                            cornerRadius: 14,
+                            cornerRadius: 20,
                             style: .continuous
                         )
-                        .stroke(Color("TextForegroundWhite"), lineWidth: 2)
-                        .background(Color("CardBackground"))
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .stroke(Color.white, lineWidth: 2)
+                        .background(Color("ButtonBackground"))
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .shadow(color: Color(.darkGray), radius: 3, x: 2, y: 3)
                     )
             })
         }
@@ -38,6 +39,6 @@ struct AddTripButton: View {
 }
 
 #Preview {
-    @Previewable @State var isAddingNewTrip: Bool = false
-    AddTripButton(isAddingNewTrip: $isAddingNewTrip)
+    @Previewable @State var isAddingTrip: Bool = false
+    AddTripButton(isAddingTrip: $isAddingTrip)
 }

@@ -17,24 +17,36 @@ struct TagView: View {
     @Binding var path: [String]
 
     @State private var isChoosingTrip: Bool = true
+    @State private var isAddingTrip: Bool = false
     @State private var trip : Trip = Trip()
+    
+    @State var tripValidation: TripValidation = TripValidation()
     
     var body: some View {
         VStack {
             if !isChoosingTrip {
                 TagStatusView(path: $path, trip: $trip)
-                TagTripView(path: $path, trip: $trip)
-                TagFishEntryView(path: $path, trip: $trip)
+                TagTripView(path: $path, trip: $trip, isAddingTrip: $isAddingTrip)
+                if trip.isClosed == "N" {
+                    TagFishEntryView(path: $path, trip: $trip, isAddingTrip: $isAddingTrip)
+                } else {
+                    VStack {
+                        TripFishListView(trip: $trip)
+                            .padding(.top, 24)
+                    }
+                }
                 Spacer()
             } else {
-                ChooseTripView(path: $path, trip: $trip, isChoosingTrip: $isChoosingTrip)
+                ChooseTripView(path: $path, trip: $trip, isChoosingTrip: $isChoosingTrip, isAddingTrip: $isAddingTrip)
             }
         }
         .padding()
-        .onChange(of: trip) {
-        }
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .background(Color("AppBackground"))
+        .onAppear {
+            isChoosingTrip = true
+            isAddingTrip = false
+        }
     }
 }
 
@@ -46,4 +58,37 @@ struct TagView: View {
         .environment(NetworkMonitor())
 }
 */
+class TripValidation {
+    var isValidWatershed: Bool = false
+    var isValidTripType: Bool = false
+    var isValidSurveySection: Bool = false
+    var isValidStartTime: Bool = false
+    var isValidEndTime: Bool = false
+    var isValidPitTag: Bool = false
+    var isValidSpecies: Bool = false
 
+    init(isValidWatershed: Bool = false, isValidTripType: Bool = false, isValidSurveySection: Bool = false, isValidStartTime: Bool = false, isValidEndTime: Bool = false, isValidPitTag: Bool = false, isValidSpecies: Bool = false) {
+        self.isValidWatershed = isValidWatershed
+        self.isValidTripType = isValidTripType
+        self.isValidSurveySection = isValidSurveySection
+        self.isValidStartTime = isValidStartTime
+        self.isValidEndTime = isValidEndTime
+        self.isValidPitTag = isValidPitTag
+        self.isValidSpecies = isValidSpecies
+    }
+    
+    func isValid() -> Bool {
+        return isValidWatershed && isValidTripType && isValidSurveySection && isValidStartTime && isValidEndTime && isValidPitTag && isValidSpecies
+    }
+    
+    func clearAll() {
+        self.isValidWatershed = false
+        self.isValidTripType = false
+        self.isValidSurveySection = false
+        self.isValidStartTime = false
+        self.isValidEndTime = false
+        self.isValidPitTag = false
+        self.isValidSpecies = false
+    }
+
+}

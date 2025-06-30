@@ -19,6 +19,7 @@ struct TagTripView: View {
     
     @Binding var path: [String]
     @Binding var trip: Trip
+    @Binding var isAddingTrip: Bool
     
     @State private var fetchManager     = FetchManager()
     // @State private var networkMonitor   = NetworkMonitor()
@@ -63,67 +64,109 @@ struct TagTripView: View {
                                     "Date:",
                                     selection: $trip.date,
                                     displayedComponents: [.date]
-                                ).datePickerStyle(.compact).frame(width: 180)
+                            )
+                                .datePickerStyle(.compact)
+                                .frame(width: 180)
+                                .disabled(trip.isClosed == "Y" ? true : false)
+                            Spacer()
+
+                            if trip.isClosed == "N" {
+                                LabeledContent {
+                                    Picker("", selection: $trip.watershed) {
+                                        Text("<Choose>").tag("")
+                                        ForEach(watersheds) { watershed in
+                                            Text(watershed.name).tag(watershed.code)
+                                        }
+                                    }
+                                    .tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                                    .pickerStyle(.menu)
+                                    .disabled(trip.isClosed == "Y" ? true : false)
+                                    
+                                } label: {
+                                    Text("Watershed:")
+                                }.frame(width: 250, height: 30)
+                            } else {
+                                let watershed = watersheds.first(where: { $0.code == trip.watershed }) ?? watersheds.first!
+                                Text("\(watershed.name)")
+                            }
+
                             Spacer()
                             
-                            LabeledContent {
-                                Picker("", selection: $trip.watershed) {
-                                    Text("<Choose>").tag("")
-                                    ForEach(watersheds) { watershed in
-                                        Text(watershed.name).tag(watershed.code)
+                            if trip.isClosed == "N" {
+                                LabeledContent {
+                                    Picker("", selection: $trip.surveySection) {
+                                        Text("<Choose>").tag("")
+                                        ForEach(surveySections) { section in
+                                            Text(section.name).tag(section.code)
+                                        }
                                     }
-                                }
-                                .shadow(radius: 3)  // tint removed
-                                .pickerStyle(.menu)
-                            } label: {
-                                Text("Watershed:")
-                            }.frame(width: 250, height: 30)
-                            Spacer()
-                            
-                            LabeledContent {
-                                Picker("", selection: $trip.surveySection) {
-                                    Text("<Choose>").tag("")
-                                    ForEach(surveySections) { section in
-                                        Text(section.name).tag(section.code)
-                                    }
-                                }
-                                .shadow(radius: 3)
-                                .pickerStyle(.menu)
-                            } label: {
-                                Text("Survey Section:")
-                            }.frame(width: 250, height: 30)
+                                    .tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                                    .shadow(radius: 3)
+                                    .pickerStyle(.menu)
+                                    .disabled(trip.isClosed == "Y" ? true : false)
+                                } label: {
+                                    Text("Survey Section:")
+                                }.frame(width: 250, height: 30)
+                            } else {
+                                let section = surveySections.first(where: { $0.code == trip.surveySection }) ?? surveySections.first!
+                                Text("\(section.name)")
+                            }
                         }
+                        .frame(height : 30)
+                        .padding(.top, 6)
                         .padding(.horizontal, 10)
                         
                         HStack {
-                            LabeledContent {
-                                Picker("", selection: $trip.tripType) {
-                                    Text("<Choose>").tag("")
-                                    ForEach(tripTypes) { type in
-                                        Text(type.name).tag(type.code)
+                            if trip.isClosed == "N" {
+                                LabeledContent {
+                                    Picker("", selection: $trip.tripType) {
+                                        Text("<Choose>").tag("")
+                                        ForEach(tripTypes) { type in
+                                            Text(type.name).tag(type.code)
+                                        }
                                     }
-                                }
-                                .shadow(radius: 3)
-                                .pickerStyle(.menu)
+                                    .tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                                    .shadow(radius: 3)
+                                    .pickerStyle(.menu)
+                                    .disabled(trip.isClosed == "Y" ? true : false)
+                                } label: {
+                                    Text("Trip Type:")
+                                }.frame(width: 220, height: 30)
+                            } else {
+                                let type = tripTypes.first(where: { $0.code == trip.tripType }) ?? tripTypes.first!
+                                Text("\(type.name)")
+                            }
+                            
+                            LabeledContent {
+                                Toggle("", isOn: $usingPitTags)
+                                    .frame(width: 50, height: 30)
+                                    .tint(Color.green)
+                                    .shadow(radius: 2)
                             } label: {
-                                Text("Trip Type:")
-                            }.frame(width: 220, height: 30)
+                                Text("Using PIT tags")
+                            }
+                                .padding(.leading, 15)
+                                .frame(width: 180)
+                                .disabled(trip.isClosed == "Y" ? true : false)
+                            
                             Spacer()
                             
                             DatePicker(
                                     "Start:",
                                     selection: $selectedStartTime,
                                     displayedComponents: [.hourAndMinute]
-                                ).datePickerStyle(.compact).frame(width: 160)
+                                ).datePickerStyle(.compact).frame(width: 160).disabled(isAddingTrip ? true : false)
                             
                             DatePicker(
                                     "End:",
                                     selection: $selectedEndTime,
                                     displayedComponents: [.hourAndMinute]
-                                ).datePickerStyle(.compact).frame(width: 140)
+                                ).datePickerStyle(.compact).frame(width: 140).disabled(isAddingTrip ? true : false)
                             
 
-                        }.padding(.horizontal, 10)
+                        }
+                        .padding(.horizontal, 10)
+                        .frame(height : 30)
 
                         HStack {
 
@@ -188,30 +231,19 @@ struct TagTripView: View {
                             }.frame(width: 180, height: 30).padding(.trailing, 10)
                         }
                         .padding(.top, 10)
+                        .frame(height : 30)
                         
                         HStack {
-                            LabeledContent {
-                                Toggle("", isOn: $usingPitTags)
-                                    .frame(width: 50, height: 30)
-                                    .tint(Color.green)
-                                    .shadow(radius: 2)
-                            } label: {
-                                Text("Using PIT tags")
-                            }.frame(width: 250)
-                            
-                            SaveButton(onSaveButtonTapped: {
-                                print("Save button tapped: \(geometry.size.width / 3)")
-                            })
-                                .frame(width: geometry.size.width / 3)
-                                .padding(.vertical, 10)
-                                .opacity( isValidWatershed && isValidTripType && isValidSurveySection && isValidStartTime && isValidEndTime ? 1 : 0.2)
-                                .disabled(isValidWatershed || isValidTripType || isValidSurveySection || isValidStartTime || isValidEndTime)
-
                             Spacer()
-                            // Text("\(locationsHandler.lastLocation2D.latitude, specifier: "%.4f"), \(locationsHandler.lastLocation2D.longitude, specifier: "%.4f")")
-
+                            if trip.isClosed == "Y" {
+                                Text("Trip is CLOSED")
+                            } else {
+                                Text("Trip is OPEN")
+                            }
+                            Spacer()
                         }
                         .padding(.horizontal, 10)
+                        .frame(height : 30)
                     }
                     .multilineTextAlignment(.center)
                     
@@ -242,7 +274,7 @@ struct TagTripView: View {
                 }
             }
         } // VStack
-        .frame(height: 180)
+        .frame(height: 130)
     }
 }
 

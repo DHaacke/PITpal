@@ -19,6 +19,7 @@ struct TagFishEntryView: View {
     
     @Binding var path: [String]
     @Binding var trip: Trip
+    @Binding var isAddingTrip: Bool
     
     @AppStorage("usingPitTags") private var usingPitTags: Bool = true
     
@@ -257,7 +258,7 @@ struct TagFishEntryView: View {
             }
         }
         .padding(.vertical, 10)
-        .frame(height: 200)
+        .frame(height: 250)
     }
     
     func validatePitTag(tag: String) -> Bool {
