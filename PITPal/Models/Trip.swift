@@ -225,5 +225,44 @@ final class Trip: Codable {
 
 }
 
-
-
+extension Trip {
+    func deepCopy() -> TripData {
+        // Create new Trip instance
+        let newTrip = TripData(date: self.date,
+                               tripType: self.tripType,
+                               surveySection: self.surveySection,
+                               watershed: self.watershed,
+                               equipment: self.equipment,
+                               latDown: self.latDown,
+                               lonDown: self.lonDown,
+                               latUp: self.latUp,
+                               lonUp: self.lonUp,
+                               sectionLength: self.sectionLength,
+                               startTime: self.startTime,
+                               endTime: self.endTime,
+                               waterTemperature: self.waterTemperature,
+                               waterFlow: self.waterFlow,
+                               isClosed: self.isClosed,
+                               fish: [])
+        
+        // Create deep copies of children
+        let newFish = self.fish.map { fish in
+            FishData(
+                date: fish.date,
+                pitTag: fish.pitTag,
+                lat: fish.lat,
+                lon: fish.lon,
+                species: fish.species,
+                fwpSpecies: fish.fwpSpecies,
+                weight: fish.weight,
+                length: fish.length,
+                gender: fish.gender,
+                doa: fish.doa,
+                hookScar: fish.hookScar,
+                comment: fish.comment
+            )
+        }
+        newTrip.fish = newFish
+        return newTrip
+    }
+}

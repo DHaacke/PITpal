@@ -49,6 +49,17 @@ extension String {
     func indexOfSubstring<S: StringProtocol>(of string: S, options: String.CompareOptions = []) -> Index? {
         range(of: string, options: options)?.lowerBound
     }
+    func toDate(format: String) -> Date {  //  = "yyyy-MM-dd'T'HH:mm:ssZ"
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        if let date = dateFormatter.date(from: self) {
+            return date
+        } else {
+            return Date() // Return current date if parsing fails
+        }
+    }
+    
     subscript (i: Int) -> Character {
         return self[index(startIndex, offsetBy: i)]
     }

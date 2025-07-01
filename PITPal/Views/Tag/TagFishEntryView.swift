@@ -134,7 +134,6 @@ struct TagFishEntryView: View {
                         VStack {
                             HStack {
                                 SegmentedPickerSpecies(speciesCode: $speciesCode, isValidSpecies: $isValidSpecies)
-                                    
                             }
                         }
                             .frame(height: 50)
@@ -152,6 +151,10 @@ struct TagFishEntryView: View {
                                         .multilineTextAlignment(.leading)
                                         .popover(isPresented: $isPresentedLength) {
                                             NumberPadView(isPresented: $isPresentedLength, enteredNumber: $enteredLength)
+                                        }
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            isPresentedLength = true
                                         }
                                 } label: {
                                     if isValidLength {
@@ -181,6 +184,10 @@ struct TagFishEntryView: View {
                                         .multilineTextAlignment(.leading)
                                         .popover(isPresented: $isPresentedWeight) {
                                             NumberPadView(isPresented: $isPresentedWeight, enteredNumber: $enteredWeight)
+                                        }
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            isPresentedLength = true
                                         }
                                 } label: {
                                     if isValidWeight {
@@ -257,8 +264,8 @@ struct TagFishEntryView: View {
                 }
             }
         }
-        .padding(.vertical, 10)
-        .frame(height: 250)
+        .padding(.vertical, 30)
+        .frame(height: 280)
     }
     
     func validatePitTag(tag: String) -> Bool {

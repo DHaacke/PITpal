@@ -73,6 +73,7 @@ struct ChooseTripView: View {
                         endTime: "00:00",
                         waterTemperature: 0.0,
                         waterFlow: 0.0,
+                        isClosed: "N",
                         fish: []
                     )
                     self.isChoosingTrip.toggle()

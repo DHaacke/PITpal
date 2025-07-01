@@ -23,8 +23,8 @@ struct LengthChartView: View {
     
     @Binding var path: [String]
     
-    @State private var startDate: Date = Date()
-    @State private var endDate:   Date = Date()
+    @State private var startDate: Date = "2024-04-01".toDate(format: "yyyy-MM-dd") // Date()
+    @State private var endDate:   Date = "2024-04-30".toDate(format: "yyyy-MM-dd") // Date()
     @State private var selectedWatershed: String = ""
     @State private var selectedTripType: String = ""
     @State private var selectedSurveySection: String = ""
@@ -33,8 +33,8 @@ struct LengthChartView: View {
     @State private var selectedMaxLength: Int = 0
     @State private var title: String = "Fish Size Distribution"
     
-    @State private var filteredTrips: [Trip] = []
-    @State private var filteredFish: [Fish] = []
+    @State private var filteredTrips: [TripData] = []
+    @State private var filteredFish: [FishData] = []
     @State private var isChartReady: Bool = false
     
     @AppStorage("tripTripType") private var tripTripType: String = "M"
@@ -44,12 +44,14 @@ struct LengthChartView: View {
     @AppStorage("lengthMax") private var lengthMax: Int = 2000
     @AppStorage("uomFishLength") private var uomFishLength: String = "mm"
     @AppStorage("uomFishWeight") private var uomFishWeight: String = "gm"
+    @AppStorage("tripSpecies") private var tripSpecies: String = "LL"
     
     @Query(filter: #Predicate<Species> { sp in sp.active == "Y"},  sort: \Species.name) var speciesList: [Species]
     @Query(sort: \TripType.name, order: .forward) var tripTypeList: [TripType]
     @Query(sort: \SurveySection.name, order: .forward) var surveySectionList: [SurveySection]
     @Query(sort: \Watershed.name, order: .forward) var watershedList: [Watershed]
     @Query(sort: \Trip.date, order: .forward) var tripList: [Trip]
+    
     
     var body: some View {
         VStack {
@@ -173,10 +175,9 @@ struct LengthChartView: View {
             }
             .padding(.horizontal, 100)
         }
-        
         .padding(.horizontal, 20)
         .background(Color("AppBackground"))
-        .frame(minWidth: 600, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+        .frame(minWidth: 700, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         
         
         .onChange(of: startDate) {
@@ -189,6 +190,13 @@ struct LengthChartView: View {
                 print("Error calculating future date.")
             }
         }
+        .onChange(of: selectedTripType) {
+            tripTripType = selectedTripType
+        }
+        .onChange(of: selectedSpecies) {
+            tripSpecies = selectedSpecies
+        }
+            
         .onAppear {
             print("LengthChartView appeared")
             selectedMinLength = lengthMin
@@ -201,12 +209,17 @@ struct LengthChartView: View {
     }
 
     
-    func filterFish() -> [Fish] {
-        // Filter fish based on selected criteria
-        var filteredTrips : [Trip] = tripList
-        var filteredFish : [Fish] = []
-
-        filteredTrips = tripList.filter { trip in (startDate.millisecondsSince1970...endDate.millisecondsSince1970).contains(trip.date.millisecondsSince1970) }
+    func filterFish() -> [FishData] {
+        var filteredTrips : [TripData] = []
+        var filteredFish  : [FishData] = []
+        
+        for trip in tripList {
+            let tripData = trip.deepCopy()
+            print("Fish count: \(tripData.fish.count) for trip: \(tripData.date.formatted(date: .numeric, time: .omitted))")
+            filteredTrips.append(tripData)
+        }
+        
+        filteredTrips = filteredTrips.filter { trip in (startDate.millisecondsSince1970...endDate.millisecondsSince1970).contains(trip.date.millisecondsSince1970) }
         if !selectedWatershed.isEmpty {
             filteredTrips = filteredTrips.filter { $0.watershed == selectedWatershed }
         }
@@ -236,69 +249,72 @@ struct LengthChartView: View {
 struct LengthBarChartView: View {
     @Environment(\.modelContext) var modelContext
     
-    @Binding var filteredFish: [Fish]
+    @Binding var filteredFish: [FishData]
     @Binding var title: String
     @Binding var species: String
     
-    @State private var fishData: [FishData] = []
+    @State private var fishChartData: [FishChartData] = []
     
     var body: some View {
         VStack {
-            Chart(fishData, id: \.id) { data in
-                BarMark(
-                    x: .value("Size", data.sizeGroup),
-                    y: .value("Count", data.count),
-                    width: 30                )
-                .foregroundStyle(.green)
-                .annotation(position: .overlay) {
-                    Rectangle()
-                        .stroke(Color.white, lineWidth: 0.75)
-                        .padding(-4)
+            GroupBox {
+                Text(title)
+                    .font(.title)
+                    .foregroundColor(.black)
+                    .padding(.bottom, 10)
+                Chart(fishChartData, id: \.id) { data in
+                    BarMark(
+                        x: .value("Size", data.sizeGroup),
+                        y: .value("Count", data.count),
+                        width: 40)
+                    .foregroundStyle(.teal.gradient)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
-                .cornerRadius(4)
-            }
-            .padding(.horizontal, 20)
-            .chartXScale(domain: [6, 24])
-            // .chartYScale(domain: [minStockPrice ?? 0, maxStockPrice ?? 0])
-            .chartXAxis {
-                AxisMarks(values: [6, 8, 10, 12, 14, 16, 18, 20]) { value in
-                    AxisValueLabel()
-                        .foregroundStyle(.white)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 30)
+                .chartXScale(domain: [6, 24])
+                // .chartYScale(domain: [minStockPrice ?? 0, maxStockPrice ?? 0])
+                .chartXAxisLabel("Fish Size (inches)", alignment: .leading)
+                .chartXAxis {
+                    AxisMarks(values: [6, 8, 10, 12, 14, 16, 18, 20, 22, 24]) { value in
+                        AxisValueLabel()
+                            .foregroundStyle(.black)
+                            .offset(x: -8)
+                    }
+                }
+                .chartYAxisLabel("Fish Count", alignment: .topTrailing)
+                .chartYAxis {
+                    AxisMarks(values: .automatic) { value in
+                        AxisGridLine()
+                        AxisValueLabel()
+                            .foregroundStyle(.black)
+                            .offset(x: 10)
+                    }
                 }
             }
-            .chartYAxis {
-                AxisMarks(values: .automatic) { value in
-                    AxisGridLine()
-                    AxisValueLabel()
-                        .foregroundStyle(.white)
-                        .offset(x: 4)
-                }
-            }
-            Text(title)
-                .font(.system(size: 12, weight: .light, design: .default))
+            .frame(minWidth: 300, maxWidth: .infinity, minHeight: 200, maxHeight: .infinity)
+            .background(Color.black)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
         }
-        .frame(minWidth: 600, maxWidth: .infinity, minHeight: 200, maxHeight: 350)
-
-        .padding(.trailing, 12)
-        .background(Color.black)
+        .padding(.horizontal, 12)
         .onAppear {
-            fishData = buildMatrix(species: species)
+            fishChartData = buildMatrix(species: species)
         }
     }
     
-    func buildMatrix(species: String) -> [FishData] {
+    func buildMatrix(species: String) -> [FishChartData] {
         DispatchQueue.main.async {
-            fishData.removeAll()
-            fishData.append(FishData(id:  1,  sizeGroup:  6,  count: filteredFish.filter { $0.length <= 125}.count, species: species))
-            fishData.append(FishData(id:  2,  sizeGroup:  8,  count: filteredFish.filter { $0.length >  125 && $0.length <= 203 }.count ,species: species))
-            fishData.append(FishData(id:  3,  sizeGroup: 10,  count: filteredFish.filter { $0.length >  203 && $0.length <= 253 }.count ,species: species))
-            fishData.append(FishData(id:  4,  sizeGroup: 12,  count: filteredFish.filter { $0.length >  253 && $0.length <= 305 }.count ,species: species))
-            fishData.append(FishData(id:  5,  sizeGroup: 14,  count: filteredFish.filter { $0.length >  305 && $0.length <= 355 }.count ,species: species))
-            fishData.append(FishData(id:  6,  sizeGroup: 16,  count: filteredFish.filter { $0.length >  355 && $0.length <= 406 }.count ,species: species))
-            fishData.append(FishData(id:  7,  sizeGroup: 18,  count: filteredFish.filter { $0.length >  406 && $0.length <= 458 }.count ,species: species))
-            fishData.append(FishData(id:  8,  sizeGroup: 20,  count: filteredFish.filter { $0.length >  458 }.count, species: species))
+            fishChartData.removeAll()
+            fishChartData.append(FishChartData(id:  1,  sizeGroup:  6,  count: filteredFish.filter { $0.length <= 125}.count, species: species))
+            fishChartData.append(FishChartData(id:  2,  sizeGroup:  8,  count: filteredFish.filter { $0.length >  125 && $0.length <= 203 }.count ,species: species))
+            fishChartData.append(FishChartData(id:  3,  sizeGroup: 10,  count: filteredFish.filter { $0.length >  203 && $0.length <= 253 }.count ,species: species))
+            fishChartData.append(FishChartData(id:  4,  sizeGroup: 12,  count: filteredFish.filter { $0.length >  253 && $0.length <= 305 }.count ,species: species))
+            fishChartData.append(FishChartData(id:  5,  sizeGroup: 14,  count: filteredFish.filter { $0.length >  305 && $0.length <= 355 }.count ,species: species))
+            fishChartData.append(FishChartData(id:  6,  sizeGroup: 16,  count: filteredFish.filter { $0.length >  355 && $0.length <= 406 }.count ,species: species))
+            fishChartData.append(FishChartData(id:  7,  sizeGroup: 18,  count: filteredFish.filter { $0.length >  406 && $0.length <= 458 }.count ,species: species))
+            fishChartData.append(FishChartData(id:  8,  sizeGroup: 20,  count: filteredFish.filter { $0.length >  458 }.count, species: species))
         }
-        return fishData
+        return fishChartData
     }
 }
     

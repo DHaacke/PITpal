@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 import Charts
 
-struct FishData: Identifiable {
+struct FishChartData: Identifiable {
     var id: Int
     var sizeGroup: Int
     var count: Int
@@ -21,23 +21,21 @@ struct BarChartView: View {
     
     @Binding var trip: Trip
     
-    @State private var fishData: [FishData] = []
-    
+    @State private var tripData: TripData = TripData()
+    @State private var rainbows: [FishData] = []
+    @State private var browns:   [FishData] = []
+
+    @State private var fishChartData: [FishChartData] = []
+
     var species: String = ""
     var title:   String = ""
     
 //    @Query(filter: #Predicate<Fish> { fish in fish.species == "RB" && fish.length > 0}) var rainbows: [Fish]
 //    @Query(filter: #Predicate<Fish> { fish in fish.species == "LL" && fish.length > 0}) var browns: [Fish]
     
-    @State private var rainbows: [Fish] = []
-    @State private var browns:   [Fish] = []
-    
-    @Query var fish: [Fish]
-    
     var body: some View {
         VStack {
             Chart(filterFish(by: species), id: \.id) { data in
-            // Chart(viewModel.fishData, id: \.id) { data in
                 BarMark(
                     x: .value("Size", data.sizeGroup),
                     y: .value("Count", data.count),
@@ -72,43 +70,44 @@ struct BarChartView: View {
         }
         .padding(.trailing, 12)
         .onAppear {
-            rainbows = getRainbows(trip: trip)
-            browns   = getBrowns(trip: trip)
+            tripData = trip.deepCopy()
+            rainbows = getRainbows(tripData: tripData)
+            browns   = getBrowns(tripData: tripData)
         }
     }
     
-    func filterFish(by species: String) -> [FishData] {
+    func filterFish(by species: String) -> [FishChartData] {
         DispatchQueue.main.async {
-            fishData.removeAll()
+            fishChartData.removeAll()
             if species == "RB" && rainbows.count > 0 {
-                fishData.append(FishData(id:  1,  sizeGroup:  6,  count: rainbows.filter { $0.length <= 125}.count , species: "RB"))
-                fishData.append(FishData(id:  2,  sizeGroup:  8,  count: rainbows.filter { $0.length >  125 && $0.length <= 203 }.count , species: "RB"))
-                fishData.append(FishData(id:  3,  sizeGroup: 10,  count: rainbows.filter { $0.length >  203 && $0.length <= 253 }.count , species: "RB"))
-                fishData.append(FishData(id:  4,  sizeGroup: 12,  count: rainbows.filter { $0.length >  253 && $0.length <= 305 }.count , species: "RB"))
-                fishData.append(FishData(id:  5,  sizeGroup: 14,  count: rainbows.filter { $0.length >  305 && $0.length <= 355 }.count , species: "RB"))
-                fishData.append(FishData(id:  6,  sizeGroup: 16,  count: rainbows.filter { $0.length >  355 && $0.length <= 406 }.count , species: "RB"))
-                fishData.append(FishData(id:  7,  sizeGroup: 18,  count: rainbows.filter { $0.length >  406 && $0.length <= 458 }.count , species: "RB"))
-                fishData.append(FishData(id:  8,  sizeGroup: 20,  count: rainbows.filter { $0.length >  458 }.count , species: "RB"))
+                fishChartData.append(FishChartData(id:  1,  sizeGroup:  6,  count: rainbows.filter { $0.length <= 125}.count , species: "RB"))
+                fishChartData.append(FishChartData(id:  2,  sizeGroup:  8,  count: rainbows.filter { $0.length >  125 && $0.length <= 203 }.count , species: "RB"))
+                fishChartData.append(FishChartData(id:  3,  sizeGroup: 10,  count: rainbows.filter { $0.length >  203 && $0.length <= 253 }.count , species: "RB"))
+                fishChartData.append(FishChartData(id:  4,  sizeGroup: 12,  count: rainbows.filter { $0.length >  253 && $0.length <= 305 }.count , species: "RB"))
+                fishChartData.append(FishChartData(id:  5,  sizeGroup: 14,  count: rainbows.filter { $0.length >  305 && $0.length <= 355 }.count , species: "RB"))
+                fishChartData.append(FishChartData(id:  6,  sizeGroup: 16,  count: rainbows.filter { $0.length >  355 && $0.length <= 406 }.count , species: "RB"))
+                fishChartData.append(FishChartData(id:  7,  sizeGroup: 18,  count: rainbows.filter { $0.length >  406 && $0.length <= 458 }.count , species: "RB"))
+                fishChartData.append(FishChartData(id:  8,  sizeGroup: 20,  count: rainbows.filter { $0.length >  458 }.count , species: "RB"))
             } else if species == "LL" && browns.count > 0 {
-                fishData.append(FishData(id: 10, sizeGroup:  6,  count: browns.filter { $0.length <= 125}.count , species: "LL"))
-                fishData.append(FishData(id: 12, sizeGroup:  8,  count: browns.filter { $0.length >  125 && $0.length <= 203 }.count , species: "LL"))
-                fishData.append(FishData(id: 13, sizeGroup: 10,  count: browns.filter { $0.length >  203 && $0.length <= 253 }.count , species: "LL"))
-                fishData.append(FishData(id: 14, sizeGroup: 12,  count: browns.filter { $0.length >  253 && $0.length <= 305 }.count , species: "LL"))
-                fishData.append(FishData(id: 15, sizeGroup: 14,  count: browns.filter { $0.length >  305 && $0.length <= 355 }.count , species: "LL"))
-                fishData.append(FishData(id: 16, sizeGroup: 16,  count: browns.filter { $0.length >  355 && $0.length <= 406 }.count , species: "LL"))
-                fishData.append(FishData(id: 17, sizeGroup: 18,  count: browns.filter { $0.length >  406 && $0.length <= 458 }.count , species: "LL"))
-                fishData.append(FishData(id: 18, sizeGroup: 20,  count: browns.filter { $0.length >  458 }.count , species: "LL"))
+                fishChartData.append(FishChartData(id: 10, sizeGroup:  6,  count: browns.filter { $0.length <= 125}.count , species: "LL"))
+                fishChartData.append(FishChartData(id: 12, sizeGroup:  8,  count: browns.filter { $0.length >  125 && $0.length <= 203 }.count , species: "LL"))
+                fishChartData.append(FishChartData(id: 13, sizeGroup: 10,  count: browns.filter { $0.length >  203 && $0.length <= 253 }.count , species: "LL"))
+                fishChartData.append(FishChartData(id: 14, sizeGroup: 12,  count: browns.filter { $0.length >  253 && $0.length <= 305 }.count , species: "LL"))
+                fishChartData.append(FishChartData(id: 15, sizeGroup: 14,  count: browns.filter { $0.length >  305 && $0.length <= 355 }.count , species: "LL"))
+                fishChartData.append(FishChartData(id: 16, sizeGroup: 16,  count: browns.filter { $0.length >  355 && $0.length <= 406 }.count , species: "LL"))
+                fishChartData.append(FishChartData(id: 17, sizeGroup: 18,  count: browns.filter { $0.length >  406 && $0.length <= 458 }.count , species: "LL"))
+                fishChartData.append(FishChartData(id: 18, sizeGroup: 20,  count: browns.filter { $0.length >  458 }.count , species: "LL"))
             }
         }
-        return fishData.filter { $0.species == species }
+        return fishChartData.filter { $0.species == species }
     }
     
-    func getRainbows(trip: Trip) -> [Fish] {
-        return fish.filter( { $0.species == "RB" && $0.length > 0 && isSameDay(tripDate: trip.date, fishDate: $0.date) } )
+    func getRainbows(tripData: TripData) -> [FishData] {
+        return tripData.fish.filter( { $0.species == "RB" && $0.length > 0 && isSameDay(tripDate: tripData.date, fishDate: $0.date) } )
     }
     
-    func getBrowns(trip: Trip) -> [Fish] {
-        return fish.filter( { $0.species == "LL" && $0.length > 0  && isSameDay(tripDate: trip.date, fishDate: $0.date) } )
+    func getBrowns(tripData: TripData) -> [FishData] {
+        return tripData.fish.filter( { $0.species == "LL" && $0.length > 0  && isSameDay(tripDate: tripData.date, fishDate: $0.date) } )
     }
     
     func isSameDay(tripDate: Date, fishDate: Date) -> Bool {
