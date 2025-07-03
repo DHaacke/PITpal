@@ -14,7 +14,13 @@ final class Trip: Codable {
     var tripType: String  // M or R
     var surveySection: String
     var watershed: String
-    var equipment: String
+    var gear: String
+    var rectifyingunit: String
+    var volts: String
+    var amps: String
+    var shocktime: String
+    var anesthetic: String
+    var dosage: String
     var latDown: Double
     var lonDown: Double
     var latUp: Double
@@ -35,7 +41,13 @@ final class Trip: Codable {
         tripType: String = "M",
         surveySection: String = "",
         watershed: String = "",
-        equipment: String = "",
+        gear: String = "",
+        rectifyingunit: String = "",
+        volts: String = "",
+        amps: String = "",
+        shocktime: String = "",
+        anesthetic: String = "",
+        dosage: String = "",
         latDown: Double = 0.0,
         lonDown: Double = 0.0,
         latUp: Double = 0.0,
@@ -53,7 +65,13 @@ final class Trip: Codable {
         self.tripType = tripType
         self.surveySection = surveySection
         self.watershed = watershed
-        self.equipment = equipment
+        self.gear = gear
+        self.rectifyingunit = rectifyingunit
+        self.volts = volts
+        self.amps = amps
+        self.shocktime = shocktime
+        self.anesthetic = anesthetic
+        self.dosage = dosage
         self.latDown = latDown
         self.lonDown = lonDown
         self.latUp = latUp
@@ -73,7 +91,13 @@ final class Trip: Codable {
         case tripType
         case surveySection
         case watershed
-        case equipment
+        case gear
+        case rectifyingunit
+        case volts
+        case amps
+        case shocktime
+        case anesthetic
+        case dosage
         case latDown
         case lonDown
         case latUp
@@ -98,7 +122,13 @@ final class Trip: Codable {
         self.tripType = try container.decode(String.self, forKey: .tripType)
         self.surveySection = try container.decode(String.self, forKey: .surveySection)
         self.watershed = try container.decode(String.self, forKey: .watershed)
-        self.equipment = try container.decode(String.self, forKey: .equipment)
+        self.gear = try container.decode(String.self, forKey: .gear)
+        self.rectifyingunit = try container.decode(String.self, forKey: .rectifyingunit)
+        self.volts = try container.decode(String.self, forKey: .volts)
+        self.amps = try container.decode(String.self, forKey: .amps)
+        self.shocktime = try container.decode(String.self, forKey: .shocktime)
+        self.anesthetic = try container.decode(String.self, forKey: .anesthetic)
+        self.dosage = try container.decode(String.self, forKey: .dosage)
         self.latDown = try container.decode(Double.self, forKey: .latDown)
         self.lonDown = try container.decode(Double.self, forKey: .lonDown)
         self.latUp = try container.decode(Double.self, forKey: .latUp)
@@ -119,7 +149,13 @@ final class Trip: Codable {
         try container.encode(tripType, forKey: .tripType)
         try container.encode(surveySection, forKey: .surveySection)
         try container.encode(watershed, forKey: .watershed)
-        try container.encode(equipment, forKey: .equipment)
+        try container.encode(gear, forKey: .gear)
+        try container.encode(rectifyingunit, forKey: .rectifyingunit)
+        try container.encode(volts, forKey: .volts)
+        try container.encode(amps, forKey: .amps)
+        try container.encode(shocktime, forKey: .shocktime)
+        try container.encode(anesthetic, forKey: .anesthetic)
+        try container.encode(dosage, forKey: .dosage)
         try container.encode(latDown, forKey: .latDown)
         try container.encode(lonDown, forKey: .lonDown)
         try container.encode(latUp, forKey: .latUp)
@@ -152,7 +188,7 @@ final class Trip: Codable {
     }
     
     func getCSVHeader() -> String {
-        return "date,type,section,watershed,equipment,lat_down,lon_down,lat_up,long_up,length,start,end,temp,cfs,date,pitTag,lat,lon,species,fwpSpecies,weight,length,gender,doa,hookScar,comment"
+        return "date,type,section,watershed,gear,rectifying_unit,volts,amps,shock_time,anesthetic,dosage,lat_down,lon_down,lat_up,long_up,length,start,end,temp,cfs,date,pitTag,lat,lon,species,fwpSpecies,weight,length,gender,mort,mc,count,comment"
     }
     
     func toCSV() -> String {
@@ -166,7 +202,13 @@ final class Trip: Codable {
         buffer += "\(self.tripType),"
         buffer += "\(self.watershed),"
         buffer += "\(self.surveySection),"
-        buffer += "\(self.equipment),"
+        buffer += "\(self.gear),"
+        buffer += "\(self.rectifyingunit),"
+        buffer += "\(self.volts),"
+        buffer += "\(self.amps),"
+        buffer += "\(self.shocktime),"
+        buffer += "\(self.anesthetic),"
+        buffer += "\(self.dosage),"
         buffer += "\(self.latDown),"
         buffer += "\(self.lonDown),"
         buffer += "\(self.latUp),"
@@ -180,50 +222,6 @@ final class Trip: Codable {
         return buffer
     }
 
-    
-    
-//    func toJSON(trip: Trip) -> String {
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "yyyy-MM-dd HH:mm"
-//        formatter.timeZone = TimeZone.current
-//        let json = """
-//        {
-//            "date" : "\(formatter.string(from: trip.date))",
-//            "tripType": "\(trip.tripType)",
-//            "watershed": "\(trip.watershed)",
-//            "equipment": "\(trip.equipment)",
-//            "latDown": \(trip.latDown),
-//            "lonDown": \(trip.lonDown),
-//            "latUp": \(trip.latUp),
-//            "lonUp": \(trip.lonUp),
-//            "sectionLength": \(trip.sectionLength),
-//            "startTime": "\(trip.startTime)",
-//            "endTime": "\(trip.endTime)",
-//            "waterTemperature": \(waterTemperature),
-//            "waterFlow": \(waterFlow),
-//            "fish": \(trip.fish.map {
-//                """
-//                {
-//                    "date" : "\(formatter.string(from: $0.date))",
-//                    "pitTag: "\($0.pitTag))",
-//                    "lat": \($0.lat)),
-//                    "lon": \($0.lon)),
-//                    "species": "\($0.species)")",
-//                    "fwpSpecies": "\($0.fwpSpecies)")",
-//                    "weight": \($0.weight)),
-//                    "length": \($0.length)),
-//                    "gender": "\($0.gender))",
-//                    "doa": "\($0.doa)")",
-//                    "hookScar": "\($0.hookScar)")",
-//                    "comment": "\($0.comment)")"
-//                },
-//               """
-//            })
-//        }
-//        """
-//        return json
-//    }
-    
     func getRecordCount(modelContext: ModelContext) -> Int {
         let descriptor = FetchDescriptor<Trip>(predicate: #Predicate { $0.tripType != "" })
         return (try? modelContext.fetchCount(descriptor)) ?? 0
@@ -238,7 +236,13 @@ extension Trip {
                                tripType: self.tripType,
                                surveySection: self.surveySection,
                                watershed: self.watershed,
-                               equipment: self.equipment,
+                               gear: self.gear,
+                               rectifyingunit: self.rectifyingunit,
+                               volts: self.volts,
+                               amps: self.amps,
+                               shocktime: self.shocktime,
+                               anesthetic: self.anesthetic,
+                               dosage: self.dosage,
                                latDown: self.latDown,
                                lonDown: self.lonDown,
                                latUp: self.latUp,
@@ -264,8 +268,9 @@ extension Trip {
                 weight: fish.weight,
                 length: fish.length,
                 gender: fish.gender,
-                doa: fish.doa,
-                hookScar: fish.hookScar,
+                mort: fish.mort,
+                mc: fish.mc,
+                count: fish.count,
                 comment: fish.comment
             )
         }

@@ -25,8 +25,7 @@ struct TripFishListView: View {
                     Text("FWP").font(.subheadline)
                     Text("Weight").font(.subheadline)
                     Text("Length").font(.subheadline)
-                    Text("DOA").font(.subheadline)
-                    Text("Scars").font(.subheadline)
+                    Text("Mort").font(.subheadline)
                     Text("Comment").font(.subheadline)
                 }
                 .font(.title2)
@@ -37,8 +36,7 @@ struct TripFishListView: View {
                         Text(fish.fwpSpecies).font(.system(size: 16, weight: .bold))
                         Text(fish.weight, format: .number)
                         Text(fish.length, format: .number)
-                        Text(fish.doa == "Y" ? "Yes" : "No")
-                        Text(fish.hookScar == "Y" ? "Yes" : "No")
+                        Text(fish.mort == "Y" ? "Yes" : "No")
                         Text(fish.comment)
                     }
                 }
@@ -55,12 +53,3 @@ struct TripFishListView: View {
     SpeciesListView(sort: SortDescriptor(\Species.active))
 }
 */
-
-
-    //                TableColumn("Species") { fish in Text(fish.species) }.width(80)
-    //                TableColumn("FWP")  { fish in Text(fish.fwpSpecies) }.width(80)
-    //                TableColumn("Weight") { fish in Text(fish.weight, format: .number) }.width(80)
-    //                TableColumn("Length") { fish in Text(fish.length, format: .number) }.width(80)
-    //                TableColumn("DOA") { fish in Text(fish.doa ? "Yes" : "No") }.width(60)
-    //                TableColumn("Scars") { fish in Text(fish.hookScar ? "Yes" : "No") }.width(60)
-    //                TableColumn("Comment", value: \.comment).width(120)

@@ -20,8 +20,9 @@ final class Fish: Codable {
     var weight: Int
     var length: Int
     var gender: String
-    var doa: String = "N"
-    var hookScar: String = "N"
+    var mort: String = "N"
+    var mc: Int = 0
+    var count: Int = 1
     var comment: String = ""
     
     init(
@@ -34,8 +35,9 @@ final class Fish: Codable {
         weight: Int = 0,
         length: Int = 0,
         gender: String = "",
-        doa: String = "N",
-        hookScar: String = "N",
+        mort: String = "N",
+        mc: Int = 0,
+        count: Int = 1,
         comment: String = "",
     ) {
         self.date = date
@@ -47,8 +49,9 @@ final class Fish: Codable {
         self.weight = weight
         self.length = length
         self.gender = gender
-        self.doa = doa
-        self.hookScar = hookScar
+        self.mort = mort
+        self.mc = mc
+        self.count = count
         self.comment = comment
     }
     
@@ -62,8 +65,9 @@ final class Fish: Codable {
         case weight
         case length
         case gender
-        case doa
-        case hookScar
+        case mort
+        case mc
+        case count
         case comment
     }
     
@@ -83,8 +87,9 @@ final class Fish: Codable {
         self.weight = try container.decode(Int.self, forKey: .weight)
         self.length = try container.decode(Int.self, forKey: .length)
         self.gender = try container.decode(String.self, forKey: .gender)
-        self.doa = try container.decode(String.self, forKey: .doa)
-        self.hookScar = try container.decode(String.self, forKey: .hookScar)
+        self.mort = try container.decode(String.self, forKey: .mort)
+        self.mc = try container.decode(Int.self, forKey: .mc)
+        self.count = try container.decode(Int.self, forKey: .count)
         self.comment = try container.decode(String.self, forKey: .comment)
     }
     
@@ -99,8 +104,9 @@ final class Fish: Codable {
         try container.encode(weight, forKey: .weight)
         try container.encode(length, forKey: .length)
         try container.encode(gender, forKey: .gender)
-        try container.encode(doa, forKey: .doa)
-        try container.encode(hookScar, forKey: .hookScar)
+        try container.encode(mort, forKey: .mort)
+        try container.encode(mc, forKey: .mc)
+        try container.encode(count, forKey: .count)
         try container.encode(comment, forKey: .comment)
     }
     
@@ -124,8 +130,9 @@ final class Fish: Codable {
             "weight": \(self.weight)),
             "length": \(self.length)),
             "gender": "\(self.gender))",
-            "doa": "\(self.doa)")",
-            "hookScar": "\(self.hookScar)")",
+            "mort": "\(self.mort)")",
+            "mc": \(self.mc)),
+            "count": \(self.count)),
             "comment": "\(self.comment)")"
         },
         """
@@ -133,7 +140,7 @@ final class Fish: Codable {
     }
     
     func toCSVHeader() -> String {
-        return "date,pitTag,lat,lon,species,fwpSpecies,weight,length,gender,doa,hookScar,comment"
+        return "date,pitTag,lat,lon,species,fwpSpecies,weight,length,gender,mort,mc,count,comment"
     }
     
     func toCSV() -> String {
@@ -153,35 +160,14 @@ final class Fish: Codable {
         buffer += "\(self.weight),"
         buffer += "\(self.length),"
         buffer += "\(self.gender),"
-        buffer += "\(self.doa),"
-        buffer += "\(self.hookScar ),"
+        buffer += "\(self.mort),"
+        buffer += "\(self.mc),"
+        buffer += "\(self.count),"
         buffer += "\"\(self.comment)\""
-        
+                
         return buffer
     
     }
-//    func toJSON(fish: Fish) -> String {
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "yyyy-MM-dd HH:mm"
-//        formatter.timeZone = TimeZone.current
-//        let json = """
-//        {
-//            "date" : "\(formatter.string(from: fish.date))",
-//            "pitTag: "\(fish.pitTag))",
-//            "lat": \(fish.lat)),
-//            "lon": \(fish.lon)),
-//            "species": "\(fish.species)")",
-//            "fwpSpecies": "\(fish.fwpSpecies)")",
-//            "weight": \(fish.weight)),
-//            "length": \(fish.length)),
-//            "gender": "\(fish.gender))",
-//            "doa": "\(fish.doa)")",
-//            "hookScar": "\(fish.hookScar)")",
-//            "comment": "\(fish.comment)")"
-//        },
-//        """
-//        return json
-//    }
         
 }
 

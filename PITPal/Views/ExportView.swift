@@ -385,7 +385,7 @@ struct ExportView: View {
         
         self.isExporting = true
         
-        buffer += "date,type,section,watershed,equipment,lat_down,lon_down,lat_up,long_up,length,start,end,temp,cfs,date,pitTag,lat,lon,species,fwpSpecies,weight,length,gender,doa,hookScar,comment\n"
+        buffer += "date,type,section,watershed,gear,rectifying_unit,volts,amps,shocktime,anesthetic,dosage,lat_down,lon_down,lat_up,long_up,length,start,end,temp,discharge,date,pitTag,lat,lon,species,fwpSpecies,weight,length,gender,mort,mc,count,comment\n"
         for trip in filteredTrips {
             print("Exporting \(trip.fish.count) fish for trip \(trip.id)")
             for fish in trip.fish {

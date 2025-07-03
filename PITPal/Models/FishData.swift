@@ -18,8 +18,9 @@ final class FishData {
     var weight: Int
     var length: Int
     var gender: String
-    var doa: String = "N"
-    var hookScar: String = "N"
+    var mort: String = "N"
+    var mc: Int = 0
+    var count: Int = 1
     var comment: String = ""
     
     init(
@@ -32,8 +33,9 @@ final class FishData {
         weight: Int = 0,
         length: Int = 0,
         gender: String = "",
-        doa: String = "N",
-        hookScar: String = "N",
+        mort: String = "N",
+        mc: Int = 0,
+        count: Int = 1,
         comment: String = "",
     ) {
         self.date = date
@@ -45,8 +47,9 @@ final class FishData {
         self.weight = weight
         self.length = length
         self.gender = gender
-        self.doa = doa
-        self.hookScar = hookScar
+        self.mort = mort
+        self.mc = mc
+        self.count = count
         self.comment = comment
     }
 }

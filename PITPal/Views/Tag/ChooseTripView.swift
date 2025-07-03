@@ -25,7 +25,14 @@ struct ChooseTripView: View {
     @AppStorage("tripTripType") private var tripTripType: String = "M"
     @AppStorage("tripSurveySection") private var tripSurveySection: String = "U"
     @AppStorage("tripWatershed") private var tripWatershed: String = "BHR"
-    @AppStorage("tripEquipment") private var tripEquipment: String = "Jet Boat- Boom anodes"
+    @AppStorage("gear") private var gear: String = "Jet Boat, Anodes boom"
+    @AppStorage("rectifyingunit") private var rectifyingunit: String = "SR Model VVP-15B"
+    @AppStorage("volts") private var volts: String = "150"
+    @AppStorage("amps") private var amps: String = "6"
+    @AppStorage("shocktime") private var shocktime: String = "6"
+    @AppStorage("anesthetic") private var anesthetic: String = "222"
+    @AppStorage("dosage") private var dosage: String = ""
+
     
     var body: some View {
 
@@ -63,7 +70,13 @@ struct ChooseTripView: View {
                         tripType: tripTripType,
                         surveySection: tripSurveySection,
                         watershed: tripWatershed,
-                        equipment: tripEquipment,
+                        gear: gear,
+                        rectifyingunit: rectifyingunit,
+                        volts: volts,
+                        amps: amps,
+                        shocktime: shocktime,
+                        anesthetic: anesthetic,
+                        dosage: dosage,
                         latDown: 0,
                         lonDown: 0,
                         latUp: 0,
@@ -73,6 +86,7 @@ struct ChooseTripView: View {
                         endTime: "00:00",
                         waterTemperature: 0.0,
                         waterFlow: 0.0,
+                        turbidity: "",
                         isClosed: "N",
                         fish: []
                     )

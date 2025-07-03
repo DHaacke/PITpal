@@ -201,7 +201,13 @@ struct ContentView: View {
                                 tripType: trip.tripType,
                                 surveySection: trip.surveySection,
                                 watershed: trip.watershed,
-                                equipment: trip.equipment,
+                                gear: trip.gear,
+                                rectifyingunit: trip.rectifyingunit,
+                                volts: trip.volts,
+                                amps: trip.amps,
+                                shocktime: trip.shocktime,
+                                anesthetic: trip.anesthetic,
+                                dosage: trip.dosage,
                                 latDown: 0,
                                 lonDown: 0,
                                 latUp: 0,
@@ -211,6 +217,7 @@ struct ContentView: View {
                                 endTime: trip.endTime,
                                 waterTemperature: trip.waterTemperature,
                                 waterFlow: trip.waterFlow,
+                                turbidity: trip.turbidity,
                                 isClosed: trip.isClosed,
                                 fish: []
                             )
@@ -226,8 +233,9 @@ struct ContentView: View {
                                     weight: fish.weight,
                                     length: fish.length,
                                     gender: fish.gender,
-                                    doa: fish.doa,
-                                    hookScar: fish.hookScar,
+                                    mort: fish.mort,
+                                    mc: fish.mc,
+                                    count: fish.count,
                                     comment: fish.comment
                                 )
                                 newTrip.fish.append(item)

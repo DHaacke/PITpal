@@ -228,8 +228,9 @@ struct TagFishEntryView: View {
                                                 weight:     Int(selectedWeight) ?? 0,
                                                 length:     Int(selectedLength) ?? 0,
                                                 gender:     "",
-                                                doa:        "N",
-                                                hookScar:   "N",
+                                                mort:       "N",
+                                                mc:         0,
+                                                count:      1,
                                                 comment:    ""
                                             )
                                             trip.fish.append(fish)

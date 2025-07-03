@@ -12,7 +12,13 @@ final class TripData {
     var tripType: String  // M or R
     var surveySection: String
     var watershed: String
-    var equipment: String
+    var gear: String
+    var rectifyingunit: String
+    var volts: String
+    var amps: String
+    var shocktime: String
+    var anesthetic: String
+    var dosage: String
     var latDown: Double
     var lonDown: Double
     var latUp: Double
@@ -31,7 +37,13 @@ final class TripData {
         tripType: String = "M",
         surveySection: String = "",
         watershed: String = "",
-        equipment: String = "",
+        gear: String = "",
+        rectifyingunit: String = "",
+        volts: String = "",
+        amps: String = "",
+        shocktime: String = "",
+        anesthetic: String = "",
+        dosage: String = "",
         latDown: Double = 0.0,
         lonDown: Double = 0.0,
         latUp: Double = 0.0,
@@ -49,7 +61,13 @@ final class TripData {
         self.tripType = tripType
         self.surveySection = surveySection
         self.watershed = watershed
-        self.equipment = equipment
+        self.gear = gear
+        self.rectifyingunit = rectifyingunit
+        self.volts = volts
+        self.amps = amps
+        self.shocktime = shocktime
+        self.anesthetic = anesthetic
+        self.dosage = dosage
         self.latDown = latDown
         self.lonDown = lonDown
         self.latUp = latUp

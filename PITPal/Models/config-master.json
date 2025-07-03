@@ -177,6 +177,12 @@
           "sort": 1
       },
       {
+          "code": "HOOK",
+          "name": "Hook in Mouth",
+          "active": "Y",
+          "sort": 1
+      },
+      {
           "code": "HUMPY",
           "name": "Humped Back",
           "active": "Y",
