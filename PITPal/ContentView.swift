@@ -59,7 +59,7 @@ struct ContentView: View {
                         .tint(Color("AccentColor"))
                         .navigationBarBackButtonHidden(false)
                         .navigationBarHidden(false)
-                        .navigationTitle("Tag / Recap").foregroundStyle(Color("TextForegroundWhite"))
+                        .navigationTitle("Capture / Tag / Recap").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                 }
                 else if navigation == K.EXPORT {
@@ -90,137 +90,160 @@ struct ContentView: View {
             if jsonManager.isConfigLoaded {
                 
                 
-//                await MainActor.run {
-//                    try! modelContext.transaction {
-//                        
-//                        for species in speciesList {
-//                            print("Deleting \(species.name)")
-//                            modelContext.delete(species)
-//                        }
-//                        for species in jsonManager.config.species {
-//                            print("Adding \(species.name)")
-//                            modelContext.insert(Species(
-//                                code: species.code,
-//                                name: species.name,
-//                                imageName: species.imageName,
-//                                color: species.color,
-//                                active: species.active
-//                            ))
-//                        }
-//
-//                        for surveySection in surveySections {
-//                            print("Deleting \(surveySection.name)")
-//                            modelContext.delete(surveySection)
-//                        }
-//                        for surveySection in jsonManager.config.surveySection {
-//                            print("Adding \(surveySection.name)")
-//                            let surveySection = SurveySection(
-//                                code: surveySection.code,
-//                                name: surveySection.name,
-//                                color: surveySection.color,
-//                                latDown: surveySection.latDown,
-//                                lonDown: surveySection.lonDown,
-//                                latUp: surveySection.latUp,
-//                                lonUp: surveySection.lonUp,
-//                                radius: surveySection.radius
-//                            )
-//                            modelContext.insert(surveySection)
-//                        }
-//                        
-//                        for gender in jsonManager.config.gender {
-//                            print("Adding \(gender.name)")
-//                            let gender = Gender(
-//                                code: gender.code,
-//                                name: gender.name,
-//                                color: gender.color
-//                            )
-//                            modelContext.insert(gender)
-//                        }
-//                        
-//                        for watershed in jsonManager.config.watershed {
-//                            print("Adding \(watershed.name)")
-//                            let watershed = Watershed(
-//                                code: watershed.code,
-//                                name: watershed.name,
-//                                geofence: [],
-//                                poly: []
-//                            )
-//                            modelContext.insert(watershed)
-//                        }
-//                        
-//                        for tripType in jsonManager.config.tripType {
-//                            print("Adding \(tripType.name)")
-//                            modelContext.insert(TripType(
-//                                code: tripType.code,
-//                                name: tripType.name,
-//                                active: tripType.active
-//                            ))
-//                        }
-//                        
-//                        
-//                        for trip in tripList {
-//                            print("Deleting \(trip.date.formatted(date: .numeric, time: .omitted))")
-//                            modelContext.delete(trip)
-//                        }
-//                        for fish in fishList {
-//                            print("Deleting \(fish.species)")
-//                            modelContext.delete(fish)
-//                        }
-//                        try modelContext.save()
-//                        
-//                        
-//                        print("Inserting \(jsonManager.config.trip.count) Trips")
-//                        for trip in jsonManager.config.trip {
-//                            print("Inserting \(trip.date), \(trip.tripType), \(trip.surveySection), \(trip.watershed) with \(trip.fish.count) fish")
-//                            let newTrip : Trip = Trip(
-//                                date: trip.date,
-//                                tripType: trip.tripType,
-//                                surveySection: trip.surveySection,
-//                                watershed: trip.watershed,
-//                                equipment: trip.equipment,
-//                                latDown: 0,
-//                                lonDown: 0,
-//                                latUp: 0,
-//                                lonUp: 0,
-//                                sectionLength: trip.sectionLength,
-//                                startTime: trip.startTime,
-//                                endTime: trip.endTime,
-//                                waterTemperature: trip.waterTemperature,
-//                                waterFlow: trip.waterFlow,
-//                                isClosed: trip.isClosed,
-//                                fish: []
-//                            )
-//                            // print("Here are the fish for this trip:")
-//                            for fish in trip.fish {
-//                                let item = Fish(
-//                                    date: fish.date,
-//                                    pitTag: fish.pitTag,
-//                                    lat: fish.lat,
-//                                    lon: fish.lon,
-//                                    species: fish.species,
-//                                    fwpSpecies: fish.fwpSpecies,
-//                                    weight: fish.weight,
-//                                    length: fish.length,
-//                                    gender: fish.gender,
-//                                    doa: fish.doa,
-//                                    hookScar: fish.hookScar,
-//                                    comment: fish.comment
-//                                )
-//                                newTrip.fish.append(item)
-//                            }
-//                            // print("Insert")
-//                            modelContext.insert(newTrip)
-//                        }
-//                            
-//                        do {
-//                            try modelContext.save()
-//                            print("Total Trips: \(getTripCount(modelContext: modelContext))")
-//                            print("Total Fish:  \(getFishCount(modelContext: modelContext))")
-//                        } catch {
-//                            print("An error occurred!")
-//                        }
-//                    }
-//                }
+                await MainActor.run {
+                    try! modelContext.transaction {
+                        
+                        for species in speciesList {
+                            print("Deleting \(species.name)")
+                            modelContext.delete(species)
+                        }
+                        for species in jsonManager.config.species {
+                            print("Adding \(species.name)")
+                            modelContext.insert(Species(
+                                code: species.code,
+                                name: species.name,
+                                imageName: species.imageName,
+                                color: species.color,
+                                active: species.active
+                            ))
+                        }
+
+                        for surveySection in surveySections {
+                            print("Deleting \(surveySection.name)")
+                            modelContext.delete(surveySection)
+                        }
+                        for surveySection in jsonManager.config.surveySection {
+                            print("Adding \(surveySection.name)")
+                            let surveySection = SurveySection(
+                                code: surveySection.code,
+                                name: surveySection.name,
+                                color: surveySection.color,
+                                latDown: surveySection.latDown,
+                                lonDown: surveySection.lonDown,
+                                latUp: surveySection.latUp,
+                                lonUp: surveySection.lonUp,
+                                radius: surveySection.radius
+                            )
+                            modelContext.insert(surveySection)
+                        }
+                        
+                        for gender in jsonManager.config.gender {
+                            print("Adding \(gender.name)")
+                            let gender = Gender(
+                                code: gender.code,
+                                name: gender.name,
+                                color: gender.color
+                            )
+                            modelContext.insert(gender)
+                        }
+                        
+                        for watershed in jsonManager.config.watershed {
+                            print("Adding \(watershed.name)")
+                            let watershed = Watershed(
+                                code: watershed.code,
+                                name: watershed.name,
+                                geofence: [],
+                                poly: []
+                            )
+                            modelContext.insert(watershed)
+                        }
+                        
+                        for tripType in jsonManager.config.tripType {
+                            print("Adding \(tripType.name)")
+                            modelContext.insert(TripType(
+                                code: tripType.code,
+                                name: tripType.name,
+                                active: tripType.active
+                            ))
+                            modelContext.insert(tripType)
+                        }
+                        
+                        for comment in jsonManager.config.comment {
+                            print("Adding \(comment.name)")
+                            modelContext.insert(Comment(
+                                code:   comment.code,
+                                name:   comment.name,
+                                active: comment.active,
+                                sort:   comment.sort
+                            ))
+                            modelContext.insert(comment)
+                        }
+                        try modelContext.save()
+                        
+                        for gear in jsonManager.config.gear {
+                            print("Adding \(gear.name)")
+                            modelContext.insert(Comment(
+                                code:   gear.code,
+                                name:   gear.name,
+                                active: gear.active,
+                                sort:   gear.sort
+                            ))
+                            modelContext.insert(gear)
+                        }
+                        try modelContext.save()
+                        
+                        for trip in tripList {
+                            print("Deleting \(trip.date.formatted(date: .numeric, time: .omitted))")
+                            modelContext.delete(trip)
+                        }
+                        for fish in fishList {
+                            print("Deleting \(fish.species)")
+                            modelContext.delete(fish)
+                        }
+                        try modelContext.save()
+                        
+                        
+                        print("Inserting \(jsonManager.config.trip.count) Trips")
+                        for trip in jsonManager.config.trip {
+                            print("Inserting \(trip.date), \(trip.tripType), \(trip.surveySection), \(trip.watershed) with \(trip.fish.count) fish")
+                            let newTrip : Trip = Trip(
+                                date: trip.date,
+                                tripType: trip.tripType,
+                                surveySection: trip.surveySection,
+                                watershed: trip.watershed,
+                                equipment: trip.equipment,
+                                latDown: 0,
+                                lonDown: 0,
+                                latUp: 0,
+                                lonUp: 0,
+                                sectionLength: trip.sectionLength,
+                                startTime: trip.startTime,
+                                endTime: trip.endTime,
+                                waterTemperature: trip.waterTemperature,
+                                waterFlow: trip.waterFlow,
+                                isClosed: trip.isClosed,
+                                fish: []
+                            )
+                            // print("Here are the fish for this trip:")
+                            for fish in trip.fish {
+                                let item = Fish(
+                                    date: fish.date,
+                                    pitTag: fish.pitTag,
+                                    lat: fish.lat,
+                                    lon: fish.lon,
+                                    species: fish.species,
+                                    fwpSpecies: fish.fwpSpecies,
+                                    weight: fish.weight,
+                                    length: fish.length,
+                                    gender: fish.gender,
+                                    doa: fish.doa,
+                                    hookScar: fish.hookScar,
+                                    comment: fish.comment
+                                )
+                                newTrip.fish.append(item)
+                            }
+                            modelContext.insert(newTrip)
+                        }
+                            
+                        do {
+                            try modelContext.save()
+                            print("Total Trips: \(getTripCount(modelContext: modelContext))")
+                            print("Total Fish:  \(getFishCount(modelContext: modelContext))")
+                        } catch {
+                            print("An error occurred!")
+                        }
+                    }
+                }
                 
                 
             }
@@ -246,4 +269,5 @@ struct ContentView: View {
         .environment(LocationsHandler())
         .environment(NetworkMonitor())
 }
+
 

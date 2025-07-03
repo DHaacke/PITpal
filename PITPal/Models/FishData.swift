@@ -15,8 +15,8 @@ final class FishData {
     var lon: Double
     var species: String
     var fwpSpecies: String
-    var weight: Double
-    var length: Double
+    var weight: Int
+    var length: Int
     var gender: String
     var doa: String = "N"
     var hookScar: String = "N"
@@ -29,8 +29,8 @@ final class FishData {
         lon: Double = 0.0,
         species: String = "",
         fwpSpecies: String = "",
-        weight: Double = 0.0,
-        length: Double = 0.0,
+        weight: Int = 0,
+        length: Int = 0,
         gender: String = "",
         doa: String = "N",
         hookScar: String = "N",

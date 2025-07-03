@@ -25,6 +25,14 @@ P I T   T A G S
 S U R V E Y   S E C T I O N S
   Do you have names of survey sections?
   
+D E M I - T R I P S
+    
+    List of Purpose  "Estimate" ...
+    Was tag inserted anal or dorsal?
+    Does the header wind up anywhere other than the survey sheets?
+    
+    
+  
   
 @Query(filter: #Predicate<Movie> { movie in
     movie.director.name == "James Cameron"

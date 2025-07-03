@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		91CF0D282DFA8A39006592A8 /* JiggleKit in Frameworks */ = {isa = PBXBuildFile; productRef = 91CF0D272DFA8A39006592A8 /* JiggleKit */; };
 		91D43ACF2DFCC11600067F7D /* notes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 91D43ACE2DFCC10E00067F7D /* notes.txt */; };
 /* End PBXBuildFile section */
 
@@ -42,7 +41,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				91CF0D282DFA8A39006592A8 /* JiggleKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,7 +84,6 @@
 			);
 			name = PITPal;
 			packageProductDependencies = (
-				91CF0D272DFA8A39006592A8 /* JiggleKit */,
 			);
 			productName = PITPal;
 			productReference = 913BF86F2DFA443F0009BB22 /* PITPal.app */;
@@ -117,7 +114,6 @@
 			mainGroup = 913BF8662DFA443F0009BB22;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				91CF0D262DFA8A39006592A8 /* XCRemoteSwiftPackageReference "JiggleKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 913BF8702DFA443F0009BB22 /* Products */;
@@ -372,25 +368,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		91CF0D262DFA8A39006592A8 /* XCRemoteSwiftPackageReference "JiggleKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/visfitness/JiggleKit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.5;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		91CF0D272DFA8A39006592A8 /* JiggleKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 91CF0D262DFA8A39006592A8 /* XCRemoteSwiftPackageReference "JiggleKit" */;
-			productName = JiggleKit;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 913BF8672DFA443F0009BB22 /* Project object */;
 }

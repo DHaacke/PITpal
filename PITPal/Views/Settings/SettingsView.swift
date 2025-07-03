@@ -13,8 +13,37 @@ struct SettingsView: View {
     @Query(sort: \Watershed.name, order: .forward) var watersheds: [Watershed]
     @Query(sort: \SurveySection.name, order: .forward) var surveySections: [SurveySection]
     
+    //   A P P E A R A N C E
     @AppStorage("darkMode") private var darkMode: Bool = false
+    
+    //   T R I P   D E F A U L T S
+    @AppStorage("tripTripType") private var tripTripType: String = "M"
+    @AppStorage("tripSurveySection") private var tripSurveySection: String = "U"
+    @AppStorage("tripWatershed") private var tripWatershed: String = "BHR"
+    @AppStorage("gear") private var gear: String = "Jet Boat, Anodes boom"
+    @AppStorage("rectifyingunit") private var rectifyingunit: String = "SR Model VVP-15B"
+    @AppStorage("volts") private var volts: String = "150"
+    @AppStorage("amps") private var amps: String = "6"
+    @AppStorage("shocktime") private var shocktime: String = "6"
+    @AppStorage("anesthetic") private var anesthetic: String = "222"
+    @AppStorage("dosage") private var dosage: String = ""
 
+    //   P E R S O N N E L   A N D   G E A R
+    @AppStorage("observers") private var observers: String = "Blythe, Blackburn, Olszewski"
+    @AppStorage("volunteers") private var volunteers: String = "Doug Haacke"
+  
+    
+    //   P I T   T A G S
+    @AppStorage("usingPitTags") private var usingPitTags: Bool = true
+    @AppStorage("pitManufacturer") private var pitManufacturer: String = "Biomark"
+    @AppStorage("pitSize") private var pitSize: Double = 8.0
+    @AppStorage("pitFrequency") private var pitFrequency: Double = 134.2
+    @AppStorage("pitTagType") private var pitTagType: String = "Passive"
+    @AppStorage("pitTagPrefix") private var pitTagPrefix: String = ""
+    @AppStorage("pitTagSuffix") private var pitTagSuffix: String = ""
+    @AppStorage("pitTagPlacement") private var pitTagPlacement: String = "Dorsal"
+
+    
     @AppStorage("uomFishLength") private var uomFishLength: String = "mm"
     @AppStorage("lengthMin") private var lengthMin: Int = 0
     @AppStorage("lengthMax") private var lengthMax: Int = 2000
@@ -25,26 +54,7 @@ struct SettingsView: View {
     @AppStorage("weightMax") private var weightMax: Int = 1000
     @AppStorage("useBluetoothWeight") private var useBluetoothWeight: Bool = false
     
-    @AppStorage("boatCaptain") private var boatCaptain: String = ""
-    @AppStorage("biologistPrimary") private var biologistPrimary: String = "Shannon Blackburn"
-    @AppStorage("biologistSecondary") private var biologistSecondary: String = "Demi Blythe"
-    @AppStorage("technicians") private var technicians: String = ""
-    @AppStorage("volunteers") private var volunteers: String = "Doug Haacke"
     
-    
-    @AppStorage("usingPitTags") private var usingPitTags: Bool = true
-    @AppStorage("pitManufacturer") private var pitManufacturer: String = "Biomark"
-    @AppStorage("pitSize") private var pitSize: Double = 8.0
-    @AppStorage("pitFrequency") private var pitFrequency: Double = 134.2
-    @AppStorage("pitTagType") private var pitTagType: String = "Passive"
-    @AppStorage("pitTagPrefix") private var pitTagPrefix: String = ""
-    @AppStorage("pitTagSuffix") private var pitTagSuffix: String = ""
-    @AppStorage("pitTagPlacement") private var pitTagPlacement: String = "Dorsal"
-    
-    @AppStorage("tripTripType") private var tripTripType: String = "M"
-    @AppStorage("tripSurveySection") private var tripSurveySection: String = "U"
-    @AppStorage("tripWatershed") private var tripWatershed: String = "BHR"
-    @AppStorage("tripEquipment") private var tripEquipment: String = "Jet Boat- Boom anodes"
     
     
     
@@ -81,51 +91,128 @@ struct SettingsView: View {
                 }
                 .listRowBackground(Color("CardBackground"))
                 
-                Section(header: Text("Personnel").font(.title2).foregroundStyle(.white)) {
+                Section(header: Text("Trip Defaults").font(.title2).foregroundStyle(.white)) {
                     LabeledContent {
-                        TextField("", text: $boatCaptain)
+                        Picker("", selection: $tripTripType) {
+                            Text("Marking").tag("M")
+                            Text("Recapture").tag("R")
+                        }.tint(Color("TextForegroundWhite"))
+                    } label: {
+                        Text("Trip Type:")
+                    }.frame(width: 600, height: 40)
+                    
+                    LabeledContent {
+                        Picker("", selection: $tripSurveySection) {
+                            ForEach(surveySections, id: \.self) { section in
+                                Text(section.name).tag(section.code)
+                            }
+                        }.tint(Color("TextForegroundWhite"))
+                    } label: {
+                        Text("Survey Section:")
+                    }.frame(width: 600, height: 40)
+                    
+                    LabeledContent {
+                        Picker("", selection: $tripWatershed) {
+                            ForEach(watersheds, id: \.self) { watershed in
+                                Text(watershed.name).tag(watershed.code)
+                            }
+                        }.tint(Color("TextForegroundWhite"))
+                    } label: {
+                        Text("Survey Section:")
+                    }.frame(width: 600, height: 40)
+                    
+                    LabeledContent {
+                        TextField("", text: $gear)
                           .foregroundColor(Color("TextForeground"))
-                          .border(Color.gray, width: 1)
                           .textFieldStyle(.roundedBorder)
+                          .border(Color.gray, width: 1)
                           .frame(width: 400)
                           .multilineTextAlignment(.leading)
                     } label: {
-                        Text("Boat Captain")
+                        Text("Gear")
                     }.frame(width: 600)
                     
                     LabeledContent {
-                        TextField("", text: $biologistPrimary)
+                        TextField("", text: $rectifyingunit)
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)
                           .frame(width: 400)
                           .multilineTextAlignment(.leading)
                     } label: {
-                        Text("Primary Biologist")
-                    }.frame(width: 600)
-                    
-                    LabeledContent {
-                        TextField("", text: $biologistSecondary)
-                          .foregroundColor(Color("TextForeground"))
-                          .textFieldStyle(.roundedBorder)
-                          .border(Color.gray, width: 1)
-                          .frame(width: 400)
-                          .multilineTextAlignment(.leading)
-                    } label: {
-                        Text("Secondary Biologist")
-                    }.frame(width: 600)
-                    
-                    LabeledContent {
-                        TextField("", text: $technicians)
-                          .foregroundColor(Color("TextForeground"))
-                          .textFieldStyle(.roundedBorder)
-                          .border(Color.gray, width: 1)
-                          .frame(width: 400)
-                          .multilineTextAlignment(.leading)
-                    } label: {
-                        Text("Technician(s)")
+                        Text("Rectifying Unit/Model")
                     }.frame(width: 600)
 
+                    
+                    LabeledContent {
+                        TextField("", text: $volts)
+                          .foregroundColor(Color("TextForeground"))
+                          .textFieldStyle(.roundedBorder)
+                          .border(Color.gray, width: 1)
+                          .frame(width: 100)
+                          .multilineTextAlignment(.leading)
+                    } label: {
+                        Text("Volts")
+                    }.frame(width: 600)
+                    
+                    LabeledContent {
+                        TextField("", text: $amps)
+                          .foregroundColor(Color("TextForeground"))
+                          .textFieldStyle(.roundedBorder)
+                          .border(Color.gray, width: 1)
+                          .frame(width: 100)
+                          .multilineTextAlignment(.leading)
+                    } label: {
+                        Text("Amps")
+                    }.frame(width: 600)
+                    
+                    LabeledContent {
+                        TextField("", text: $shocktime)
+                          .foregroundColor(Color("TextForeground"))
+                          .textFieldStyle(.roundedBorder)
+                          .border(Color.gray, width: 1)
+                          .frame(width: 100)
+                          .multilineTextAlignment(.leading)
+                    } label: {
+                        Text("Shock Time")
+                    }.frame(width: 600)
+                    
+                    LabeledContent {
+                        TextField("", text: $anesthetic)
+                          .foregroundColor(Color("TextForeground"))
+                          .textFieldStyle(.roundedBorder)
+                          .border(Color.gray, width: 1)
+                          .frame(width: 100)
+                          .multilineTextAlignment(.leading)
+                    } label: {
+                        Text("Anesthetic")
+                    }.frame(width: 600)
+                    
+                    LabeledContent {
+                        TextField("", text: $dosage)
+                          .foregroundColor(Color("TextForeground"))
+                          .textFieldStyle(.roundedBorder)
+                          .border(Color.gray, width: 1)
+                          .frame(width: 100)
+                          .multilineTextAlignment(.leading)
+                    } label: {
+                        Text("Dosage")
+                    }.frame(width: 600)
+                }
+                .listRowBackground(Color("CardBackground"))
+                
+                
+                Section(header: Text("Personnel").font(.title2).foregroundStyle(.white)) {
+                    LabeledContent {
+                        TextField("", text: $observers)
+                          .foregroundColor(Color("TextForeground"))
+                          .border(Color.gray, width: 1)
+                          .textFieldStyle(.roundedBorder)
+                          .frame(width: 400)
+                          .multilineTextAlignment(.leading)
+                    } label: {
+                        Text("Observers")
+                    }.frame(width: 600)
                     
                     LabeledContent {
                         TextField("", text: $volunteers)
@@ -135,8 +222,10 @@ struct SettingsView: View {
                           .frame(width: 400)
                           .multilineTextAlignment(.leading)
                     } label: {
-                        Text("Volunteer(s)")
+                        Text("Volunteers")
                     }.frame(width: 600)
+                    
+                    
                 }
                 .listRowBackground(Color("CardBackground"))
                 
@@ -152,7 +241,7 @@ struct SettingsView: View {
                         Text("Using PIT tags")
                         Text("Enable this if you are using PIT tags for tagging fish.")
                             .font(.footnote)
-                    }.frame(width: 500)
+                    }.frame(width: 600)
                     
                     LabeledContent {
                         TextField("", text: $pitManufacturer)
@@ -174,17 +263,17 @@ struct SettingsView: View {
                         }.tint(Color("TextForegroundWhite"))
                     } label: {
                         Text("PIT tag size (length)")
-                    }.frame(width: 500, height: 40)
+                    }.frame(width: 600, height: 40)
                     
                     LabeledContent {
                         TextField("", value: $pitFrequency, formatter: decimalFormatter)
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 100)
-                          .multilineTextAlignment(.trailing)
+                          .multilineTextAlignment(.leading)
                     } label: {
                         Text("PIT tag frequency")
-                    }.frame(width: 500)
+                    }.frame(width: 600)
                     
                     LabeledContent {
                         Picker("", selection: $pitTagType) {
@@ -194,7 +283,7 @@ struct SettingsView: View {
                         }.tint(Color("TextForegroundWhite"))
                     } label: {
                         Text("PIT tag type")
-                    }.frame(width: 500, height: 40)
+                    }.frame(width: 600, height: 40)
                     
                     LabeledContent {
                         TextField("", text: $pitTagPrefix)
@@ -205,7 +294,7 @@ struct SettingsView: View {
                           .multilineTextAlignment(.leading)
                     } label: {
                         Text("PIT tag prefix")
-                    }.frame(width: 500)
+                    }.frame(width: 600)
 
                     LabeledContent {
                         TextField("", text: $pitTagSuffix)
@@ -216,7 +305,7 @@ struct SettingsView: View {
                           .multilineTextAlignment(.leading)
                     } label: {
                         Text("PIT tag suffix")
-                    }.frame(width: 500)
+                    }.frame(width: 600)
                     
                     LabeledContent {
                         Picker("", selection: $pitTagPlacement) {
@@ -227,7 +316,7 @@ struct SettingsView: View {
                         }.tint(Color("TextForegroundWhite"))
                     } label: {
                         Text("Typical PIT tag placement")
-                    }.frame(width: 500, height: 40)
+                    }.frame(width: 600, height: 40)
                     
                 }
                 .listRowBackground(Color("CardBackground"))
@@ -241,27 +330,28 @@ struct SettingsView: View {
                         }.tint(Color("TextForegroundWhite"))
                     } label: {
                         Text("Unit of Measurement for Length")
-                    }.frame(width: 500, height: 40)
+                    }.frame(width: 600, height: 40)
+                    
                     LabeledContent {
                         TextField("", value: $lengthMin, formatter: NumberFormatter())
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 100)
-                          .multilineTextAlignment(.trailing)
+                          .multilineTextAlignment(.leading)
                         Text(uomFishLength).frame(width: 40, alignment: .leading)
                     } label: {
                         Text("Min Length")
-                    }.frame(width: 500)
+                    }.frame(width: 600)
                     LabeledContent {
                         TextField("", value: $lengthMax, formatter: NumberFormatter())
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 100)
-                          .multilineTextAlignment(.trailing)
+                          .multilineTextAlignment(.leading)
                         Text(uomFishLength).frame(width: 40, alignment: .leading)
                     } label: {
                         Text("Max Length")
-                    }.frame(width: 500)
+                    }.frame(width: 600)
                     LabeledContent {
                         Toggle("", isOn: $useBluetoothLength)
                             .frame(width: 50, height: 40)
@@ -269,7 +359,7 @@ struct SettingsView: View {
                             .shadow(radius: 2)
                     } label: {
                         Text("Use Bluetooth Length")
-                    }.frame(width: 500)
+                    }.frame(width: 600)
                 }
                 .listRowBackground(Color("CardBackground"))
                 
@@ -284,28 +374,28 @@ struct SettingsView: View {
                         }.tint(Color("TextForegroundWhite"))
                     } label: {
                         Text("Unit of Measurement for Weight")
-                    }.frame(width: 500, height: 40)
+                    }.frame(width: 600, height: 40)
                     
                     LabeledContent {
                         TextField("", value: $weightMin, formatter: NumberFormatter())
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 100)
-                          .multilineTextAlignment(.trailing)
+                          .multilineTextAlignment(.leading)
                         Text(uomFishWeight).frame(width: 40, alignment: .leading)
                     } label: {
                         Text("Min Weight")
-                    }.frame(width: 500)
+                    }.frame(width: 600)
                     LabeledContent {
                         TextField("", value: $weightMax, formatter: NumberFormatter())
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 100)
-                          .multilineTextAlignment(.trailing)
+                          .multilineTextAlignment(.leading)
                         Text(uomFishWeight).frame(width: 40, alignment: .leading)
                     } label: {
                         Text("Max Weight")
-                    }.frame(width: 500)
+                    }.frame(width: 600)
                     LabeledContent {
                         Toggle("", isOn: $useBluetoothWeight)
                             .frame(width: 50, height: 40)
@@ -313,53 +403,12 @@ struct SettingsView: View {
                             .shadow(radius: 2)
                     } label: {
                         Text("Use Bluetooth Weight")
-                    }.frame(width: 500)
+                    }.frame(width: 600)
                 }
                 .listRowBackground(Color("CardBackground"))
 
                 
-                Section(header: Text("Trip Defaults").font(.title2).foregroundStyle(.white)) {
-                    LabeledContent {
-                        Picker("", selection: $tripTripType) {
-                            Text("Marking").tag("M")
-                            Text("Recapture").tag("R")
-                        }.tint(Color("TextForegroundWhite"))
-                    } label: {
-                        Text("Trip Type:")
-                    }.frame(width: 500, height: 40)
-                    
-                    LabeledContent {
-                        Picker("", selection: $tripSurveySection) {
-                            ForEach(surveySections, id: \.self) { section in
-                                Text(section.name).tag(section.code)
-                            }
-                        }.tint(Color("TextForegroundWhite"))
-                    } label: {
-                        Text("Survey Section:")
-                    }.frame(width: 500, height: 40)
-                    
-                    LabeledContent {
-                        Picker("", selection: $tripWatershed) {
-                            ForEach(watersheds, id: \.self) { watershed in
-                                Text(watershed.name).tag(watershed.code)
-                            }
-                        }.tint(Color("TextForegroundWhite"))
-                    } label: {
-                        Text("Survey Section:")
-                    }.frame(width: 500, height: 40)
-                    
-                    LabeledContent {
-                        TextField("", text: $tripEquipment)
-                          .foregroundColor(Color("TextForeground"))
-                          .textFieldStyle(.roundedBorder)
-                          .border(Color.gray, width: 1)
-                          .frame(width: 400)
-                          .multilineTextAlignment(.leading)
-                    } label: {
-                        Text("Equipment:")
-                    }.frame(width: 600)
-                }
-                .listRowBackground(Color("CardBackground"))
+                
                 
                 Section(header: Text("Species").font(.title2).foregroundStyle(.white)) {
                     SpeciesListView(sort: SortDescriptor(\Species.name))

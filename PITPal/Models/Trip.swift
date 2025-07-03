@@ -24,6 +24,7 @@ final class Trip: Codable {
     var endTime: String        // 17:10
     var waterTemperature: Double
     var waterFlow: Double
+    var turbidity: String
     var isClosed: String
     @Relationship(deleteRule: .cascade, inverse: \Fish.trip) var fish: [Fish]
     // var fish: [Fish]
@@ -44,6 +45,7 @@ final class Trip: Codable {
         endTime: String = "",
         waterTemperature: Double = 0,
         waterFlow: Double = 0,
+        turbidity: String = "",
         isClosed: String = "Y",
         fish: [Fish] = []
     ) {
@@ -61,6 +63,7 @@ final class Trip: Codable {
         self.endTime = endTime
         self.waterTemperature = waterTemperature
         self.waterFlow = waterFlow
+        self.turbidity = turbidity
         self.isClosed = isClosed
         self.fish = fish
     }
@@ -80,6 +83,7 @@ final class Trip: Codable {
         case endTime
         case waterTemperature
         case waterFlow
+        case turbidity
         case isClosed
         case fish
     }
@@ -104,6 +108,7 @@ final class Trip: Codable {
         self.endTime = try container.decode(String.self, forKey: .endTime)
         self.waterTemperature = try container.decode(Double.self, forKey: .waterTemperature)
         self.waterFlow = try container.decode(Double.self, forKey: .waterFlow)
+        self.turbidity = try container.decode(String.self, forKey: .turbidity)
         self.isClosed = try container.decode(String.self, forKey: .isClosed)
         self.fish = try container.decodeIfPresent([Fish].self, forKey: .fish) ?? []
     }
@@ -124,6 +129,7 @@ final class Trip: Codable {
         try container.encode(endTime, forKey: .endTime)
         try container.encode(waterTemperature, forKey: .waterTemperature)
         try container.encode(waterFlow, forKey: .waterFlow)
+        try container.encode(turbidity, forKey: .turbidity)
         try container.encode(isClosed, forKey: .isClosed)
         try container.encode(fish, forKey: .fish)
     }
@@ -170,7 +176,7 @@ final class Trip: Codable {
         buffer += "\(self.endTime),"
         buffer += "\(self.waterTemperature),"
         buffer += "\(self.waterFlow),"
-
+        buffer += "\(self.turbidity),"
         return buffer
     }
 
@@ -242,6 +248,7 @@ extension Trip {
                                endTime: self.endTime,
                                waterTemperature: self.waterTemperature,
                                waterFlow: self.waterFlow,
+                               turbidity: self.turbidity,
                                isClosed: self.isClosed,
                                fish: [])
         

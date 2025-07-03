@@ -11,6 +11,7 @@ import SwiftData
 // @AppStorage("usingPitTags") private var usingPitTags: Bool = true
 
 struct TagFishEntryView: View {
+    
     @Environment(\.modelContext) var modelContext
     @Environment(LocationsHandler.self) var locationsHandler
     @Environment(JSONManager.self) var jsonManager
@@ -28,11 +29,11 @@ struct TagFishEntryView: View {
     @State private var pitTagNumber: String = ""
     @State private var enteredNumber: String = ""
     
-    @State private var speciesCode: String = ""
-    @State private var fishLength: String = ""
-    @State private var enteredLength: String = ""
-    @State private var fishWeight: String = ""
-    @State private var enteredWeight: String = ""
+    @State private var selectedSpecies: String = ""
+    @State private var selectedLength:  String = ""
+    @State private var selectedWeight:  String = ""
+    @State private var enteredLength:   String = ""
+    @State private var enteredWeight:   String = ""
     
     @State private var isPresentedPitTag: Bool = false
     @State private var isPresentedLength: Bool = false
@@ -43,6 +44,8 @@ struct TagFishEntryView: View {
     @State private var isValidSurveySection: Bool = false
     @State private var isValidLength: Bool = false
     @State private var isValidWeight: Bool = false
+    
+    let q = Queries()
     
     // @Query(sort: \Species.code) var species: [Species]
     // @Query(filter: #Predicate<Species> { sp in sp.active == true}, sort: \Species.name) var filteredSpecies: [Species]
@@ -126,14 +129,12 @@ struct TagFishEntryView: View {
                             .padding(.horizontal, 20)
                             .frame(height: usingPitTags ? 50 : 0)
                         }
-//                        else {
-//                            Text("Not using PIT tags")
-//                        }
+
 
                         
                         VStack {
                             HStack {
-                                SegmentedPickerSpecies(speciesCode: $speciesCode, isValidSpecies: $isValidSpecies)
+                                SegmentedPickerSpecies(selectedSpecies: $selectedSpecies, isValidSpecies: $isValidSpecies)
                             }
                         }
                             .frame(height: 50)
@@ -142,7 +143,7 @@ struct TagFishEntryView: View {
                         VStack {
                             HStack {
                                 LabeledContent {
-                                    TextField("", text: $fishLength)
+                                    TextField("", text: $selectedLength)
                                         .disabled(true)
                                         .border(Color.gray, width: 1)
                                         .foregroundColor(Color("TextForeground"))
@@ -175,7 +176,7 @@ struct TagFishEntryView: View {
                                 .padding(.trailing, 60)
                                 
                                 LabeledContent {
-                                    TextField("", text: $fishWeight)
+                                    TextField("", text: $selectedWeight)
                                         .disabled(true)
                                         .border(Color.gray, width: 1)
                                         .foregroundColor(Color("TextForeground"))
@@ -212,13 +213,39 @@ struct TagFishEntryView: View {
                             HStack {
                                 SaveButton(onSaveButtonTapped: {
                                     print("Save button tapped")
+                                    try! modelContext.transaction {
+
+                                        modelContext.insert(trip)
+
+                                        if isValidLength || isValidWeight || isValidSpecies {
+                                            let fish = Fish(
+                                                date:       trip.date,
+                                                pitTag:     pitTagNumber,
+                                                lat:        locationsHandler.lastLocation2D.latitude,
+                                                lon:        locationsHandler.lastLocation2D.longitude,
+                                                species:    selectedSpecies,
+                                                fwpSpecies: q.fetchFWPCodeFromCode(context: modelContext, code: selectedSpecies),
+                                                weight:     Int(selectedWeight) ?? 0,
+                                                length:     Int(selectedLength) ?? 0,
+                                                gender:     "",
+                                                doa:        "N",
+                                                hookScar:   "N",
+                                                comment:    ""
+                                            )
+                                            trip.fish.append(fish)
+                                            
+                                            selectedSpecies = ""
+                                            selectedLength  = ""
+                                            selectedWeight  = ""
+                                            enteredLength   = ""
+                                            enteredWeight   = ""
+                                        }
+                                    }
+
                                 })
                                     .padding(.vertical, 20)
-                                    .opacity(fishLength.isEmpty || fishWeight.isEmpty || speciesCode.isEmpty ? 0.2 : 1)
-                                    .disabled(isValidLength || isValidWeight || isValidSpecies || (isValidPitTag && usingPitTags))
-                            }
-                            HStack {
-                                
+//                                    .opacity(selectedLength.isEmpty || selectedWeight.isEmpty || selectedSpecies.isEmpty ? 0.2 : 1)
+//                                    .disabled(isValidLength || isValidWeight || isValidSpecies || (isValidPitTag && usingPitTags))
                             }
                         }.padding(.horizontal, 20)
                         
@@ -237,26 +264,33 @@ struct TagFishEntryView: View {
                         }
                         enteredNumber = ""
                     }
+                    
                     .onChange(of: enteredLength) {
-                        if enteredLength == "<" && !fishLength.isEmpty {
-                            fishLength = String(fishLength.dropLast())
-                        } else {
-                            fishLength += enteredLength
+                        print("Entered Length: \(selectedLength)")
+                        if enteredLength == "<" && !selectedLength.isEmpty  {
+                            selectedLength = String(selectedLength.dropLast())
+                        }
+                        else {
+                            selectedLength += enteredLength
                         }
                         enteredLength = ""
-                        isValidLength = Int(fishLength) ?? 0 > 0
+                        isValidLength = !selectedLength.isEmpty ? true : false
                     }
+                    
                     .onChange(of: enteredWeight) {
-                        if enteredWeight == "<" && !fishWeight.isEmpty {
-                            fishWeight = String(fishWeight.dropLast())
-                        } else {
-                            fishWeight += enteredWeight
+                        print("Entered Weight: \(selectedWeight)")
+                        if enteredWeight == "<" && !selectedWeight.isEmpty  {
+                            selectedWeight = String(selectedWeight.dropLast())
+                        }
+                        else {
+                            selectedWeight += enteredWeight
                         }
                         enteredWeight = ""
-                        isValidWeight = Int(fishWeight) ?? 0 > 0
+                        isValidWeight = !selectedWeight.isEmpty ? true : false
                     }
-                    .onChange(of: speciesCode) {
-                        isValidSpecies = !speciesCode.isEmpty
+                    
+                    .onChange(of: selectedSpecies) {
+                        isValidSpecies = !selectedSpecies.isEmpty
                     }
                     .onChange(of: pitTagNumber) {
                         isValidPitTag = validatePitTag(tag: pitTagNumber)

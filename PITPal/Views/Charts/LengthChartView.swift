@@ -25,23 +25,25 @@ struct LengthChartView: View {
     
     @State private var startDate: Date = "2024-04-01".toDate(format: "yyyy-MM-dd") // Date()
     @State private var endDate:   Date = "2024-04-30".toDate(format: "yyyy-MM-dd") // Date()
+    @State private var selectedTitle: String = "Size Distribution"
     @State private var selectedWatershed: String = ""
     @State private var selectedTripType: String = ""
     @State private var selectedSurveySection: String = ""
     @State private var selectedSpecies: String = ""
     @State private var selectedMinLength: Int = 0
     @State private var selectedMaxLength: Int = 0
-    @State private var title: String = "Fish Size Distribution"
+
     
     @State private var filteredTrips: [TripData] = []
     @State private var filteredFish: [FishData] = []
+    @State private var fishChartData: [FishChartData] = []
     @State private var isChartReady: Bool = false
     
     @AppStorage("tripTripType") private var tripTripType: String = "M"
     @AppStorage("tripSurveySection") private var tripSurveySection: String = "U"
     @AppStorage("tripWatershed") private var tripWatershed: String = "BHR"
     @AppStorage("lengthMin") private var lengthMin: Int = 0
-    @AppStorage("lengthMax") private var lengthMax: Int = 2000
+    @AppStorage("lengthMax") private var lengthMax: Int = 3000
     @AppStorage("uomFishLength") private var uomFishLength: String = "mm"
     @AppStorage("uomFishWeight") private var uomFishWeight: String = "gm"
     @AppStorage("tripSpecies") private var tripSpecies: String = "LL"
@@ -51,6 +53,8 @@ struct LengthChartView: View {
     @Query(sort: \SurveySection.name, order: .forward) var surveySectionList: [SurveySection]
     @Query(sort: \Watershed.name, order: .forward) var watershedList: [Watershed]
     @Query(sort: \Trip.date, order: .forward) var tripList: [Trip]
+    
+
     
     
     var body: some View {
@@ -73,6 +77,19 @@ struct LengthChartView: View {
             .padding(.bottom, 40)
             
             VStack(alignment: .leading) {
+                
+                HStack {
+                    LabeledContent {
+                        TextField("", text: $selectedTitle)
+                          .foregroundColor(Color("TextForeground"))
+                          .textFieldStyle(.roundedBorder)
+                          .frame(width: 250)
+                          .multilineTextAlignment(.leading)
+                    } label: {
+                        Text("Chart Title")
+                    }.frame(width: 400)
+                    Spacer()
+                }
                 
                 HStack() {
                     LabeledContent {
@@ -137,7 +154,7 @@ struct LengthChartView: View {
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 70)
-                          .multilineTextAlignment(.trailing)
+                          .multilineTextAlignment(.leading)
                         Text(uomFishLength).frame(width: 40, alignment: .leading)
                     } label: {
                         Text("Min Length")
@@ -148,7 +165,7 @@ struct LengthChartView: View {
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 70)
-                          .multilineTextAlignment(.trailing)
+                          .multilineTextAlignment(.leading)
                         Text(uomFishLength).frame(width: 40, alignment: .leading)
                     } label: {
                         Text("Max Length")
@@ -160,13 +177,19 @@ struct LengthChartView: View {
                     ChartButton(onChartButtonTapped: {
                         filteredFish = filterFish()
                         print("Filtered Fish Found: \(filteredFish.count)")
+                        fishChartData = buildMatrix(species: selectedSpecies)
                         self.isChartReady = filteredFish.count > 0 ? true : false
                     })
                     Spacer()
                 }
                 if isChartReady {
                     VStack {
-                        LengthBarChartView(filteredFish: $filteredFish, title: $title, species: $selectedSpecies)
+                        LengthBarChartView(
+                            filteredFish: $filteredFish,
+                            fishChartData: $fishChartData,
+                            title: $selectedTitle,
+                            species: $selectedSpecies,
+                        )
                             .padding(.top, 20)
                             .padding(.bottom, 20)
                     }
@@ -231,11 +254,26 @@ struct LengthChartView: View {
         }
         if !selectedSpecies.isEmpty {
             for trip in filteredTrips {
-                filteredFish = trip.fish.filter { $0.species == selectedSpecies && $0.length >= Double(selectedMinLength) && Double($0.length) <= Double(selectedMaxLength) }
+                filteredFish = trip.fish.filter { $0.species == selectedSpecies && $0.length >= selectedMinLength && $0.length <= selectedMaxLength }
                 trip.fish = filteredFish
             }
         }
         return filteredFish
+    }
+    
+    func buildMatrix(species: String) -> [FishChartData] {
+        DispatchQueue.main.async {
+            fishChartData.removeAll()
+            fishChartData.append(FishChartData(id:  1,  sizeGroup:  6,  count: filteredFish.filter { $0.length <= 125}.count, species: species))
+            fishChartData.append(FishChartData(id:  2,  sizeGroup:  8,  count: filteredFish.filter { $0.length >  125 && $0.length <= 203 }.count ,species: species))
+            fishChartData.append(FishChartData(id:  3,  sizeGroup: 10,  count: filteredFish.filter { $0.length >  203 && $0.length <= 253 }.count ,species: species))
+            fishChartData.append(FishChartData(id:  4,  sizeGroup: 12,  count: filteredFish.filter { $0.length >  253 && $0.length <= 305 }.count ,species: species))
+            fishChartData.append(FishChartData(id:  5,  sizeGroup: 14,  count: filteredFish.filter { $0.length >  305 && $0.length <= 355 }.count ,species: species))
+            fishChartData.append(FishChartData(id:  6,  sizeGroup: 16,  count: filteredFish.filter { $0.length >  355 && $0.length <= 406 }.count ,species: species))
+            fishChartData.append(FishChartData(id:  7,  sizeGroup: 18,  count: filteredFish.filter { $0.length >  406 && $0.length <= 458 }.count ,species: species))
+            fishChartData.append(FishChartData(id:  8,  sizeGroup: 20,  count: filteredFish.filter { $0.length >  458 }.count, species: species))
+        }
+        return fishChartData
     }
 }
 
@@ -250,10 +288,9 @@ struct LengthBarChartView: View {
     @Environment(\.modelContext) var modelContext
     
     @Binding var filteredFish: [FishData]
+    @Binding var fishChartData: [FishChartData]
     @Binding var title: String
     @Binding var species: String
-    
-    @State private var fishChartData: [FishChartData] = []
     
     var body: some View {
         VStack {
@@ -296,33 +333,86 @@ struct LengthBarChartView: View {
             .background(Color.black)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
-        .padding(.horizontal, 12)
-        .onAppear {
-            fishChartData = buildMatrix(species: species)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 20)
+        VStack {
+            PDFButton(onPDFButtonTapped: {
+                print("Creating PDF...")
+                createPDF()
+            })
+            .padding(.bottom, 10)
         }
     }
     
-    func buildMatrix(species: String) -> [FishChartData] {
-        DispatchQueue.main.async {
-            fishChartData.removeAll()
-            fishChartData.append(FishChartData(id:  1,  sizeGroup:  6,  count: filteredFish.filter { $0.length <= 125}.count, species: species))
-            fishChartData.append(FishChartData(id:  2,  sizeGroup:  8,  count: filteredFish.filter { $0.length >  125 && $0.length <= 203 }.count ,species: species))
-            fishChartData.append(FishChartData(id:  3,  sizeGroup: 10,  count: filteredFish.filter { $0.length >  203 && $0.length <= 253 }.count ,species: species))
-            fishChartData.append(FishChartData(id:  4,  sizeGroup: 12,  count: filteredFish.filter { $0.length >  253 && $0.length <= 305 }.count ,species: species))
-            fishChartData.append(FishChartData(id:  5,  sizeGroup: 14,  count: filteredFish.filter { $0.length >  305 && $0.length <= 355 }.count ,species: species))
-            fishChartData.append(FishChartData(id:  6,  sizeGroup: 16,  count: filteredFish.filter { $0.length >  355 && $0.length <= 406 }.count ,species: species))
-            fishChartData.append(FishChartData(id:  7,  sizeGroup: 18,  count: filteredFish.filter { $0.length >  406 && $0.length <= 458 }.count ,species: species))
-            fishChartData.append(FishChartData(id:  8,  sizeGroup: 20,  count: filteredFish.filter { $0.length >  458 }.count, species: species))
+    func createPDF() {
+            // Create PDF context
+        let pdfMetaData = [
+            kCGPDFContextCreator: "Chart PDF Creator",
+            kCGPDFContextAuthor: "Doug Haacke"
+        ]
+        let format = UIGraphicsPDFRendererFormat()
+        format.documentInfo = pdfMetaData as [String: Any]
+        
+        // Define PDF page size
+        let pageSize = CGSize(width: 595, height: 842) // A4 size
+        let renderer = UIGraphicsPDFRenderer(bounds: CGRect(origin: .zero, size: pageSize), format: format)
+        
+        // Create PDF data
+        let data = renderer.pdfData { context in
+            context.beginPage()
+            
+            // Create SwiftUI view
+            let chartView = LengthBarChartView(
+                filteredFish: $filteredFish,
+                fishChartData: $fishChartData,
+                title: $title,
+                species: $species
+            )
+            
+            // Convert SwiftUI view to UIImage
+            let controller = UIHostingController(rootView: chartView)
+            controller.view.frame = CGRect(x: 50, y: 50, width: 495, height: 500)
+            
+            // Render the view
+            let view = controller.view!
+            let targetRect = CGRect(x: 50, y: 50, width: 495, height: 500)
+            view.drawHierarchy(in: targetRect, afterScreenUpdates: true)
+            
+//            // Add a large group title
+//            let title = "Sales Chart"
+//            let attributes: [NSAttributedString.Key: Any] = [
+//                .font: UIFont.boldSystemFont(ofSize: 24),
+//                .foregroundColor: UIColor.black
+//            ]
+//            title.draw(at: CGPoint(x: 50, y: 20), withAttributes: attributes)
         }
-        return fishChartData
+        
+//        let tempDir = FileManager.default.temporaryDirectory
+//        let fileURL = tempDir.appendingPathComponent("\(title).pdf")
+        
+        let folderURL = URL.documentsDirectory.appending(path: "PDF", directoryHint: .isDirectory)
+        do {
+            try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            print("Error creating PDF directory (or directory already exists): \(error)")
+        }
+        
+        let pdfURL = URL.documentsDirectory.appending(path: "PDF", directoryHint: .isDirectory).appending(path: "\(title).pdf")
+        do {
+            try data.write(to: pdfURL)
+            print("PDF saved at: \(pdfURL)")
+        } catch {
+            print("Error saving PDF: \(error)")
+        }
+
     }
 }
     
-    /*
-     struct FishData: Identifiable {
-     var id: Int
-     var sizeGroup: Int
-     var count: Int
-     var species: String
-     }
-    */
+/*
+ struct FishData: Identifiable {
+ var id: Int
+ var sizeGroup: Int
+ var count: Int
+ var species: String
+ }
+*/

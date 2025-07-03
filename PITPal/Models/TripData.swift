@@ -22,6 +22,7 @@ final class TripData {
     var endTime: String        // 17:10
     var waterTemperature: Double
     var waterFlow: Double
+    var turbidity: String
     var isClosed: String
     var fish: [FishData]
     
@@ -40,6 +41,7 @@ final class TripData {
         endTime: String = "",
         waterTemperature: Double = 0,
         waterFlow: Double = 0,
+        turbidity: String = "CLEAR",
         isClosed: String = "Y",
         fish: [FishData] = []
     ) {
@@ -57,6 +59,7 @@ final class TripData {
         self.endTime = endTime
         self.waterTemperature = waterTemperature
         self.waterFlow = waterFlow
+        self.turbidity = turbidity
         self.isClosed = isClosed
         self.fish = fish
     }

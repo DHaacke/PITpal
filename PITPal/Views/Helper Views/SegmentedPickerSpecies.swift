@@ -12,7 +12,7 @@ struct SegmentedPickerSpecies: View {
     @Environment(\.modelContext) var modelContext
     @Environment(JSONManager.self) var jsonManager
     
-    @Binding var speciesCode: String
+    @Binding var selectedSpecies: String
     @Binding var isValidSpecies: Bool
     
     @State private var selectedItem: String = ""
@@ -65,7 +65,7 @@ struct SegmentedPickerSpecies: View {
                     }
                     .onChange(of: selectedItem) {
                         print("Selected \(selectedItem)")
-                        speciesCode = selectedItem
+                        selectedSpecies = selectedItem
                     }
                     .background(Color("CardBackground"))
                     .padding(.horizontal, 20)

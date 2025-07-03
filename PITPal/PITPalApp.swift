@@ -48,7 +48,7 @@ struct PITPalApp: App {
                 launchTimer.upstream.connect().cancel()
             }
             .onAppear {
-                
+                print("Autosave disabled: \(modelContext.autosaveEnabled)")
             }
             .task {
                 print("App is starting...")

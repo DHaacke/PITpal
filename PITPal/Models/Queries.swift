@@ -59,4 +59,20 @@ final class Queries {
                 return ""
         }
     }
+    
+    func fetchFWPCodeFromCode(context: ModelContext, code: String) -> String {
+        let descriptor = FetchDescriptor<Species>(
+            predicate: #Predicate { species in
+                species.code == code
+            }
+        )
+        do {
+            let speciesList : [Species] = try context.fetch(descriptor)
+            var s: Species? { speciesList.first }
+            return s?.fwpCode ?? "N/A"
+        } catch {
+            print("Error fetching FWP Species code: \(error)")
+            return "N/A" // Handle the error appropriately
+        }
+    }
 }

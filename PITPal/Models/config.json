@@ -2,7 +2,7 @@
     "species" : [
         {
             "code": "RB",
-            "fwp_code": "001",
+            "fwpCode": "001",
             "name": "Rainbow",
             "imageName": "rainbow",
             "color": "TroutGreen",
@@ -10,7 +10,7 @@
         },
         {
             "code": "LL",
-            "fwp_code": "004",
+            "fwpCode": "004",
             "name": "Brown",
             "imageName": "brown",
             "color" : "TroutBrown",
@@ -18,7 +18,7 @@
         },
         {
             "code": "YCT",
-            "fwp_code": "",
+            "fwpCode": "",
             "name": "Y. Cutthroat",
             "imageName": "cutthroat",
             "color" : "TroutYellow",
@@ -26,7 +26,7 @@
         },
         {
             "code": "LING",
-            "fwp_code": "026",
+            "fwpCode": "026",
             "name": "Ling",
             "imageName": "ling",
             "color" : "TroutGray",
@@ -34,7 +34,7 @@
         },
         {
             "code": "SMB",
-            "fwp_code": "073",
+            "fwpCode": "073",
             "name": "Smallmouth",
             "imageName": "smallmouth",
             "color" : "TroutYellow",
@@ -42,7 +42,7 @@
         },
         {
             "code": "TRT",
-            "fwp_code": "118",
+            "fwpCode": "118",
             "name": "Tiger",
             "imageName": "tiger",
             "color" : "TroutPurple",

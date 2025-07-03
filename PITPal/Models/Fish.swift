@@ -12,13 +12,13 @@ import SwiftUI
 final class Fish: Codable {
     var trip: Trip?
     var date: Date
-    var pitTag: String
+    var pitTag: String  // F59534AF76C0
     var lat: Double
     var lon: Double
     var species: String
     var fwpSpecies: String
-    var weight: Double
-    var length: Double
+    var weight: Int
+    var length: Int
     var gender: String
     var doa: String = "N"
     var hookScar: String = "N"
@@ -31,8 +31,8 @@ final class Fish: Codable {
         lon: Double = 0.0,
         species: String = "",
         fwpSpecies: String = "",
-        weight: Double = 0.0,
-        length: Double = 0.0,
+        weight: Int = 0,
+        length: Int = 0,
         gender: String = "",
         doa: String = "N",
         hookScar: String = "N",
@@ -80,8 +80,8 @@ final class Fish: Codable {
         self.lon = try container.decode(Double.self, forKey: .lon)
         self.species = try container.decode(String.self, forKey: .species)
         self.fwpSpecies = try container.decode(String.self, forKey: .fwpSpecies)
-        self.weight = try container.decode(Double.self, forKey: .weight)
-        self.length = try container.decode(Double.self, forKey: .length)
+        self.weight = try container.decode(Int.self, forKey: .weight)
+        self.length = try container.decode(Int.self, forKey: .length)
         self.gender = try container.decode(String.self, forKey: .gender)
         self.doa = try container.decode(String.self, forKey: .doa)
         self.hookScar = try container.decode(String.self, forKey: .hookScar)
