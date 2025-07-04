@@ -63,9 +63,6 @@ struct TripFishView: View {
     @State private var isValidWeight: Bool = false
     @State private var isShowingDuplicateAlert: Bool = false
     
-    // @ScaledMetric(relativeTo: .footnote) private var fontRefSize = 100.0
-    
-    
     let q = Queries()
     
     // @Query(sort: \Comment.sort) var commentList: [Comment]
@@ -433,9 +430,11 @@ struct TripFishView: View {
                                     print("Save button tapped")
                                   
                                     // verify trip is not already saved
-                                    let existingTripList = existingTrips.filter { isSameDay(firstDate: $0.date, secondDate: tripData.date) && $0.tripType == tripData.tripType && $0.watershed == tripData.watershed && $0.surveySection == tripData.surveySection }
-                                    if existingTripList.count > 0 {
-                                        isShowingDuplicateAlert = true
+                                    if self.isAddingTrip == true {
+                                        let existingTripList = existingTrips.filter { isSameDay(firstDate: $0.date, secondDate: tripData.date) && $0.tripType == tripData.tripType && $0.watershed == tripData.watershed && $0.surveySection == tripData.surveySection }
+                                        if existingTripList.count > 0 {
+                                            isShowingDuplicateAlert = true
+                                        }
                                     } else {
                                         try! modelContext.transaction {
                                             let trip = Trip(
@@ -463,6 +462,8 @@ struct TripFishView: View {
                                                 isClosed: "N"
                                             )
                                             
+                                            self.isAddingTrip = false
+                                            
                                             modelContext.insert(trip)
                                             
                                             let fish = Fish(
@@ -484,6 +485,7 @@ struct TripFishView: View {
                                             trip.fish.append(fish)
                                             
                                             selectedSpecies  = ""
+                                            selectedGender   = ""
                                             selectedLength   = ""
                                             selectedWeight   = ""
                                             selectedCount    = "1"
@@ -497,22 +499,20 @@ struct TripFishView: View {
                                             isValidWeight    = false
                                             isValidSpecies   = false
                                             
+                                            try modelContext.save()
+                                            
                                             self.tripData = trip.deepCopy()
                                         }
                                     }
                                 })
                                     .padding(.vertical, 20)
                                     .opacity(selectedLength.isEmpty || selectedWeight.isEmpty || selectedSpecies.isEmpty ? 0.2 : 1)
-//                                    .alert(isPresented:$isShowingDuplicateAlert) {
-//                                        Alert(
-//                                            title: Text("Trip already exists"),
-//                                            message: Text("You cannot add a trip for the same date, watershed, trip type and section."),
-//                                            primaryButton: .destructive(Text("OK")) {
-//                                                // print("Deleting...")
-//                                            },
-//                                        )
-//                                    }
-                                    // .disabled(isValidLength || isValidWeight || isValidSpecies)
+                                    .disabled(!isValidSpecies)
+                                    .alert("Oops!", isPresented: $isShowingDuplicateAlert) {
+                                        Button("OK", role: .cancel) { }
+                                    } message: {
+                                        Text("This trip already. Please choose a different date or trip type, section or watershed.")
+                                    }
                             }
                         }.padding(.horizontal, 20)
                         

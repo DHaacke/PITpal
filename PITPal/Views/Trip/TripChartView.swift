@@ -20,9 +20,9 @@ struct TripChartView: View {
     @Environment(\.modelContext) var modelContext
     
     @Binding var tripData: TripData
-    @State private var rainbows: [FishData] = []
-    @State private var browns:   [FishData] = []
-
+    @Binding var rainbows: [FishData]
+    @Binding var browns:   [FishData]
+    
     @State private var fishChartData: [FishChartData] = []
 
     var species: String = ""
@@ -67,10 +67,6 @@ struct TripChartView: View {
                 .font(.system(size: 12, weight: .light, design: .default))
         }
         .padding(.trailing, 12)
-        .onAppear {
-            rainbows = getRainbows(tripData: tripData)
-            browns   = getBrowns(tripData: tripData)
-        }
     }
     
     func filterFish(by species: String) -> [FishChartData] {
@@ -97,14 +93,6 @@ struct TripChartView: View {
             }
         }
         return fishChartData.filter { $0.species == species }
-    }
-    
-    func getRainbows(tripData: TripData) -> [FishData] {
-        return tripData.fish.filter( { $0.species == "RB" && $0.length > 0 && isSameDay(tripDate: tripData.date, fishDate: $0.date) } )
-    }
-    
-    func getBrowns(tripData: TripData) -> [FishData] {
-        return tripData.fish.filter( { $0.species == "LL" && $0.length > 0  && isSameDay(tripDate: tripData.date, fishDate: $0.date) } )
     }
     
     func isSameDay(tripDate: Date, fishDate: Date) -> Bool {

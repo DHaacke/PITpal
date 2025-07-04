@@ -168,6 +168,26 @@ final class Fish: Codable {
         return buffer
     
     }
+    
+    func deepCopy() -> FishData {
+        let newFishData = FishData(
+            date: self.date,
+            pitTag: self.pitTag,
+            lat: self.lat,
+            lon: self.lon,
+            species: self.species,
+            fwpSpecies: self.fwpSpecies,
+            weight: self.weight,
+            length: self.length,
+            gender: self.gender,
+            mort: self.mort,
+            mc: self.mc,
+            count: self.count,
+            comment: self.comment
+        )
+        return newFishData
+    }
+        
         
 }
 

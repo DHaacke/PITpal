@@ -22,8 +22,8 @@ struct TripStatusView: View {
     @State private var isLoadingBighornStats: Bool = true
     @State private var bighornStats: [BighornStats] = []
     
-    @State private var rainbows: [Fish] = []
-    @State private var browns:   [Fish] = []
+    @State private var rainbows: [FishData] = []
+    @State private var browns:   [FishData] = []
     
     @Query var fish: [Fish]
     @Query(sort: \Trip.date, order: .reverse) var trips: [Trip]  //  used for JSON export
@@ -82,9 +82,9 @@ struct TripStatusView: View {
                                 VStack {
                                     HStack {
                                         HStack {
-                                            TripChartView(tripData: $tripData, species: "RB", title: "Rainbow trout")
+                                            TripChartView(tripData: $tripData, rainbows: $rainbows, browns: $browns, species: "RB", title: "Rainbow trout")
                                                 .padding(.top, 10).padding(.trailing, 6)
-                                            TripChartView(tripData: $tripData, species: "LL", title: "Brown trout")
+                                            TripChartView(tripData: $tripData, rainbows: $rainbows, browns: $browns, species: "LL", title: "Brown trout")
                                                 .padding(.top, 10)
                                         }
                                     }
@@ -103,6 +103,12 @@ struct TripStatusView: View {
         
             .onChange(of: networkMonitor.isConnected) {
                 print("Network available changed to: \(networkMonitor.isConnected)")
+            }
+            
+            .onChange(of: tripData.fish) {
+                print("Status: onChange tripData.fish")
+                rainbows = getRainbows(tripData: tripData)
+                browns   = getBrowns(tripData: tripData)
             }
                 
             .onAppear {
@@ -178,12 +184,22 @@ struct TripStatusView: View {
              }
     }
     
-    func getRainbows(tripData: TripData) -> [Fish] {
-        return fish.filter( { $0.species == "RB" && $0.length > 0 && isSameDay(tripDate: tripData.date, fishDate: $0.date) } )
+    func getRainbows(tripData: TripData) -> [FishData] {
+        let rainbows = fish.filter { $0.species == "RB" && isSameDay(tripDate: tripData.date, fishDate: $0.date) }
+        var rainbowData: [FishData] = []
+        for r in rainbows {
+            rainbowData.append(r.deepCopy())
+        }
+        return rainbowData
     }
     
-    func getBrowns(tripData: TripData) -> [Fish] {
-        return fish.filter( { $0.species == "LL" && $0.length > 0  && isSameDay(tripDate: tripData.date, fishDate: $0.date) } )
+    func getBrowns(tripData: TripData) -> [FishData] {
+        let browns = fish.filter { $0.species == "LL" && isSameDay(tripDate: tripData.date, fishDate: $0.date) }
+        var brownData: [FishData] = []
+        for b in browns {
+            brownData.append(b.deepCopy())
+        }
+        return brownData
     }
     
     func isSameDay(tripDate: Date, fishDate: Date) -> Bool {

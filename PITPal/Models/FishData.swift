@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-final class FishData {
+final class FishData: Equatable {
     var id: UUID = UUID()
     var trip: TripData?
     var date: Date
@@ -52,6 +52,10 @@ final class FishData {
         self.mc = mc
         self.count = count
         self.comment = comment
+    }
+    
+    static func ==(lhs: FishData, rhs: FishData) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 
