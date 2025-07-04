@@ -33,9 +33,13 @@ struct TagFishEntryView: View {
     @State private var selectedLength:  String = ""
     @State private var selectedWeight:  String = ""
     @State private var selectedGender:  String = ""
+    @State private var selectedMortality:  String = "N"
+    @State private var selectedMC:  String = "N"
+    @State private var selectedCount:  String = "1"
     
     @State private var enteredLength:   String = ""
     @State private var enteredWeight:   String = ""
+    @State private var enteredCount:   String = ""
 
     @State private var selectedComments: String = ""
     @State private var isPresentedComments: Bool = false
@@ -43,6 +47,7 @@ struct TagFishEntryView: View {
     @State private var isPresentedPitTag: Bool = false
     @State private var isPresentedLength: Bool = false
     @State private var isPresentedWeight: Bool = false
+    @State private var isPresentedCount: Bool = false
     
     @State private var isValidPitTag: Bool = false
     @State private var isValidSpecies: Bool = false
@@ -290,9 +295,88 @@ struct TagFishEntryView: View {
                                 .padding(.bottom, 12)
                                 
                                 Spacer()
-                           }
+                            }
                                 
+                            //   M O R T
+                            HStack {
+                                LabeledContent {
+                                    Picker("", selection: $selectedMortality) {
+                                        Text("Yes").tag("Y")
+                                        Text("No").tag("N")
+                                    }
+                                        .frame(width: 300)
+                                        .tint(Color("TextForegroundWhite"))
+                                        .pickerStyle(.segmented)
+                                        .scaleEffect(1.4)
+                                } label: {
+                                    Text("Mortality:")
+                                        .multilineTextAlignment(.leading)
+                                    Spacer()
+                                }
+                                .frame(width: 500, height: 30)
+                                .padding(.bottom, 12)
+                                
+                                Spacer()
+                            }
                             
+                            //   M / C
+                            HStack {
+                                LabeledContent {
+                                    Picker("", selection: $selectedMC) {
+                                        Text("Yes").tag("Y")
+                                        Text("No").tag("N")
+                                    }
+                                        .frame(width: 300)
+                                        .tint(Color("TextForegroundWhite"))
+                                        .pickerStyle(.segmented)
+                                        .scaleEffect(1.4)
+
+                                } label: {
+                                    Text("M/C:")
+                                        .multilineTextAlignment(.leading)
+                                    Spacer()
+                                }
+                                .frame(width: 500, height: 30)
+                                .padding(.bottom, 12)
+                                
+                                Spacer()
+                            }
+                            
+                            
+                            //   C O U N T
+                            HStack {
+                                LabeledContent {
+                                    TextField("", text: $selectedCount)
+                                        .disabled(true)
+                                        .border(Color.gray, width: 1)
+                                        .foregroundColor(Color("TextForeground"))
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: 100)
+                                        .multilineTextAlignment(.leading)
+                                        .popover(isPresented: $isPresentedCount) {
+                                            NumberPadView(isPresented: $isPresentedCount, enteredNumber: $enteredCount)
+                                        }
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            isPresentedCount = true
+                                        }
+                                } label: {
+                                    Text("Count: ")
+                                }.frame(width: 250)
+                                
+                                Button {
+                                    self.isPresentedCount = true
+                                } label: {
+                                    Image(systemName: "keyboard.onehanded.right.fill")
+                                }
+                                .foregroundColor(.white)
+                                .background(Color.clear)
+                                .font(.system(size: 28, weight: .regular, design: .default))
+                               
+                                Spacer()
+                            }
+                            .padding(.bottom, 12)
+                        
                             
                             
                             
@@ -366,8 +450,10 @@ struct TagFishEntryView: View {
                                                 selectedSpecies  = ""
                                                 selectedLength   = ""
                                                 selectedWeight   = ""
+                                                selectedCount    = "1"
                                                 enteredLength    = ""
                                                 enteredWeight    = ""
+                                                enteredCount     = ""
                                                 selectedComments = ""
                                                 pitTagNumber     = ""
                                                 
@@ -377,10 +463,6 @@ struct TagFishEntryView: View {
                                                 
                                             }
                                         }
-//                                        print("Resetting comments")
-//                                        for c in comments {
-//                                            c.isSelected = false
-//                                        }
                                     }
                                 })
                                     .padding(.vertical, 20)
