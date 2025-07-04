@@ -8,6 +8,7 @@
 import SwiftUI
 
 final class FishData {
+    var id: UUID = UUID()
     var trip: TripData?
     var date: Date
     var pitTag: String

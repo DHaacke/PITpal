@@ -38,7 +38,7 @@ final class Fish: Codable {
         mort: String = "",
         mc: Int = 0,
         count: Int = 1,
-        comment: String = "",
+        comment: String = ""
     ) {
         self.date = date
         self.pitTag = pitTag

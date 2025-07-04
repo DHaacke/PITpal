@@ -13,9 +13,9 @@ struct TripFishListView: View {
     @Environment(\.modelContext) var modelContext
     //@Query(sort: \Fish.date, order: .forward) var fishList: [Fish]
     
-    @Binding var trip: Trip
+    @Binding var tripData: TripData
 
-    @State private var fishList: [Fish] = []
+    @State private var fishList: [FishData] = []
     
     var body: some View {
         ScrollView {
@@ -30,7 +30,7 @@ struct TripFishListView: View {
                 }
                 .font(.title2)
                 Divider()
-                ForEach(fishList) { fish in
+                ForEach(fishList, id: \.id) { fish in
                     GridRow {
                         Text(fish.species).font(.system(size: 16, weight: .bold))
                         Text(fish.fwpSpecies).font(.system(size: 16, weight: .bold))
@@ -43,7 +43,7 @@ struct TripFishListView: View {
             }
         }
         .onAppear {
-            fishList = trip.fish.sorted { $0.length > $1.length }
+            fishList = tripData.fish.sorted { $0.length > $1.length }
         }
    }
 }

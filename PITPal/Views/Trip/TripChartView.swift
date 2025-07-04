@@ -16,12 +16,10 @@ struct FishChartData: Identifiable {
     var species: String
 }
 
-struct BarChartView: View {
+struct TripChartView: View {
     @Environment(\.modelContext) var modelContext
     
-    @Binding var trip: Trip
-    
-    @State private var tripData: TripData = TripData()
+    @Binding var tripData: TripData
     @State private var rainbows: [FishData] = []
     @State private var browns:   [FishData] = []
 
@@ -70,7 +68,6 @@ struct BarChartView: View {
         }
         .padding(.trailing, 12)
         .onAppear {
-            tripData = trip.deepCopy()
             rainbows = getRainbows(tripData: tripData)
             browns   = getBrowns(tripData: tripData)
         }

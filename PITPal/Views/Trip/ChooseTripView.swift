@@ -14,7 +14,7 @@ struct ChooseTripView: View {
     @Query(sort: \Trip.date, order: .reverse) var trips: [Trip]
     
     @Binding var path: [String]
-    @Binding var trip: Trip
+    @Binding var tripData: TripData
     @Binding var isChoosingTrip: Bool
     @Binding var isAddingTrip: Bool
     
@@ -65,7 +65,7 @@ struct ChooseTripView: View {
             .onChange(of: isAddingTrip) {
                 if isAddingTrip {
                     print("Adding new trip...")
-                    self.trip = Trip(
+                    self.tripData = TripData(
                         date: Date(),
                         tripType: tripTripType,
                         surveySection: tripSurveySection,
@@ -97,7 +97,7 @@ struct ChooseTripView: View {
             .onChange(of: tripSelection) {
                 if let tripSelection {
                     print("\(tripSelection.date.formatted(date: .numeric, time: .omitted)) - \(q.fetchNameFromCode(context: modelContext, model: "SurveySection", code: tripSelection.surveySection)), \(q.fetchNameFromCode(context: modelContext, model: "TripType", code: tripSelection.tripType)), \(tripSelection.fish.count) Fish")
-                    self.trip = tripSelection
+                    self.tripData = tripSelection.deepCopy()
                     self.isChoosingTrip.toggle()
                 }
             }

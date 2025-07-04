@@ -55,7 +55,7 @@ struct ContentView: View {
                         .navigationBarTitleDisplayMode(.inline)
                 }
                 else if navigation == K.TAG {
-                    TagView(path: $path)
+                    TripView(path: $path)
                         .tint(Color("AccentColor"))
                         .navigationBarBackButtonHidden(false)
                         .navigationBarHidden(false)

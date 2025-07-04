@@ -10,7 +10,7 @@ import SwiftData
 
 // @AppStorage("usingPitTags") private var usingPitTags: Bool = true
 
-struct TagFishEntryView: View {
+struct TripFishView: View {
     
     @Environment(\.modelContext) var modelContext
     @Environment(LocationsHandler.self) var locationsHandler
@@ -19,10 +19,17 @@ struct TagFishEntryView: View {
     @Environment(\.scenePhase) var scenePhase
     
     @Binding var path: [String]
-    @Binding var trip: Trip
+    @Binding var tripData: TripData
     @Binding var isAddingTrip: Bool
     
     @AppStorage("usingPitTags") private var usingPitTags: Bool = true
+    @AppStorage("gear") private var gear: String = "Jet Boat, Anodes boom"
+    @AppStorage("rectifyingunit") private var rectifyingunit: String = "SR Model VVP-15B"
+    @AppStorage("volts") private var volts: String = "150"
+    @AppStorage("amps") private var amps: String = "6"
+    @AppStorage("shocktime") private var shocktime: String = "6"
+    @AppStorage("anesthetic") private var anesthetic: String = "222"
+    @AppStorage("dosage") private var dosage: String = ""
     
     @State private var bluetoothManager = BluetoothManager()
    
@@ -54,6 +61,7 @@ struct TagFishEntryView: View {
     @State private var isValidSurveySection: Bool = false
     @State private var isValidLength: Bool = false
     @State private var isValidWeight: Bool = false
+    @State private var isShowingDuplicateAlert: Bool = false
     
     // @ScaledMetric(relativeTo: .footnote) private var fontRefSize = 100.0
     
@@ -66,6 +74,10 @@ struct TagFishEntryView: View {
     @Query(filter: #Predicate<Species> { sp in
         sp.active == "Y"
     }, sort: \.name) var activeSpecies: [Species]
+    
+    @Query(filter: #Predicate<Fish> { fish in
+        fish.pitTag != ""
+    }, sort: \.pitTag) var taggedFish: [Fish]
     
     
     // @Query var comments: [Comment]
@@ -414,59 +426,92 @@ struct TagFishEntryView: View {
                                 Spacer()
                             }
                             
-                           
                             
+                            //   S A V E
                             HStack {
                                 SaveButton(onSaveButtonTapped: {
                                     print("Save button tapped")
-                                    
+                                  
                                     // verify trip is not already saved
-                                    let existingTripList = existingTrips.filter { isSameDay(firstDate:$0.date, secondDate: trip.date) && $0.tripType == trip.tripType && $0.watershed == trip.watershed && $0.surveySection == trip.surveySection }
+                                    let existingTripList = existingTrips.filter { isSameDay(firstDate: $0.date, secondDate: tripData.date) && $0.tripType == tripData.tripType && $0.watershed == tripData.watershed && $0.surveySection == tripData.surveySection }
                                     if existingTripList.count > 0 {
-                                        print("Trip already exists for this date")
+                                        isShowingDuplicateAlert = true
                                     } else {
                                         try! modelContext.transaction {
+                                            let trip = Trip(
+                                                date: tripData.date,
+                                                tripType: tripData.tripType,
+                                                surveySection: tripData.surveySection,
+                                                watershed: tripData.watershed,
+                                                gear: gear,
+                                                rectifyingunit: rectifyingunit,
+                                                volts: volts,
+                                                amps: amps,
+                                                shocktime: shocktime,
+                                                anesthetic: anesthetic,
+                                                dosage: dosage,
+                                                latDown: tripData.latDown,
+                                                lonDown: tripData.lonDown,
+                                                latUp: tripData.latUp,
+                                                lonUp: tripData.lonUp,
+                                                sectionLength: tripData.sectionLength,
+                                                startTime: tripData.startTime,
+                                                endTime: tripData.endTime,
+                                                waterTemperature: tripData.waterTemperature,
+                                                waterFlow: tripData.waterFlow,
+                                                turbidity: tripData.turbidity,
+                                                isClosed: "N"
+                                            )
                                             
                                             modelContext.insert(trip)
-
-                                            if isValidLength || isValidWeight || isValidSpecies {
-                                                let fish = Fish(
-                                                    date:       trip.date,
-                                                    pitTag:     pitTagNumber,
-                                                    lat:        locationsHandler.lastLocation2D.latitude,
-                                                    lon:        locationsHandler.lastLocation2D.longitude,
-                                                    species:    selectedSpecies,
-                                                    fwpSpecies: q.fetchFWPCodeFromCode(context: modelContext, code: selectedSpecies),
-                                                    weight:     Int(selectedWeight) ?? 0,
-                                                    length:     Int(selectedLength) ?? 0,
-                                                    gender:     "",
-                                                    mort:       "N",
-                                                    mc:         0,
-                                                    count:      1,
-                                                    comment:    ""
-                                                )
-                                                trip.fish.append(fish)
-                                                
-                                                selectedSpecies  = ""
-                                                selectedLength   = ""
-                                                selectedWeight   = ""
-                                                selectedCount    = "1"
-                                                enteredLength    = ""
-                                                enteredWeight    = ""
-                                                enteredCount     = ""
-                                                selectedComments = ""
-                                                pitTagNumber     = ""
-                                                
-                                                isValidLength    = false
-                                                isValidWeight    = false
-                                                isValidSpecies   = false
-                                                
-                                            }
+                                            
+                                            let fish = Fish(
+                                                date:       trip.date,
+                                                pitTag:     pitTagNumber,
+                                                lat:        locationsHandler.lastLocation2D.latitude,
+                                                lon:        locationsHandler.lastLocation2D.longitude,
+                                                species:    selectedSpecies,
+                                                fwpSpecies: q.fetchFWPCodeFromCode(context: modelContext, code: selectedSpecies),
+                                                weight:     Int(selectedWeight) ?? 0,
+                                                length:     Int(selectedLength) ?? 0,
+                                                gender:     selectedGender,
+                                                mort:       selectedMortality == "Y" ? "1" : "",
+                                                mc:         selectedMC == "Y" ? 1 : 0,
+                                                count:      Int(selectedCount) ?? 1,
+                                                comment:    selectedComments
+                                            )
+                                            
+                                            trip.fish.append(fish)
+                                            
+                                            selectedSpecies  = ""
+                                            selectedLength   = ""
+                                            selectedWeight   = ""
+                                            selectedCount    = "1"
+                                            enteredLength    = ""
+                                            enteredWeight    = ""
+                                            enteredCount     = ""
+                                            selectedComments = ""
+                                            pitTagNumber     = ""
+                                            
+                                            isValidLength    = false
+                                            isValidWeight    = false
+                                            isValidSpecies   = false
+                                            
+                                            self.tripData = trip.deepCopy()
                                         }
                                     }
                                 })
                                     .padding(.vertical, 20)
                                     .opacity(selectedLength.isEmpty || selectedWeight.isEmpty || selectedSpecies.isEmpty ? 0.2 : 1)
+//                                    .alert(isPresented:$isShowingDuplicateAlert) {
+//                                        Alert(
+//                                            title: Text("Trip already exists"),
+//                                            message: Text("You cannot add a trip for the same date, watershed, trip type and section."),
+//                                            primaryButton: .destructive(Text("OK")) {
+//                                                // print("Deleting...")
+//                                            },
+//                                        )
+//                                    }
                                     // .disabled(isValidLength || isValidWeight || isValidSpecies)
                             }
                         }.padding(.horizontal, 20)
@@ -476,6 +521,11 @@ struct TagFishEntryView: View {
                         if bluetoothManager.pitTagNumber.isEmpty { return }
                         self.pitTagNumber = bluetoothManager.pitTagNumber
                         bluetoothManager.pitTagNumber = ""
+                        
+                        let timesSeen = checkFishHistoryForPitTag(tag: pitTagNumber)
+                        if timesSeen > 0 {
+                            print("PIT Tag \(pitTagNumber) has been seen \(timesSeen) times")
+                        }
                     }
                     .onChange(of: enteredNumber) {
                         print("onChange enteredNumber")
@@ -519,7 +569,6 @@ struct TagFishEntryView: View {
                     }
                     
                     .onAppear {
-
                     }
                 }
             }
@@ -599,16 +648,25 @@ struct TagFishEntryView: View {
         let result = calender.compare(firstDate, to: secondDate, toGranularity: .day)
         return result == .orderedSame
     }
+    
+    func checkFishHistoryForPitTag(tag: String) -> Int {
+        let fish = taggedFish.filter { $0.pitTag == tag }
+        if fish.isEmpty {
+            return 0;
+        } else {
+            return fish.count
+        }
+    }
 }
 
 
 
-#Preview {
-    @Previewable @State var path: [String] = [K.TAG]
-    @Previewable @State var trip: Trip = Trip(date: Date(), tripType: "Marking", surveySection: "Section", watershed: "Watershed")
-    TagFishEntryView(path: $path, trip: $trip, isAddingTrip: .constant(true))
-        .environment(LocationsHandler())
-        .environment(JSONManager())
-        .environment(NetworkMonitor())
-}
-
+//#Preview {
+//    @Previewable @State var path: [String] = [K.TAG]
+//    @Previewable @State var tripData: TripData = TripData(date: Date(), tripType: "Marking", surveySection: "Section", watershed: "Watershed")
+//    TripFishView(path: $path, tripData: $tripData, isAddingTrip: .constant(true))
+//        .environment(LocationsHandler())
+//        .environment(JSONManager())
+//        .environment(NetworkMonitor())
+//}
+//

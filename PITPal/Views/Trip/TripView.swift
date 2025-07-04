@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TagView: View {
+struct TripView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(LocationsHandler.self) var locationsHandler
     @Environment(JSONManager.self) var jsonManager
@@ -18,26 +18,26 @@ struct TagView: View {
 
     @State private var isChoosingTrip: Bool = true
     @State private var isAddingTrip: Bool = false
-    @State private var trip : Trip = Trip()
+    @State private var tripData : TripData = TripData()
     
     @State var tripValidation: TripValidation = TripValidation()
     
     var body: some View {
         VStack {
             if !isChoosingTrip {
-                TagStatusView(path: $path, trip: $trip)
-                TagTripView(path: $path, trip: $trip, isAddingTrip: $isAddingTrip)
-                if trip.isClosed == "N" {
-                    TagFishEntryView(path: $path, trip: $trip, isAddingTrip: $isAddingTrip)
+                TripStatusView(path: $path, tripData: $tripData)
+                TripHeaderView(path: $path, tripData: $tripData, isAddingTrip: $isAddingTrip)
+                if tripData.isClosed == "N" {
+                    TripFishView(path: $path, tripData: $tripData, isAddingTrip: $isAddingTrip)
                 } else {
                     VStack {
-                        TripFishListView(trip: $trip)
+                        TripFishListView(tripData: $tripData)
                             .padding(.top, 24)
                     }
                 }
                 Spacer()
             } else {
-                ChooseTripView(path: $path, trip: $trip, isChoosingTrip: $isChoosingTrip, isAddingTrip: $isAddingTrip)
+                ChooseTripView(path: $path, tripData: $tripData, isChoosingTrip: $isChoosingTrip, isAddingTrip: $isAddingTrip)
             }
         }
         .padding()

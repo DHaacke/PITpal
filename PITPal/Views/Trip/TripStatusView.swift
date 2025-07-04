@@ -8,14 +8,14 @@
 import SwiftUI
 import SwiftData
 
-struct TagStatusView: View {
+struct TripStatusView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(LocationsHandler.self) var locationsHandler
     @Environment(JSONManager.self) var jsonManager
     @Environment(NetworkMonitor.self) var networkMonitor
     
     @Binding var path: [String]
-    @Binding var trip: Trip
+    @Binding var tripData: TripData
     
     @State private var fetchManager     = FetchManager()
     
@@ -82,9 +82,9 @@ struct TagStatusView: View {
                                 VStack {
                                     HStack {
                                         HStack {
-                                            BarChartView(trip: $trip, species: "RB", title: "Rainbow trout")
+                                            TripChartView(tripData: $tripData, species: "RB", title: "Rainbow trout")
                                                 .padding(.top, 10).padding(.trailing, 6)
-                                            BarChartView(trip: $trip, species: "LL", title: "Brown trout")
+                                            TripChartView(tripData: $tripData, species: "LL", title: "Brown trout")
                                                 .padding(.top, 10)
                                         }
                                     }
@@ -123,15 +123,15 @@ struct TagStatusView: View {
                         }
                     }
                     if self.bighornStats.count > 0 {
-                        self.trip.waterTemperature = self.bighornStats[2].value
-                        self.trip.waterFlow = self.bighornStats[0].value
+                        self.tripData.waterTemperature = self.bighornStats[2].value
+                        self.tripData.waterFlow = self.bighornStats[0].value
 //                        print("\n\n")
 //                        print(self.bighornStats)
                     }
                     isLoadingBighornStats = false
                    
-                    rainbows = getRainbows(trip: trip)
-                    browns   = getBrowns(trip: trip)
+                    rainbows = getRainbows(tripData: tripData)
+                    browns   = getBrowns(tripData: tripData)
                 }
             }
         }
@@ -178,12 +178,12 @@ struct TagStatusView: View {
              }
     }
     
-    func getRainbows(trip: Trip) -> [Fish] {
-        return fish.filter( { $0.species == "RB" && $0.length > 0 && isSameDay(tripDate: trip.date, fishDate: $0.date) } )
+    func getRainbows(tripData: TripData) -> [Fish] {
+        return fish.filter( { $0.species == "RB" && $0.length > 0 && isSameDay(tripDate: tripData.date, fishDate: $0.date) } )
     }
     
-    func getBrowns(trip: Trip) -> [Fish] {
-        return fish.filter( { $0.species == "LL" && $0.length > 0  && isSameDay(tripDate: trip.date, fishDate: $0.date) } )
+    func getBrowns(tripData: TripData) -> [Fish] {
+        return fish.filter( { $0.species == "LL" && $0.length > 0  && isSameDay(tripDate: tripData.date, fishDate: $0.date) } )
     }
     
     func isSameDay(tripDate: Date, fishDate: Date) -> Bool {

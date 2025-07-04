@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct TagTripView: View {
+struct TripHeaderView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(LocationsHandler.self) var locationsHandler
     @Environment(JSONManager.self) var jsonManager
@@ -18,7 +18,7 @@ struct TagTripView: View {
     @AppStorage("usingPitTags") private var usingPitTags: Bool = true
     
     @Binding var path: [String]
-    @Binding var trip: Trip
+    @Binding var tripData: TripData
     @Binding var isAddingTrip: Bool
     
     @State private var fetchManager     = FetchManager()
@@ -62,17 +62,17 @@ struct TagTripView: View {
                             // Text("Date is \(birthDate.formatted(date: .long, time: .omitted))")
                             DatePicker(
                                     "Date:",
-                                    selection: $trip.date,
+                                    selection: $tripData.date,
                                     displayedComponents: [.date]
                             )
                                 .datePickerStyle(.compact)
                                 .frame(width: 180)
-                                .disabled(trip.isClosed == "Y" ? true : false)
+                                .disabled(tripData.isClosed == "Y" ? true : false)
                             Spacer()
 
-                            if trip.isClosed == "N" {
+                            if tripData.isClosed == "N" {
                                 LabeledContent {
-                                    Picker("", selection: $trip.watershed) {
+                                    Picker("", selection: $tripData.watershed) {
                                         Text("<Choose>").tag("")
                                         ForEach(watersheds) { watershed in
                                             Text(watershed.name).tag(watershed.code)
@@ -80,21 +80,21 @@ struct TagTripView: View {
                                     }
                                     .tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
                                     .pickerStyle(.menu)
-                                    .disabled(trip.isClosed == "Y" ? true : false)
+                                    .disabled(tripData.isClosed == "Y" ? true : false)
                                     
                                 } label: {
                                     Text("Watershed:")
                                 }.frame(width: 250, height: 30)
                             } else {
-                                let watershed = watersheds.first(where: { $0.code == trip.watershed }) ?? watersheds.first!
+                                let watershed = watersheds.first(where: { $0.code == tripData.watershed }) ?? watersheds.first!
                                 Text("\(watershed.name)")
                             }
 
                             Spacer()
                             
-                            if trip.isClosed == "N" {
+                            if tripData.isClosed == "N" {
                                 LabeledContent {
-                                    Picker("", selection: $trip.surveySection) {
+                                    Picker("", selection: $tripData.surveySection) {
                                         Text("<Choose>").tag("")
                                         ForEach(surveySections) { section in
                                             Text(section.name).tag(section.code)
@@ -103,12 +103,12 @@ struct TagTripView: View {
                                     .tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
                                     .shadow(radius: 3)
                                     .pickerStyle(.menu)
-                                    .disabled(trip.isClosed == "Y" ? true : false)
+                                    .disabled(tripData.isClosed == "Y" ? true : false)
                                 } label: {
                                     Text("Survey Section:")
                                 }.frame(width: 250, height: 30)
                             } else {
-                                let section = surveySections.first(where: { $0.code == trip.surveySection }) ?? surveySections.first!
+                                let section = surveySections.first(where: { $0.code == tripData.surveySection }) ?? surveySections.first!
                                 Text("\(section.name)")
                             }
                         }
@@ -117,9 +117,9 @@ struct TagTripView: View {
                         .padding(.horizontal, 10)
                         
                         HStack {
-                            if trip.isClosed == "N" {
+                            if tripData.isClosed == "N" {
                                 LabeledContent {
-                                    Picker("", selection: $trip.tripType) {
+                                    Picker("", selection: $tripData.tripType) {
                                         Text("<Choose>").tag("")
                                         ForEach(tripTypes) { type in
                                             Text(type.name).tag(type.code)
@@ -128,12 +128,12 @@ struct TagTripView: View {
                                     .tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
                                     .shadow(radius: 3)
                                     .pickerStyle(.menu)
-                                    .disabled(trip.isClosed == "Y" ? true : false)
+                                    .disabled(tripData.isClosed == "Y" ? true : false)
                                 } label: {
                                     Text("Trip Type:")
                                 }.frame(width: 220, height: 30)
                             } else {
-                                let type = tripTypes.first(where: { $0.code == trip.tripType }) ?? tripTypes.first!
+                                let type = tripTypes.first(where: { $0.code == tripData.tripType }) ?? tripTypes.first!
                                 Text("\(type.name)")
                             }
                             Spacer()
@@ -221,7 +221,7 @@ struct TagTripView: View {
                         
                         HStack {
                             Spacer()
-                            if trip.isClosed == "Y" {
+                            if tripData.isClosed == "Y" {
                                 Text("Trip is CLOSED")
                             } else {
                                 Text("Trip is OPEN")
@@ -237,22 +237,22 @@ struct TagTripView: View {
                 .onAppear {
                     // print("width: \(geometry.size.width)")
                 }
-                .onChange(of: trip.watershed) {
-                    if trip.watershed.isEmpty {
+                .onChange(of: tripData.watershed) {
+                    if tripData.watershed.isEmpty {
                         isValidWatershed = false
                     } else {
                         isValidWatershed = true
                     }
                 }
-                .onChange(of: trip.surveySection) {
-                    if trip.surveySection.isEmpty {
+                .onChange(of: tripData.surveySection) {
+                    if tripData.surveySection.isEmpty {
                         isValidSurveySection = false
                     } else {
                         isValidSurveySection = true
                     }
                 }
-                .onChange(of: trip.tripType) {
-                    if trip.tripType.isEmpty {
+                .onChange(of: tripData.tripType) {
+                    if tripData.tripType.isEmpty {
                         isValidTripType = false
                     } else {
                         isValidTripType = true
