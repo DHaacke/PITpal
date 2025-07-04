@@ -20,7 +20,7 @@ final class Fish: Codable {
     var weight: Int
     var length: Int
     var gender: String
-    var mort: String = "N"
+    var mort: String = ""
     var mc: Int = 0
     var count: Int = 1
     var comment: String = ""
@@ -35,7 +35,7 @@ final class Fish: Codable {
         weight: Int = 0,
         length: Int = 0,
         gender: String = "",
-        mort: String = "N",
+        mort: String = "",
         mc: Int = 0,
         count: Int = 1,
         comment: String = "",

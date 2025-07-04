@@ -125,9 +125,8 @@ struct TagStatusView: View {
                     if self.bighornStats.count > 0 {
                         self.trip.waterTemperature = self.bighornStats[2].value
                         self.trip.waterFlow = self.bighornStats[0].value
-
-                        print("\n\n")
-                        print(self.bighornStats)
+//                        print("\n\n")
+//                        print(self.bighornStats)
                     }
                     isLoadingBighornStats = false
                    

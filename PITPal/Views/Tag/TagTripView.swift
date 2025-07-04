@@ -136,34 +136,20 @@ struct TagTripView: View {
                                 let type = tripTypes.first(where: { $0.code == trip.tripType }) ?? tripTypes.first!
                                 Text("\(type.name)")
                             }
-                            
-                            LabeledContent {
-                                Toggle("", isOn: $usingPitTags)
-                                    .frame(width: 50, height: 30)
-                                    .tint(Color.green)
-                                    .shadow(radius: 2)
-                            } label: {
-                                Text("Using PIT tags")
-                            }
-                                .padding(.leading, 15)
-                                .frame(width: 180)
-                                .disabled(trip.isClosed == "Y" ? true : false)
-                            
                             Spacer()
                             
+                           
                             DatePicker(
                                     "Start:",
                                     selection: $selectedStartTime,
                                     displayedComponents: [.hourAndMinute]
                                 ).datePickerStyle(.compact).frame(width: 160).disabled(isAddingTrip ? true : false)
-                            
+                            Spacer()
                             DatePicker(
                                     "End:",
                                     selection: $selectedEndTime,
                                     displayedComponents: [.hourAndMinute]
                                 ).datePickerStyle(.compact).frame(width: 140).disabled(isAddingTrip ? true : false)
-                            
-
                         }
                         .padding(.horizontal, 10)
                         .frame(height : 30)

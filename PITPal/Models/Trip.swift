@@ -10,6 +10,7 @@ import SwiftUI
 
 @Model
 final class Trip: Codable {
+    #Unique<Trip>([\.date])  // , [\.tripType], [\.surveySection], [\.watershed]
     var date: Date
     var tripType: String  // M or R
     var surveySection: String
@@ -34,7 +35,7 @@ final class Trip: Codable {
     var isClosed: String
     @Relationship(deleteRule: .cascade, inverse: \Fish.trip) var fish: [Fish]
     // var fish: [Fish]
-    // #Unique<Trip>([\.date], [\.tripType], [\.surveySection], [\.watershed])
+    
     
     init(
         date: Date = Date(),

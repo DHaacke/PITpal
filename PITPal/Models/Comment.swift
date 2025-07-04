@@ -10,15 +10,18 @@ import SwiftData
 
 @Model
 final class Comment: Codable, Equatable {
-    @Attribute(.unique) var code: String
+    #Unique<Comment>([\.code])
+    var code: String
     var name: String
     var active: String
+    var selected: Bool
     var sort: Int
     
-    init(code: String = "", name: String = "", active: String = "Y", sort: Int = 0) {
+    init(code: String = "", name: String = "", active: String = "Y", selected: Bool = false, sort: Int = 0) {
         self.code = code
         self.name = name
         self.active = active
+        self.selected = false
         self.sort = sort
     }
     
@@ -26,6 +29,7 @@ final class Comment: Codable, Equatable {
         case code
         case name
         case active
+        case selected
         case sort
     }
     
@@ -34,6 +38,7 @@ final class Comment: Codable, Equatable {
         code =   try container.decode(String.self, forKey: .code)
         name =   try container.decode(String.self, forKey: .name)
         active = try container.decode(String.self, forKey: .active)
+        selected = try container.decodeIfPresent(Bool.self, forKey: .selected) ?? false
         sort =   try container.decode(Int.self, forKey: .sort)
     }
     
@@ -42,10 +47,20 @@ final class Comment: Codable, Equatable {
         try container.encode(code, forKey: .code)
         try container.encode(name, forKey: .name)
         try container.encode(active, forKey: .active)
+        try container.encode(selected, forKey: .selected)
         try container.encode(sort, forKey: .sort)
     }
-    
-    static func == (lhs: Comment, rhs: Comment) -> Bool {
-        lhs.code == rhs.code
+}
+
+extension Comment {
+    func deepCopy() -> CommentData {
+        let newComment = CommentData(
+            code: self.code,
+            name: self.name,
+            active: self.active,
+            selected: self.selected,
+            sort: self.sort
+        )
+        return newComment
     }
 }

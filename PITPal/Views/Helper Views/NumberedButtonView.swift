@@ -18,10 +18,10 @@ struct NumberedButtonView: View {
         }) {
             ZStack {
                 Text(buttonText)
-                                     
-                    .font(.system(size: 30, weight: .regular, design: .default))
-            }.frame(width: 30)
-
+                    .font(.system(size: 36, weight: .regular, design: .default))
+            }
+            .frame(width: 36)
+            .padding(6)
         }
     }
 }

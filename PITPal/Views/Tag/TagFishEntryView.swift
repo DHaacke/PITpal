@@ -32,9 +32,14 @@ struct TagFishEntryView: View {
     @State private var selectedSpecies: String = ""
     @State private var selectedLength:  String = ""
     @State private var selectedWeight:  String = ""
+    @State private var selectedGender:  String = ""
+    
     @State private var enteredLength:   String = ""
     @State private var enteredWeight:   String = ""
-    
+
+    @State private var selectedComments: String = ""
+    @State private var isPresentedComments: Bool = false
+
     @State private var isPresentedPitTag: Bool = false
     @State private var isPresentedLength: Bool = false
     @State private var isPresentedWeight: Bool = false
@@ -45,10 +50,22 @@ struct TagFishEntryView: View {
     @State private var isValidLength: Bool = false
     @State private var isValidWeight: Bool = false
     
+    // @ScaledMetric(relativeTo: .footnote) private var fontRefSize = 100.0
+    
+    
     let q = Queries()
     
-    // @Query(sort: \Species.code) var species: [Species]
-    // @Query(filter: #Predicate<Species> { sp in sp.active == true}, sort: \Species.name) var filteredSpecies: [Species]
+    // @Query(sort: \Comment.sort) var commentList: [Comment]
+    @Query(sort: \Trip.date) var existingTrips: [Trip]
+    
+    @Query(filter: #Predicate<Species> { sp in
+        sp.active == "Y"
+    }, sort: \.name) var activeSpecies: [Species]
+    
+    
+    // @Query var comments: [Comment]
+    // @Query(filter: #Predicate<Comment> { c in c.active == "Y"}, sort: \Comment.sort) var activeComments: [Comment]
+
           
     var body: some View {
         VStack {
@@ -95,13 +112,7 @@ struct TagFishEntryView: View {
                                 
                                 if usingPitTags {
                                     VStack {
-                                        Button {
-                                            if bluetoothManager.isConnected == false || bluetoothManager.connectionStatus == K.DISCONNECTED {
-                                                print(getBluetoothStatus())
-                                                print("* * Restarting Bluetooth * *")
-                                                bluetoothManager.restart()
-                                            }
-                                        } label: {
+                                        if bluetoothManager.isConnected {
                                             Image("Bluetooth")
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit)
@@ -109,19 +120,33 @@ struct TagFishEntryView: View {
                                                 .frame(width: 30, height: 30)
                                                 .padding(0)
                                         }
-                                            .buttonStyle(PlainButtonStyle())
-                                            .padding(0)
+//                                        Button {
+//                                            if bluetoothManager.isConnected == false || bluetoothManager.connectionStatus == K.DISCONNECTED {
+//                                                print(getBluetoothStatus())
+//                                                print("* * Restarting Bluetooth * *")
+//                                                bluetoothManager.restart()
+//                                            }
+//                                        } label: {
+//                                            Image("Bluetooth")
+//                                                .resizable()
+//                                                .aspectRatio(contentMode: .fit)
+//                                                .shadow(radius: 8)
+//                                                .frame(width: 30, height: 30)
+//                                                .padding(0)
+//                                        }
+//                                            .buttonStyle(PlainButtonStyle())
+//                                            .padding(0)
 
-                                        HStack {
-                                            if bluetoothManager.connectionStatus == K.SCANNING {
-                                                ProgressView()
-                                                    .frame(width: 12, height: 12)
-                                            }
-                                            Text(getBluetoothStatus())
-                                                .foregroundColor(Color("TextForegroundWhite"))  // getBluetoothColor()
-                                                .font(.system(size: 10, weight: .regular, design: .default))
-                                                .shadow(radius: 3)
-                                        }
+//                                        HStack {
+//                                            if bluetoothManager.connectionStatus == K.SCANNING {
+//                                                ProgressView()
+//                                                    .frame(width: 12, height: 12)
+//                                            }
+//                                            Text(getBluetoothStatus())
+//                                                .foregroundColor(Color("TextForegroundWhite"))  // getBluetoothColor()
+//                                                .font(.system(size: 10, weight: .regular, design: .default))
+//                                                .shadow(radius: 3)
+//                                        }
                                     }
                                     .frame(width: 140)
                                 }
@@ -131,16 +156,42 @@ struct TagFishEntryView: View {
                         }
 
 
-                        
-                        VStack {
-                            HStack {
-                                SegmentedPickerSpecies(selectedSpecies: $selectedSpecies, isValidSpecies: $isValidSpecies)
+                        //   S P E C I E S
+                        HStack {
+                            LabeledContent {
+                                Picker("", selection: $selectedSpecies) {
+                                    ForEach(activeSpecies) { species in
+                                        Text(species.name).tag(species.code)
+                                    }
+                                }
+                                    .frame(width: 470)
+                                    .tint(Color("TextForegroundWhite"))
+                                    .pickerStyle(.segmented)
+                                    .scaleEffect(1.4)
+                                    // .frame(minHeight: 30 * fontScalingFactor)
+                            } label: {
+                                Text("Species:")
+                                    .multilineTextAlignment(.leading)
+                                Spacer()
                             }
-                        }
-                            .frame(height: 50)
-                            .padding(.bottom, 10)
+                            .frame(width: 700, height: 30)
+                            .padding(.bottom, 12)
+                            
+                            Spacer()
+                       }
+                           .padding(.horizontal, 20)
+                        
+//                        VStack {
+//                            HStack {
+//                                SegmentedPickerSpecies(selectedSpecies: $selectedSpecies, isValidSpecies: $isValidSpecies)
+//                            }
+//                        }
+//                            .frame(height: 50)
+//                            .padding(.bottom, 10)
                         
                         VStack {
+                            
+                            //   F I S H   L E N G T H
                             HStack {
                                 LabeledContent {
                                     TextField("", text: $selectedLength)
@@ -148,7 +199,7 @@ struct TagFishEntryView: View {
                                         .border(Color.gray, width: 1)
                                         .foregroundColor(Color("TextForeground"))
                                         .textFieldStyle(.roundedBorder)
-                                        .frame(width: 80)
+                                        .frame(width: 100)
                                         .multilineTextAlignment(.leading)
                                         .popover(isPresented: $isPresentedLength) {
                                             NumberPadView(isPresented: $isPresentedLength, enteredNumber: $enteredLength)
@@ -163,7 +214,7 @@ struct TagFishEntryView: View {
                                     } else {
                                         Text("Fish Length: ")
                                     }
-                                }.frame(width: 200)
+                                }.frame(width: 250)
                                 
                                 Button {
                                     self.isPresentedLength = true
@@ -174,14 +225,20 @@ struct TagFishEntryView: View {
                                 .background(Color.clear)
                                 .font(.system(size: 28, weight: .regular, design: .default))
                                 .padding(.trailing, 60)
-                                
+                                Spacer()
+                            }
+                            .padding(.bottom, 12)
+                            
+                            
+                            //   F I S H   W E I G H T
+                            HStack {
                                 LabeledContent {
                                     TextField("", text: $selectedWeight)
                                         .disabled(true)
                                         .border(Color.gray, width: 1)
                                         .foregroundColor(Color("TextForeground"))
                                         .textFieldStyle(.roundedBorder)
-                                        .frame(width: 80)
+                                        .frame(width: 100)
                                         .multilineTextAlignment(.leading)
                                         .popover(isPresented: $isPresentedWeight) {
                                             NumberPadView(isPresented: $isPresentedWeight, enteredNumber: $enteredWeight)
@@ -196,10 +253,72 @@ struct TagFishEntryView: View {
                                     } else {
                                         Text("Fish Weight: ")
                                     }
-                                }.frame(width: 200)
+                                }.frame(width: 250)
                                 
                                 Button {
                                     self.isPresentedWeight = true
+                                } label: {
+                                    Image(systemName: "keyboard.onehanded.right.fill")
+                                }
+                                .foregroundColor(.white)
+                                .background(Color.clear)
+                                .font(.system(size: 28, weight: .regular, design: .default))
+                               
+                                Spacer()
+                            }
+                            .padding(.bottom, 12)
+                            
+                            
+                            //  G E N D E R
+                            HStack {
+                                LabeledContent {
+                                    Picker("", selection: $selectedGender) {
+                                        Text("Male").tag("M")
+                                        Text("Female").tag("F")
+                                    }
+                                        .frame(width: 300)
+                                        .tint(Color("TextForegroundWhite"))
+                                        .pickerStyle(.segmented)
+                                        .scaleEffect(1.4)
+                                        // .frame(minHeight: 30 * fontScalingFactor)
+                                } label: {
+                                    Text("Sex:")
+                                        .multilineTextAlignment(.leading)
+                                    Spacer()
+                                }
+                                .frame(width: 500, height: 30)
+                                .padding(.bottom, 12)
+                                
+                                Spacer()
+                           }
+                                
+                            
+                            
+                            
+                            
+                            //   C O M M E N T S
+                            HStack {
+                                LabeledContent {
+                                    TextField("", text: $selectedComments)
+                                        .disabled(true)
+                                        .border(Color.gray, width: 1)
+                                        .foregroundColor(Color("TextForeground"))
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: 350)
+                                        .multilineTextAlignment(.leading)
+                                        .popover(isPresented: $isPresentedComments) {
+                                            ChooseCommentsView(isPresentedComments: $isPresentedComments, selectedComments: $selectedComments)
+                                        }
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            isPresentedComments = true
+                                        }
+                                } label: {
+                                    Text("Comment(s):")
+                                }.frame(width: 500)
+                                
+                                Button {
+                                    self.isPresentedComments = true
                                 } label: {
                                     Image(systemName: "keyboard.onehanded.right.fill")
                                 }
@@ -210,43 +329,63 @@ struct TagFishEntryView: View {
                                 
                                 Spacer()
                             }
+                            
+                           
+                            
                             HStack {
                                 SaveButton(onSaveButtonTapped: {
                                     print("Save button tapped")
-                                    try! modelContext.transaction {
-
-                                        modelContext.insert(trip)
-
-                                        if isValidLength || isValidWeight || isValidSpecies {
-                                            let fish = Fish(
-                                                date:       trip.date,
-                                                pitTag:     pitTagNumber,
-                                                lat:        locationsHandler.lastLocation2D.latitude,
-                                                lon:        locationsHandler.lastLocation2D.longitude,
-                                                species:    selectedSpecies,
-                                                fwpSpecies: q.fetchFWPCodeFromCode(context: modelContext, code: selectedSpecies),
-                                                weight:     Int(selectedWeight) ?? 0,
-                                                length:     Int(selectedLength) ?? 0,
-                                                gender:     "",
-                                                mort:       "N",
-                                                mc:         0,
-                                                count:      1,
-                                                comment:    ""
-                                            )
-                                            trip.fish.append(fish)
+                                    
+                                    // verify trip is not already saved
+                                    let existingTripList = existingTrips.filter { isSameDay(firstDate:$0.date, secondDate: trip.date) && $0.tripType == trip.tripType && $0.watershed == trip.watershed && $0.surveySection == trip.surveySection }
+                                    if existingTripList.count > 0 {
+                                        print("Trip already exists for this date")
+                                    } else {
+                                        try! modelContext.transaction {
                                             
-                                            selectedSpecies = ""
-                                            selectedLength  = ""
-                                            selectedWeight  = ""
-                                            enteredLength   = ""
-                                            enteredWeight   = ""
-                                        }
-                                    }
+                                            modelContext.insert(trip)
 
+                                            if isValidLength || isValidWeight || isValidSpecies {
+                                                let fish = Fish(
+                                                    date:       trip.date,
+                                                    pitTag:     pitTagNumber,
+                                                    lat:        locationsHandler.lastLocation2D.latitude,
+                                                    lon:        locationsHandler.lastLocation2D.longitude,
+                                                    species:    selectedSpecies,
+                                                    fwpSpecies: q.fetchFWPCodeFromCode(context: modelContext, code: selectedSpecies),
+                                                    weight:     Int(selectedWeight) ?? 0,
+                                                    length:     Int(selectedLength) ?? 0,
+                                                    gender:     "",
+                                                    mort:       "N",
+                                                    mc:         0,
+                                                    count:      1,
+                                                    comment:    ""
+                                                )
+                                                trip.fish.append(fish)
+                                                
+                                                selectedSpecies  = ""
+                                                selectedLength   = ""
+                                                selectedWeight   = ""
+                                                enteredLength    = ""
+                                                enteredWeight    = ""
+                                                selectedComments = ""
+                                                pitTagNumber     = ""
+                                                
+                                                isValidLength    = false
+                                                isValidWeight    = false
+                                                isValidSpecies   = false
+                                                
+                                            }
+                                        }
+//                                        print("Resetting comments")
+//                                        for c in comments {
+//                                            c.isSelected = false
+//                                        }
+                                    }
                                 })
                                     .padding(.vertical, 20)
-//                                    .opacity(selectedLength.isEmpty || selectedWeight.isEmpty || selectedSpecies.isEmpty ? 0.2 : 1)
-//                                    .disabled(isValidLength || isValidWeight || isValidSpecies || (isValidPitTag && usingPitTags))
+                                    .opacity(selectedLength.isEmpty || selectedWeight.isEmpty || selectedSpecies.isEmpty ? 0.2 : 1)
+                                    // .disabled(isValidLength || isValidWeight || isValidSpecies)
                             }
                         }.padding(.horizontal, 20)
                         
@@ -295,6 +434,10 @@ struct TagFishEntryView: View {
                     }
                     .onChange(of: pitTagNumber) {
                         isValidPitTag = validatePitTag(tag: pitTagNumber)
+                    }
+                    
+                    .onAppear {
+
                     }
                 }
             }
@@ -367,15 +510,23 @@ struct TagFishEntryView: View {
                 return Color.clear
         }
     }
+    
+    func isSameDay(firstDate: Date, secondDate: Date) -> Bool {
+        var calender = Calendar.current
+        calender.timeZone = TimeZone.current
+        let result = calender.compare(firstDate, to: secondDate, toGranularity: .day)
+        return result == .orderedSame
+    }
 }
 
 
-/*
+
 #Preview {
     @Previewable @State var path: [String] = [K.TAG]
-    TagFishEntryView(path: $path, trip: $trip)
+    @Previewable @State var trip: Trip = Trip(date: Date(), tripType: "Marking", surveySection: "Section", watershed: "Watershed")
+    TagFishEntryView(path: $path, trip: $trip, isAddingTrip: .constant(true))
         .environment(LocationsHandler())
         .environment(JSONManager())
         .environment(NetworkMonitor())
 }
-*/
+

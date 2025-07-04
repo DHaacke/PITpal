@@ -80,9 +80,9 @@ struct SegmentedPickerSpecies: View {
 }
 
 
-//#Preview {
-//    @State var speciesCode: String = "RB"
-//    SegmentedPickerSpecies(speciesCode : $speciesCode)
-//        .environment(JSONManager())
-//}
+#Preview {
+    @Previewable @State var speciesCode: String = "RB"
+    SegmentedPickerSpecies(selectedSpecies: $speciesCode, isValidSpecies: .constant(true))
+        .environment(JSONManager())
+}
 
