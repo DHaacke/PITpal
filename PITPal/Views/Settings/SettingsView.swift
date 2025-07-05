@@ -20,13 +20,13 @@ struct SettingsView: View {
     @AppStorage("tripTripType") private var tripTripType: String = "M"
     @AppStorage("tripSurveySection") private var tripSurveySection: String = "U"
     @AppStorage("tripWatershed") private var tripWatershed: String = "BHR"
-    @AppStorage("gear") private var gear: String = "Jet Boat, Anodes boom"
-    @AppStorage("rectifyingunit") private var rectifyingunit: String = "SR Model VVP-15B"
-    @AppStorage("volts") private var volts: String = "150"
-    @AppStorage("amps") private var amps: String = "6"
-    @AppStorage("shocktime") private var shocktime: String = "6"
-    @AppStorage("anesthetic") private var anesthetic: String = "222"
-    @AppStorage("dosage") private var dosage: String = ""
+    @AppStorage("tripGar") private var tripGear: String = "Jet Boat, Anodes boom"
+    @AppStorage("tripRectifyingunit") private var tripRectifyingunit: String = "SR Model VVP-15B"
+    @AppStorage("tripVolts") private var tripVolts: String = "150"
+    @AppStorage("tripAmps") private var tripAmps: String = "6"
+    @AppStorage("tripShocktime") private var tripShocktime: String = "6"
+    @AppStorage("tripAnesthetic") private var tripAnesthetic: String = "222"
+    @AppStorage("tripDosage") private var tripDosage: String = ""
 
     //   P E R S O N N E L   A N D   G E A R
     @AppStorage("observers") private var observers: String = "Blythe, Blackburn, Olszewski"
@@ -122,7 +122,7 @@ struct SettingsView: View {
                     }.frame(width: 600, height: 40)
                     
                     LabeledContent {
-                        TextField("", text: $gear)
+                        TextField("", text: $tripGear)
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)
@@ -133,7 +133,7 @@ struct SettingsView: View {
                     }.frame(width: 600)
                     
                     LabeledContent {
-                        TextField("", text: $rectifyingunit)
+                        TextField("", text: $tripRectifyingunit)
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)
@@ -145,7 +145,7 @@ struct SettingsView: View {
 
                     
                     LabeledContent {
-                        TextField("", text: $volts)
+                        TextField("", text: $tripVolts)
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)
@@ -156,7 +156,7 @@ struct SettingsView: View {
                     }.frame(width: 600)
                     
                     LabeledContent {
-                        TextField("", text: $amps)
+                        TextField("", text: $tripAmps)
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)
@@ -167,7 +167,7 @@ struct SettingsView: View {
                     }.frame(width: 600)
                     
                     LabeledContent {
-                        TextField("", text: $shocktime)
+                        TextField("", text: $tripShocktime)
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)
@@ -178,7 +178,7 @@ struct SettingsView: View {
                     }.frame(width: 600)
                     
                     LabeledContent {
-                        TextField("", text: $anesthetic)
+                        TextField("", text: $tripAnesthetic)
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)
@@ -189,7 +189,7 @@ struct SettingsView: View {
                     }.frame(width: 600)
                     
                     LabeledContent {
-                        TextField("", text: $dosage)
+                        TextField("", text: $tripDosage)
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .border(Color.gray, width: 1)

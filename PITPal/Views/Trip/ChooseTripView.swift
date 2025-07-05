@@ -25,13 +25,13 @@ struct ChooseTripView: View {
     @AppStorage("tripTripType") private var tripTripType: String = "M"
     @AppStorage("tripSurveySection") private var tripSurveySection: String = "U"
     @AppStorage("tripWatershed") private var tripWatershed: String = "BHR"
-    @AppStorage("gear") private var gear: String = "Jet Boat, Anodes boom"
-    @AppStorage("rectifyingunit") private var rectifyingunit: String = "SR Model VVP-15B"
-    @AppStorage("volts") private var volts: String = "150"
-    @AppStorage("amps") private var amps: String = "6"
-    @AppStorage("shocktime") private var shocktime: String = "6"
-    @AppStorage("anesthetic") private var anesthetic: String = "222"
-    @AppStorage("dosage") private var dosage: String = ""
+    @AppStorage("tripGear") private var tripGear: String = "Jet Boat, Anodes boom"
+    @AppStorage("tripRectifyingunit") private var tripRectifyingunit: String = "SR Model VVP-15B"
+    @AppStorage("tripVolts") private var tripVolts: String = "150"
+    @AppStorage("tripAmps") private var tripAmps: String = "6"
+    @AppStorage("tripShocktime") private var tripShocktime: String = "6"
+    @AppStorage("tripAnesthetic") private var tripAnesthetic: String = "222"
+    @AppStorage("tripDosage") private var tripDosage: String = ""
 
     
     var body: some View {
@@ -70,13 +70,13 @@ struct ChooseTripView: View {
                         tripType: tripTripType,
                         surveySection: tripSurveySection,
                         watershed: tripWatershed,
-                        gear: gear,
-                        rectifyingunit: rectifyingunit,
-                        volts: volts,
-                        amps: amps,
-                        shocktime: shocktime,
-                        anesthetic: anesthetic,
-                        dosage: dosage,
+                        gear: tripGear,
+                        rectifyingunit: tripRectifyingunit,
+                        volts: tripVolts,
+                        amps: tripAmps,
+                        shocktime: tripShocktime,
+                        anesthetic: tripAnesthetic,
+                        dosage: tripDosage,
                         latDown: 0,
                         lonDown: 0,
                         latUp: 0,

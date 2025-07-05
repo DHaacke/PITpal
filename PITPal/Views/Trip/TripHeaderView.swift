@@ -34,12 +34,21 @@ struct TripHeaderView: View {
     @State private var tripLonDown: String = "0.0"
     @State private var tripLatUp: String = "0.0"
     @State private var tripLonUp: String = "0.0"
+    @State private var tripGear: String = ""
+    @State private var tripRectifyingunit: String = ""
+    @State private var tripVolts: String = ""
+    @State private var tripAmps: String = ""
+    @State private var tripShocktime: String = ""
+    @State private var tripAnesthetic: String = ""
+    @State private var tripDosage: String = ""
     
     @State private var isValidWatershed: Bool = false
     @State private var isValidTripType: Bool = false
     @State private var isValidSurveySection: Bool = false
     @State private var isValidStartTime: Bool = true
     @State private var isValidEndTime: Bool = true
+    
+    @State private var isShowingTripExtras: Bool = false
     
     
     @Query(sort: \Watershed.code) var watersheds: [Watershed]
@@ -221,15 +230,120 @@ struct TripHeaderView: View {
                         
                         HStack {
                             Spacer()
-                            if tripData.isClosed == "Y" {
-                                Text("Trip is CLOSED")
-                            } else {
-                                Text("Trip is OPEN")
-                            }
+                            Image(systemName: "ellipsis.rectangle.fill")
                             Spacer()
                         }
                         .padding(.horizontal, 10)
                         .frame(height : 30)
+                        .onTapGesture {
+                            isShowingTripExtras.toggle()
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.bottom, 8)
+                        .frame(height : 24)
+                        
+                        if isShowingTripExtras {
+
+                            // Text("Trip is \(tripData.isClosed == "Y" ? "CLOSED" : "OPEN")")
+                            HStack {
+                                LabeledContent {
+                                    TextField("", text: $tripGear)
+                                      .foregroundColor(Color("TextForeground"))
+                                      .textFieldStyle(.roundedBorder)
+                                      .border(Color.gray, width: 1)
+                                      .frame(width: 400)
+                                      .multilineTextAlignment(.leading)
+                                } label: {
+                                    Text("Gear")
+                                }
+                                .frame(width: 600)
+                                
+                                Spacer()
+                            }
+                            .padding(.horizontal, 20)
+
+                            HStack {
+                                LabeledContent {
+                                    TextField("", text: $tripRectifyingunit)
+                                      .foregroundColor(Color("TextForeground"))
+                                      .textFieldStyle(.roundedBorder)
+                                      .border(Color.gray, width: 1)
+                                      .frame(width: 400)
+                                      .multilineTextAlignment(.leading)
+                                } label: {
+                                    Text("Rectifying Unit/Model")
+                                }.frame(width: 600)
+                                Spacer()
+                            }
+                            .padding(.horizontal, 20)
+                            
+                            HStack {
+                                LabeledContent {
+                                    TextField("", text: $tripVolts)
+                                      .foregroundColor(Color("TextForeground"))
+                                      .textFieldStyle(.roundedBorder)
+                                      .border(Color.gray, width: 1)
+                                      .frame(width: 100)
+                                      .multilineTextAlignment(.leading)
+                                } label: {
+                                    Text("Volts")
+                                }.frame(width: 300).padding(.trailing, 30)
+                                LabeledContent {
+                                    TextField("", text: $tripAmps)
+                                      .foregroundColor(Color("TextForeground"))
+                                      .textFieldStyle(.roundedBorder)
+                                      .border(Color.gray, width: 1)
+                                      .frame(width: 100)
+                                      .multilineTextAlignment(.leading)
+                                } label: {
+                                    Text("Amps")
+                                }.frame(width: 260)
+                                Spacer()
+                            }
+                            .padding(.horizontal, 20)
+                            
+                            HStack {
+                                LabeledContent {
+                                    TextField("", text: $tripShocktime)
+                                      .foregroundColor(Color("TextForeground"))
+                                      .textFieldStyle(.roundedBorder)
+                                      .border(Color.gray, width: 1)
+                                      .frame(width: 100)
+                                      .multilineTextAlignment(.leading)
+                                } label: {
+                                    Text("Shock Time")
+                                }.frame(width: 300)
+                                Spacer()
+                            }
+                            .padding(.horizontal, 20)
+                            
+                            HStack {
+                                LabeledContent {
+                                    TextField("", text: $tripAnesthetic)
+                                      .foregroundColor(Color("TextForeground"))
+                                      .textFieldStyle(.roundedBorder)
+                                      .border(Color.gray, width: 1)
+                                      .frame(width: 100)
+                                      .multilineTextAlignment(.leading)
+                                } label: {
+                                    Text("Anesthetic")
+                                }.frame(width: 300).padding(.trailing, 30)
+
+                                LabeledContent {
+                                    TextField("", text: $tripDosage)
+                                      .foregroundColor(Color("TextForeground"))
+                                      .textFieldStyle(.roundedBorder)
+                                      .border(Color.gray, width: 1)
+                                      .frame(width: 100)
+                                      .multilineTextAlignment(.leading)
+                                } label: {
+                                    Text("Dosage")
+                                }.frame(width: 260)
+                                Spacer()
+                            }
+                            .padding(.horizontal, 20)
+                        }
+
                     }
                     .multilineTextAlignment(.center)
                     
@@ -260,7 +374,7 @@ struct TripHeaderView: View {
                 }
             }
         } // VStack
-        .frame(height: 130)
+        .frame(height: isShowingTripExtras ? 420 : 160)  // 160
     }
 }
 
