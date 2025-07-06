@@ -23,13 +23,13 @@ struct TripFishView: View {
     @Binding var isAddingTrip: Bool
     
     @AppStorage("usingPitTags") private var usingPitTags: Bool = true
-    @AppStorage("gear") private var gear: String = "Jet Boat, Anodes boom"
-    @AppStorage("rectifyingunit") private var rectifyingunit: String = "SR Model VVP-15B"
-    @AppStorage("volts") private var volts: String = "150"
-    @AppStorage("amps") private var amps: String = "6"
-    @AppStorage("shocktime") private var shocktime: String = "6"
-    @AppStorage("anesthetic") private var anesthetic: String = "222"
-    @AppStorage("dosage") private var dosage: String = ""
+    @AppStorage("tripGear") private var tripGear: String = "Jet Boat, Anodes boom"
+    @AppStorage("tripRectifyingunit") private var tripRectifyingunit: String = "SR Model VVP-15B"
+    @AppStorage("tripVolts") private var tripVolts: String = "150"
+    @AppStorage("tripAmps") private var tripAmps: String = "6"
+    @AppStorage("tripShocktime") private var tripShocktime: String = "6"
+    @AppStorage("tripAnesthetic") private var tripAnesthetic: String = "222"
+    @AppStorage("tripDosage") private var tripDosage: String = ""
     
     @State private var bluetoothManager = BluetoothManager()
    
@@ -442,13 +442,13 @@ struct TripFishView: View {
                                                 tripType: tripData.tripType,
                                                 surveySection: tripData.surveySection,
                                                 watershed: tripData.watershed,
-                                                gear: gear,
-                                                rectifyingunit: rectifyingunit,
-                                                volts: volts,
-                                                amps: amps,
-                                                shocktime: shocktime,
-                                                anesthetic: anesthetic,
-                                                dosage: dosage,
+                                                gear: tripGear,
+                                                rectifyingunit: tripRectifyingunit,
+                                                volts: tripVolts,
+                                                amps: tripAmps,
+                                                shocktime: tripShocktime,
+                                                anesthetic: tripAnesthetic,
+                                                dosage: tripDosage,
                                                 latDown: tripData.latDown,
                                                 lonDown: tripData.lonDown,
                                                 latUp: tripData.latUp,

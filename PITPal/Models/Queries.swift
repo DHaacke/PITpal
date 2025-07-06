@@ -22,7 +22,7 @@ final class Queries {
                 do {
                     let sections : [SurveySection] = try context.fetch(descriptor)
                     var section: SurveySection? { sections.first }
-                    return section?.name ?? "N/A"
+                    return section?.name ?? "All Sections"
                 } catch {
                     print("Error fetching SurveySection name: \(error)")
                     return "N/A" // Handle the error appropriately
@@ -36,7 +36,7 @@ final class Queries {
                 do {
                     let species : [Species] = try context.fetch(descriptor)
                     var specie: Species? { species.first }
-                    return specie?.name ?? "N/A"
+                    return specie?.name ?? "All Species"
                 } catch {
                     print("Error fetching Species name: \(error)")
                     return "N/A" // Handle the error appropriately
@@ -50,9 +50,23 @@ final class Queries {
                 do {
                     let types : [TripType] = try context.fetch(descriptor)
                     var type: TripType? { types.first }
-                    return type?.name ?? "N/A"
+                    return type?.name ?? "All Trip Types"
                 } catch {
                     print("Error fetching TripType name: \(error)")
+                    return "N/A" // Handle the error appropriately
+                }
+            case "Watershed":
+                let descriptor = FetchDescriptor<Watershed>(
+                    predicate: #Predicate { watershed in
+                        watershed.code == code
+                    }
+                )
+                do {
+                    let watersheds : [Watershed] = try context.fetch(descriptor)
+                    var watershed: Watershed? { watersheds.first }
+                    return watershed?.name ?? "All Watersheds"
+                } catch {
+                    print("Error fetching Watershed name: \(error)")
                     return "N/A" // Handle the error appropriately
                 }
             default:

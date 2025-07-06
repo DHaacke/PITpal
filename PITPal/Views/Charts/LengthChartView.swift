@@ -25,13 +25,15 @@ struct LengthChartView: View {
     
     @State private var startDate: Date = "2024-04-01".toDate(format: "yyyy-MM-dd") // Date()
     @State private var endDate:   Date = "2024-04-30".toDate(format: "yyyy-MM-dd") // Date()
-    @State private var selectedTitle: String = "Size Distribution"
+    @State private var selectedTitle: String = "{SPECIES} Size Distribution ({SECTION})"
+    @State private var parsedTitle: String = ""
     @State private var selectedWatershed: String = ""
     @State private var selectedTripType: String = ""
     @State private var selectedSurveySection: String = ""
     @State private var selectedSpecies: String = ""
     @State private var selectedMinLength: Int = 0
     @State private var selectedMaxLength: Int = 0
+    @State private var selectedBarColor: Color = .blue
 
     
     @State private var filteredTrips: [TripData] = []
@@ -48,14 +50,13 @@ struct LengthChartView: View {
     @AppStorage("uomFishWeight") private var uomFishWeight: String = "gm"
     @AppStorage("tripSpecies") private var tripSpecies: String = "LL"
     
+    @Query(sort: \Trip.date, order: .forward) var tripList: [Trip]
     @Query(filter: #Predicate<Species> { sp in sp.active == "Y"},  sort: \Species.name) var speciesList: [Species]
     @Query(sort: \TripType.name, order: .forward) var tripTypeList: [TripType]
     @Query(sort: \SurveySection.name, order: .forward) var surveySectionList: [SurveySection]
     @Query(sort: \Watershed.name, order: .forward) var watershedList: [Watershed]
-    @Query(sort: \Trip.date, order: .forward) var tripList: [Trip]
     
-
-    
+    let q = Queries()
     
     var body: some View {
         VStack {
@@ -83,11 +84,11 @@ struct LengthChartView: View {
                         TextField("", text: $selectedTitle)
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
-                          .frame(width: 250)
+                          .frame(width: 400)
                           .multilineTextAlignment(.leading)
                     } label: {
                         Text("Chart Title")
-                    }.frame(width: 400)
+                    }.frame(width: 550)
                     Spacer()
                 }
                 
@@ -137,7 +138,7 @@ struct LengthChartView: View {
                 HStack {
                     LabeledContent {
                         Picker("", selection: $selectedSpecies) {
-                            Text("<Choose>").tag("")
+                            Text("All Species").tag("")
                             ForEach(speciesList, id: \.code) { species in
                                 Text(species.name)
                                     .frame(width: 400)
@@ -170,7 +171,15 @@ struct LengthChartView: View {
                     } label: {
                         Text("Max Length")
                     }.frame(width: 250)
-                }.padding(.bottom, 50)
+                }.padding(.bottom, 10)
+                
+                HStack {
+                    LabeledContent {
+                        ColorPicker("", selection: $selectedBarColor)
+                    } label: {
+                        Text("Bar Color")
+                    }.frame(width: 250).padding(.trailing, 60)
+                }
                 
                 HStack(alignment: .center) {
                     Spacer()
@@ -178,6 +187,20 @@ struct LengthChartView: View {
                         filteredFish = filterFish()
                         print("Filtered Fish Found: \(filteredFish.count)")
                         fishChartData = buildMatrix(species: selectedSpecies)
+                        
+                        parsedTitle = selectedTitle
+                        if parsedTitle.contains("{SPECIES}") {
+                            parsedTitle = parsedTitle.replacingOccurrences(of: "{SPECIES}", with: q.fetchNameFromCode(context: modelContext, model: "Species", code: selectedSpecies))
+                        }
+                        if parsedTitle.contains("{WATERSHED}") {
+                            parsedTitle = parsedTitle.replacingOccurrences(of: "{WATERSHED}", with: q.fetchNameFromCode(context: modelContext, model: "Watershed", code: selectedWatershed))
+                        }
+                        if parsedTitle.contains("{SECTION}") {
+                            parsedTitle = parsedTitle.replacingOccurrences(of: "{SECTION}", with: q.fetchNameFromCode(context: modelContext, model: "SurveySection", code: selectedSurveySection))
+                        }
+                        if parsedTitle.contains("{TYPE}") {
+                            parsedTitle = parsedTitle.replacingOccurrences(of: "{TRIPTYPE}", with: q.fetchNameFromCode(context: modelContext, model: "TripType", code: selectedSpecies))
+                        }
                         self.isChartReady = filteredFish.count > 0 ? true : false
                     })
                     Spacer()
@@ -187,8 +210,9 @@ struct LengthChartView: View {
                         LengthBarChartView(
                             filteredFish: $filteredFish,
                             fishChartData: $fishChartData,
-                            title: $selectedTitle,
+                            title: $parsedTitle,
                             species: $selectedSpecies,
+                            color: $selectedBarColor
                         )
                             .padding(.top, 20)
                             .padding(.bottom, 20)
@@ -237,25 +261,22 @@ struct LengthChartView: View {
         var filteredFish  : [FishData] = []
         
         for trip in tripList {
-            let tripData = trip.deepCopy()
-            print("Fish count: \(tripData.fish.count) for trip: \(tripData.date.formatted(date: .numeric, time: .omitted))")
-            filteredTrips.append(tripData)
-        }
-        
-        filteredTrips = filteredTrips.filter { trip in (startDate.millisecondsSince1970...endDate.millisecondsSince1970).contains(trip.date.millisecondsSince1970) }
-        if !selectedWatershed.isEmpty {
-            filteredTrips = filteredTrips.filter { $0.watershed == selectedWatershed }
-        }
-        if !selectedTripType.isEmpty {
-            filteredTrips = filteredTrips.filter { $0.tripType == selectedTripType }
-        }
-        if !selectedSurveySection.isEmpty {
-            filteredTrips = filteredTrips.filter { $0.surveySection == selectedSurveySection }
+            if (startDate.millisecondsSince1970...endDate.millisecondsSince1970).contains(trip.date.millisecondsSince1970) &&
+               (selectedWatershed.isEmpty || trip.watershed == selectedWatershed) &&
+               (selectedTripType.isEmpty || trip.tripType == selectedTripType) &&
+               (selectedSurveySection.isEmpty || trip.surveySection == selectedSurveySection)
+            {
+                let tripData = trip.deepCopy()
+                filteredTrips.append(tripData)
+            }
         }
         if !selectedSpecies.isEmpty {
             for trip in filteredTrips {
-                filteredFish = trip.fish.filter { $0.species == selectedSpecies && $0.length >= selectedMinLength && $0.length <= selectedMaxLength }
-                trip.fish = filteredFish
+                filteredFish.append(contentsOf: trip.fish.filter { $0.species == selectedSpecies && $0.length >= selectedMinLength && $0.length <= selectedMaxLength })
+            }
+        } else {
+            for trip in filteredTrips {
+                filteredFish.append(contentsOf: trip.fish)
             }
         }
         return filteredFish
@@ -291,6 +312,7 @@ struct LengthBarChartView: View {
     @Binding var fishChartData: [FishChartData]
     @Binding var title: String
     @Binding var species: String
+    @Binding var color: Color
     
     var body: some View {
         VStack {
@@ -304,7 +326,7 @@ struct LengthBarChartView: View {
                         x: .value("Size", data.sizeGroup),
                         y: .value("Count", data.count),
                         width: 40)
-                    .foregroundStyle(.teal.gradient)
+                    .foregroundStyle(color.gradient)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
                 .padding(.horizontal, 20)
@@ -366,7 +388,8 @@ struct LengthBarChartView: View {
                 filteredFish: $filteredFish,
                 fishChartData: $fishChartData,
                 title: $title,
-                species: $species
+                species: $species,
+                color: $color
             )
             
             // Convert SwiftUI view to UIImage

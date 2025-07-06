@@ -90,9 +90,9 @@ struct ContentView: View {
             if jsonManager.isConfigLoaded {
                 
                 
-                await MainActor.run {
-                    try! modelContext.transaction {
-
+//                await MainActor.run {
+//                    try! modelContext.transaction {
+//
 //                        for species in speciesList {
 //                            print("Deleting \(species.name)")
 //                            modelContext.delete(species)
@@ -202,7 +202,7 @@ struct ContentView: View {
 //                        }
 //                        try modelContext.save()
 //                        
-                        
+//                        
 //                        for trip in tripList {
 //                            print("Deleting \(trip.date.formatted(date: .numeric, time: .omitted))")
 //                            modelContext.delete(trip)
@@ -271,8 +271,8 @@ struct ContentView: View {
 //                        } catch {
 //                            print("An error occurred!")
 //                        }
-                    }
-                }
+//                    }
+//                }
                 
                 
             }

@@ -32,7 +32,6 @@ struct SettingsView: View {
     @AppStorage("observers") private var observers: String = "Blythe, Blackburn, Olszewski"
     @AppStorage("volunteers") private var volunteers: String = "Doug Haacke"
   
-    
     //   P I T   T A G S
     @AppStorage("usingPitTags") private var usingPitTags: Bool = true
     @AppStorage("pitManufacturer") private var pitManufacturer: String = "Biomark"
@@ -53,10 +52,6 @@ struct SettingsView: View {
     @AppStorage("weightMin") private var weightMin: Int = 0
     @AppStorage("weightMax") private var weightMax: Int = 1000
     @AppStorage("useBluetoothWeight") private var useBluetoothWeight: Bool = false
-    
-    
-    
-    
     
     @Binding var path: [String]
     

@@ -39,7 +39,8 @@ struct ChooseTripView: View {
             VStack {
                 Text("Choose Trip")
                     .font(.title)
-                    .padding()
+                    .padding(.top, 10)
+
                 List(trips, id: \.self, selection: $tripSelection) { trip in
                     Text("\(trip.date.formatted(date: .numeric, time: .omitted)) - \(q.fetchNameFromCode(context: modelContext, model: "SurveySection", code: trip.surveySection)), \(q.fetchNameFromCode(context: modelContext, model: "TripType", code: trip.tripType)), \(trip.fish.count) Fish")
                         .font(.headline)
@@ -48,6 +49,7 @@ struct ChooseTripView: View {
                             tripSelection = trip
                         }
                 }
+                .padding(.top, 0)
                 AddTripButton(isAddingTrip: $isAddingTrip)
             }
             .frame(minWidth: 0, maxWidth: 500, minHeight: 0, maxHeight: 600)

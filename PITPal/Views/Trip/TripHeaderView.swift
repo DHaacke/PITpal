@@ -159,6 +159,7 @@ struct TripHeaderView: View {
                                     selection: $selectedEndTime,
                                     displayedComponents: [.hourAndMinute]
                                 ).datePickerStyle(.compact).frame(width: 140).disabled(isAddingTrip ? true : false)
+                            
                         }
                         .padding(.horizontal, 10)
                         .frame(height : 30)
@@ -166,7 +167,7 @@ struct TripHeaderView: View {
                         HStack {
 
                             LabeledContent {
-                                TextField("", text: $tripLatDown)
+                                TextField("", value: $tripData.latDown, formatter: NumberFormatter())
                                     .foregroundColor(Color("TextForeground"))
                                     .textFieldStyle(.roundedBorder)
                                     .frame(width: 100)
@@ -176,14 +177,14 @@ struct TripHeaderView: View {
                                     .onTapGesture {
                                         Task {
                                             await MainActor.run {
-                                                self.tripLatDown = "\(locationsHandler.lastLocation2D.latitude)"
+                                                self.tripData.latDown = locationsHandler.lastLocation2D.latitude
                                             }
                                         }
                                     }
                             }.frame(width: 160, height: 30).padding(.trailing, 20)
                            
                             LabeledContent {
-                                TextField("", text: $tripLonDown )
+                                TextField("", value: $tripData.lonDown, formatter: NumberFormatter())
                                   .foregroundColor(Color("TextForeground"))
                                   .textFieldStyle(.roundedBorder)
                                   .frame(width: 120)
@@ -191,16 +192,12 @@ struct TripHeaderView: View {
                             } label: {
                                 Text("Lon↓:")
                                     .onTapGesture {
-                                        Task {
-                                            await MainActor.run {
-                                                tripLonDown = "\(locationsHandler.lastLocation2D.longitude)"
-                                            }
-                                        }
+                                        tripData.lonDown = locationsHandler.lastLocation2D.longitude
                                     }
                             }.frame(width: 180, height: 30).padding(.trailing, 20)
                             
                             LabeledContent {
-                                TextField("", text: $tripLatUp )
+                                TextField("", value: $tripData.latUp, formatter: NumberFormatter())
                                   .foregroundColor(Color("TextForeground"))
                                   .textFieldStyle(.roundedBorder)
                                   .frame(width: 100)
@@ -208,21 +205,21 @@ struct TripHeaderView: View {
                             } label: {
                                 Text("Lat↑:")
                                    .onTapGesture {
-                                       tripLatUp = "\(locationsHandler.lastLocation2D.latitude)"
+                                       tripData.latUp = locationsHandler.lastLocation2D.latitude
                                    }
                             }.frame(width: 160, height: 30).padding(.trailing, 20)
                             
                             LabeledContent {
-                                TextField("", text: $tripLonUp)
+                                TextField("", value: $tripData.lonUp, formatter: NumberFormatter())
                                   .foregroundColor(Color("TextForeground"))
                                   .textFieldStyle(.roundedBorder)
                                   .frame(width: 120)
                                   .multilineTextAlignment(.trailing)
                             } label: {
                                 Text("Lon↑:")
-                                .onTapGesture {
-                                    tripLonUp = "\(locationsHandler.lastLocation2D.longitude)"
-                                }
+                                    .onTapGesture {
+                                        tripData.lonUp = locationsHandler.lastLocation2D.longitude
+                                    }
                             }.frame(width: 180, height: 30).padding(.trailing, 10)
                         }
                         .padding(.top, 10)
@@ -247,7 +244,7 @@ struct TripHeaderView: View {
                             // Text("Trip is \(tripData.isClosed == "Y" ? "CLOSED" : "OPEN")")
                             HStack {
                                 LabeledContent {
-                                    TextField("", text: $tripGear)
+                                    TextField("", text: $tripData.gear)
                                       .foregroundColor(Color("TextForeground"))
                                       .textFieldStyle(.roundedBorder)
                                       .border(Color.gray, width: 1)
@@ -264,7 +261,7 @@ struct TripHeaderView: View {
 
                             HStack {
                                 LabeledContent {
-                                    TextField("", text: $tripRectifyingunit)
+                                    TextField("", text: $tripData.rectifyingunit)
                                       .foregroundColor(Color("TextForeground"))
                                       .textFieldStyle(.roundedBorder)
                                       .border(Color.gray, width: 1)
@@ -279,7 +276,7 @@ struct TripHeaderView: View {
                             
                             HStack {
                                 LabeledContent {
-                                    TextField("", text: $tripVolts)
+                                    TextField("", text: $tripData.volts)
                                       .foregroundColor(Color("TextForeground"))
                                       .textFieldStyle(.roundedBorder)
                                       .border(Color.gray, width: 1)
@@ -289,7 +286,7 @@ struct TripHeaderView: View {
                                     Text("Volts")
                                 }.frame(width: 300).padding(.trailing, 30)
                                 LabeledContent {
-                                    TextField("", text: $tripAmps)
+                                    TextField("", text: $tripData.amps)
                                       .foregroundColor(Color("TextForeground"))
                                       .textFieldStyle(.roundedBorder)
                                       .border(Color.gray, width: 1)
@@ -304,7 +301,7 @@ struct TripHeaderView: View {
                             
                             HStack {
                                 LabeledContent {
-                                    TextField("", text: $tripShocktime)
+                                    TextField("", text: $tripData.shocktime)
                                       .foregroundColor(Color("TextForeground"))
                                       .textFieldStyle(.roundedBorder)
                                       .border(Color.gray, width: 1)
@@ -319,7 +316,7 @@ struct TripHeaderView: View {
                             
                             HStack {
                                 LabeledContent {
-                                    TextField("", text: $tripAnesthetic)
+                                    TextField("", text: $tripData.anesthetic)
                                       .foregroundColor(Color("TextForeground"))
                                       .textFieldStyle(.roundedBorder)
                                       .border(Color.gray, width: 1)
@@ -330,7 +327,7 @@ struct TripHeaderView: View {
                                 }.frame(width: 300).padding(.trailing, 30)
 
                                 LabeledContent {
-                                    TextField("", text: $tripDosage)
+                                    TextField("", text: $tripData.dosage)
                                       .foregroundColor(Color("TextForeground"))
                                       .textFieldStyle(.roundedBorder)
                                       .border(Color.gray, width: 1)
@@ -351,6 +348,14 @@ struct TripHeaderView: View {
                 .onAppear {
                     // print("width: \(geometry.size.width)")
                 }
+                
+                .onChange(of: selectedStartTime) {
+                    tripData.startTime = selectedStartTime.formatted(date: .omitted, time: .shortened)
+                }
+                .onChange(of: selectedEndTime) {
+                    tripData.endTime = selectedEndTime.formatted(date: .omitted, time: .shortened)
+                }
+                    
                 .onChange(of: tripData.watershed) {
                     if tripData.watershed.isEmpty {
                         isValidWatershed = false
@@ -374,7 +379,7 @@ struct TripHeaderView: View {
                 }
             }
         } // VStack
-        .frame(height: isShowingTripExtras ? 420 : 160)  // 160
+        .frame(height: isShowingTripExtras ? 410 : 160)  // 160
     }
 }
 
