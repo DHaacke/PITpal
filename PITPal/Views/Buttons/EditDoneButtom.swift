@@ -1,21 +1,21 @@
 //
-//  SaveButton.swift
+//  EditDoneButtom.swift
 //  PITPal
 //
-//  Created by Doug Haacke on 6/22/25.
+//  Created by Doug Haacke on 7/7/25.
 //
 
 import SwiftUI
 
-struct SaveButton: View {
-    var onSaveButtonTapped: () -> Void
+struct EditDoneButton: View {
+    var onEditDoneButtonTapped: () -> Void
    
     var body: some View {
         VStack {
             Button(action: {
-                onSaveButtonTapped()
+                onEditDoneButtonTapped()
             }, label: {
-                Text("Save")
+                Text("Done")
                     .frame(width: 80, height: 34)
                     .font(.system(size: 24, weight: .medium))
                     .foregroundColor(.white)
@@ -35,7 +35,7 @@ struct SaveButton: View {
 
 
 #Preview {
-    SaveButton(onSaveButtonTapped: {
-        print("Save button tapped")
+    EditDoneButton(onEditDoneButtonTapped: {
+        print("Edit done button tapped")
     })
 }

@@ -1,21 +1,21 @@
 //
-//  SaveButton.swift
+//  AddButton.swift
 //  PITPal
 //
-//  Created by Doug Haacke on 6/22/25.
+//  Created by Doug Haacke on 7/6/25.
 //
 
 import SwiftUI
 
-struct SaveButton: View {
-    var onSaveButtonTapped: () -> Void
+struct AddButton: View {
+    var onAddButtonTapped: () -> Void
    
     var body: some View {
         VStack {
             Button(action: {
-                onSaveButtonTapped()
+                onAddButtonTapped()
             }, label: {
-                Text("Save")
+                Text("Add")
                     .frame(width: 80, height: 34)
                     .font(.system(size: 24, weight: .medium))
                     .foregroundColor(.white)
@@ -35,7 +35,7 @@ struct SaveButton: View {
 
 
 #Preview {
-    SaveButton(onSaveButtonTapped: {
-        print("Save button tapped")
+    AddButton(onAddButtonTapped: {
+        print("Add button tapped")
     })
 }

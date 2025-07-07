@@ -9,13 +9,16 @@ import SwiftUI
 import SwiftData
 
 @Model
-final class Species: Codable, Equatable {
+final class Species: Codable, Equatable, Hashable, Identifiable {
     @Attribute(.unique) var code: String
     var fwpCode: String = ""
     var name: String
     var imageName: String
     var color: String
     var active: String
+    var id: String {
+        code
+    }
     
     init(
         code: String = "",

@@ -1,22 +1,22 @@
 //
-//  SaveButton.swift
+//  DeleteButton.swift
 //  PITPal
 //
-//  Created by Doug Haacke on 6/22/25.
+//  Created by Doug Haacke on 7/6/25.
 //
 
 import SwiftUI
 
-struct SaveButton: View {
-    var onSaveButtonTapped: () -> Void
+struct DeleteButton: View {
+    var onDeleteButtonTapped: () -> Void
    
     var body: some View {
         VStack {
             Button(action: {
-                onSaveButtonTapped()
+                onDeleteButtonTapped()
             }, label: {
-                Text("Save")
-                    .frame(width: 80, height: 34)
+                Text("Delete")
+                    .frame(width: 90, height: 34)
                     .font(.system(size: 24, weight: .medium))
                     .foregroundColor(.white)
                     .background(
@@ -35,7 +35,7 @@ struct SaveButton: View {
 
 
 #Preview {
-    SaveButton(onSaveButtonTapped: {
-        print("Save button tapped")
+    DeleteButton(onDeleteButtonTapped: {
+        print("Delete button tapped")
     })
 }

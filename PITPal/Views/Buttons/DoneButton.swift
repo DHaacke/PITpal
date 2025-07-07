@@ -22,15 +22,6 @@ struct DoneButton: View {
                     .font(.system(size: 22, weight: .medium))
                     .foregroundColor(Color("TextForegroundWhite"))
                     .background(.clear)
-//                    .background(
-//                        RoundedRectangle(
-//                            cornerRadius: 20,
-//                            style: .continuous
-//                        )
-//                        .stroke(Color("TextForegroundWhite"), lineWidth: 2)
-//                        .background(Color("CardBackground"))
-//                        .clipShape(RoundedRectangle(cornerRadius: 20))
-//                    )
             })
         }
         .background(.clear)

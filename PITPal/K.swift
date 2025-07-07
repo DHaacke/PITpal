@@ -11,13 +11,15 @@ import SwiftUI
 struct K {
 
     // views
-    static let MAINMENU: String     = "MAINMENU"
-    static let SETTINGS: String     = "SETTINGS"
-    static let TAG: String          = "TAG"
-    static let EXPORT: String       = "EXPORT"
-    static let LENGTH_CHART: String = "LENGTH_CHART"
-    static let WEIGHT_CHART: String = "WEIGHT_CHART"
-    static let OTHER: String        = "OTHER"
+    static let MAINMENU: String         = "MAINMENU"
+    static let SETTINGS: String         = "SETTINGS"
+    static let TAG: String              = "TAG"
+    static let EXPORT: String           = "EXPORT"
+    static let LENGTH_CHART: String     = "LENGTH_CHART"
+    static let WEIGHT_CHART: String     = "WEIGHT_CHART"
+    static let SPECIES_DETAIL: String   = "SPECIES_DETAIL"
+    static let SECTION_DETAIL: String   = "SECTION_DETAIL"
+    static let OTHER: String            = "OTHER"
     
     // bluetooth
     static let BLUETOOTH_OFF: Int            = 0

@@ -5,40 +5,59 @@
 //  Created by Doug Haacke on 6/22/25.
 //
 
+import Foundation
 import SwiftData
 import SwiftUI
 import Combine
 
 struct SpeciesListView: View {
     @Environment(\.modelContext) var modelContext
-    // @Query(sort: [SortDescriptor(\Species.active)]) var speciesList: [Species]
-    // @Query(sort: \Species.active, order: .reverse) var speciesList: [Species]
+
     @Query(sort: \Species.name, order: .forward) var speciesList: [Species]
     
-    // @State private var sortOrder = SortDescriptor(\Species.active)
+    @Binding var path: [String]
     
-    var body: some View {
-//        ScrollView {
-            VStack {
-                Table(speciesList) {
-                    TableColumn("Code") { sp in Text(sp.code) }.width(60)
-                    TableColumn("Name", value: \.name)
-                    TableColumn("Image Name", value: \.imageName)
-                    TableColumn("Color", value: \.color)
-                    TableColumn("Active", value: \.active)
-                }
-                .scrollContentBackground(.hidden)
-                // .background(Color("AppBackground"))
-            }
-            .tableStyle(.automatic)
-            .frame(minWidth: 600, maxWidth: .infinity, minHeight: 240, maxHeight: .infinity  )
-            .padding(.top, 8)
-            .padding(.horizontal, 12)
-        }
-//    }
+    @State private var selectedSpeciesId: Species.ID?
+    @State private var species: Species = Species()
+    @State private var isShowingSpeciesDetail = false
 
-    init(sort: SortDescriptor<Species>) {
-        _speciesList = Query(sort: [sort])
+
+    var body: some View {
+
+        VStack {
+            Table(speciesList, selection: $selectedSpeciesId) {
+                TableColumn("Code") { sp in Text(sp.code) }.width(60)
+                TableColumn("FWP Code", value: \.fwpCode)
+                TableColumn("Name", value: \.name)
+                TableColumn("Image Name", value: \.imageName)
+                TableColumn("Color", value: \.color)
+                TableColumn("Active", value: \.active)
+            }
+            .scrollContentBackground(.hidden)
+            .onChange(of: selectedSpeciesId) {
+                if selectedSpeciesId != nil {
+                    isShowingSpeciesDetail = true
+                }
+            }
+            .sheet(isPresented: $isShowingSpeciesDetail) {
+                if let speciesId = selectedSpeciesId, let species = speciesList.first(where: { $0.id == speciesId }) {
+                    SpeciesDetailView(species: species)
+                        // .frame(minWidth: 400, maxWidth: 600, minHeight: 500, maxHeight: 600)
+                        .environment(\.modelContext, modelContext)
+                        .onDisappear {
+                            isShowingSpeciesDetail = false
+                            selectedSpeciesId = nil
+                        }
+                }
+            }
+        }
+        .tableStyle(.automatic)
+        .frame(minWidth: 600, maxWidth: .infinity, minHeight: 240, maxHeight: .infinity  )
+        .padding(.top, 8)
+        .padding(.horizontal, 12)
+        .onChange(of: selectedSpeciesId) {
+            print("Selected Species ID changed: \(selectedSpeciesId ?? "nil")")
+        }
             
     }
 

@@ -102,6 +102,7 @@ struct ContentView: View {
 //                            print("Adding \(species.name)")
 //                            modelContext.insert(Species(
 //                                code: species.code,
+//                                fwpCode: species.fwpCode,
 //                                name: species.name,
 //                                imageName: species.imageName,
 //                                color: species.color,
