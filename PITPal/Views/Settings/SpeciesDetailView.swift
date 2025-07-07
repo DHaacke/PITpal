@@ -6,12 +6,21 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SpeciesDetailView: View {
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) var modelContext
     
     @State var species: Species
+    @State var isAddingSpecies: Bool
     
     @State private var isActive: Bool = true
+    @State private var isShowingAddAlert: Bool = false
+    @State private var isShowingDeleteAlert: Bool = false
+    
+    @Query(sort: \Species.name, order: .forward) var speciesList: [Species]
+    @Query(sort: \Fish.species, order: .forward) var fishList: [Fish]
     
     var body: some View {
         VStack {
@@ -78,24 +87,50 @@ struct SpeciesDetailView: View {
                 Spacer()
             }
             .padding(.bottom, 20)
+            
             HStack {
                 Spacer()
-                AddButton(onAddButtonTapped: {
-                    print("Add Button tapped")
-                })
-                .padding(.trailing, 100)
-                DeleteButton(onDeleteButtonTapped: {
-                    print("Delete Button tapped")
-                })
+                if isAddingSpecies {
+                    AddButton(onAddButtonTapped: {
+                        let dupes = speciesList.filter { $0.code == species.code }
+                        if !species.code.isEmpty && !species.name.isEmpty && !species.fwpCode.isEmpty && dupes.isEmpty {
+                            print("Adding species: \(species.code)")
+                            modelContext.insert(species)
+                            try! modelContext.save()
+                            dismiss()
+                        } else {
+                            isShowingAddAlert = true
+                        }
+                    })
+                    .alert("Oops! You must enter a unique code and at least a name and FWP code.", isPresented: $isShowingAddAlert) {
+                        Button("OK", role: .cancel) { }
+                    }
+                }
+                if !isAddingSpecies {
+                    DeleteButton(onDeleteButtonTapped: {
+                        let exists = fishList.filter { $0.species == species.code }
+                        if exists.isEmpty {
+                            modelContext.delete(species)
+                            try! modelContext.save()
+                            dismiss()
+                        } else {
+                            isShowingDeleteAlert = true
+                        }
+                    })
+                    .alert("Oops! You cannot delete a species that is currently used in a fish record.", isPresented: $isShowingDeleteAlert) {
+                        Button("OK", role: .cancel) { }
+                    }
+                }
                 Spacer()
             }
             HStack {
                 Spacer()
                 EditDoneButton(onEditDoneButtonTapped: {
-                    print("Edit Button tapped")
+                    dismiss()
                 })
                 Spacer()
             }
+            .padding(.top, 20)
             Spacer()
         }
         .padding(.horizontal, 60)

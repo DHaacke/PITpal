@@ -18,7 +18,7 @@ struct ContentView: View {
     @AppStorage("darkMode") private var darkMode: Bool = false
     
     @State private var path = [String]()
-    
+
     // TODO, these are here to help populate the database
     @Query(sort: \Trip.date) var tripList: [Trip]
     @Query(sort: \Species.code) var speciesList: [Species]
@@ -292,12 +292,12 @@ struct ContentView: View {
     }
 }
 
-
+/*
 #Preview {
     @Previewable @State var path: [String] = []
     ContentView()
         .environment(LocationsHandler())
         .environment(NetworkMonitor())
 }
-
+*/
 

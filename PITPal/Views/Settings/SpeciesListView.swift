@@ -21,7 +21,6 @@ struct SpeciesListView: View {
     @State private var species: Species = Species()
     @State private var isShowingSpeciesDetail = false
 
-
     var body: some View {
 
         VStack {
@@ -41,12 +40,11 @@ struct SpeciesListView: View {
             }
             .sheet(isPresented: $isShowingSpeciesDetail) {
                 if let speciesId = selectedSpeciesId, let species = speciesList.first(where: { $0.id == speciesId }) {
-                    SpeciesDetailView(species: species)
-                        // .frame(minWidth: 400, maxWidth: 600, minHeight: 500, maxHeight: 600)
+                    SpeciesDetailView(species: species, isAddingSpecies: false)
                         .environment(\.modelContext, modelContext)
                         .onDisappear {
                             isShowingSpeciesDetail = false
-                            selectedSpeciesId = nil
+                            // selectedSpeciesId = nil
                         }
                 }
             }

@@ -24,40 +24,38 @@ struct PITPalApp: App {
     
     var body: some Scene {
         WindowGroup {
-
-                VStack {
-                    if isWaitingForLaunchView == false {
-                        if locationsHandler.isAuthorized {
-                            ContentView()
-                                .environment(locationsHandler)
-                                .environment(jsonManager)
-                                .environment(networkMonitor)
-                        } else {
-                            LocationDeniedView()
-                        }
+            VStack {
+                if isWaitingForLaunchView == false {
+                    if locationsHandler.isAuthorized {
+                        ContentView()
+                            .environment(locationsHandler)
+                            .environment(jsonManager)
+                            .environment(networkMonitor)
                     } else {
-                        Text("Loading PIT Pal...")
-                        ProgressView()
+                        LocationDeniedView()
                     }
+                } else {
+                    Text("Loading PIT Pal...")
+                    ProgressView()
                 }
-                // .environment(\.colorScheme, darkMode == true ? .dark : .light)
-                // .preferredColorScheme(darkMode == true ? .dark : .light)
-                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-                .background(Color("AppBackground"))
-                .onReceive(launchTimer) { time in
-                    isWaitingForLaunchView = false
-                    launchTimer.upstream.connect().cancel()
-                }
-                .onAppear {
-                    print("Autosave disabled: \(modelContext.autosaveEnabled)")
-                }
-                .task {
-                    print("App is starting...")
-                    print(modelContext.sqliteCommand)
-                    locationsHandler.updatesStarted = true
-                    // networkManager.checkNetworkConnection()
-                }
-   
+            }
+            // .environment(\.colorScheme, darkMode == true ? .dark : .light)
+            // .preferredColorScheme(darkMode == true ? .dark : .light)
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+            .background(Color("AppBackground"))
+            .onReceive(launchTimer) { time in
+                isWaitingForLaunchView = false
+                launchTimer.upstream.connect().cancel()
+            }
+            .onAppear {
+                print("Autosave disabled: \(modelContext.autosaveEnabled)")
+            }
+            .task {
+                print("App is starting...")
+                print(modelContext.sqliteCommand)
+                locationsHandler.updatesStarted = true
+                // networkManager.checkNetworkConnection()
+            }
         }
         .modelContainer(for: [Trip.self, Fish.self, Species.self, Gender.self, SurveySection.self, Watershed.self, TripType.self, Comment.self])
     }

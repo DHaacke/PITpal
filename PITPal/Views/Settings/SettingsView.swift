@@ -55,6 +55,8 @@ struct SettingsView: View {
     @AppStorage("weightMax") private var weightMax: Int = 1000
     @AppStorage("useBluetoothWeight") private var useBluetoothWeight: Bool = false
     
+    @State private var isShowingSpeciesDetail = false
+    @State private var isShowingSurveySectionDetail = false
 
     
     let decimalFormatter: NumberFormatter = {
@@ -405,11 +407,22 @@ struct SettingsView: View {
                     .listRowBackground(Color("CardBackground"))
                     
                     
-                    
-                    
-                    Section(header: Text("Species").font(.title2).foregroundStyle(.white)) {
+                    Section(header:
+                            HStack {
+                                Text("Species").font(.title2).foregroundStyle(.white)
+                                Spacer()
+                                Button("+") {
+                                    isShowingSpeciesDetail = true
+                                }.font(.system(size: 28, weight: .medium))
+                            }
+                    ) {
                         SpeciesListView(path: $path)
                     }
+                    
+                    
+//                    Section(header: Text("Species").font(.title2).foregroundStyle(.white)) {
+//                        SpeciesListView(path: $path)
+//                    }
                     .listRowBackground(Color("CardBackground"))
                     
                     Section(header: Text("Survey Sections").font(.title2).foregroundStyle(.white)) {
@@ -423,6 +436,13 @@ struct SettingsView: View {
                 .toolbarBackground(.automatic, for: .navigationBar)
                 .scrollContentBackground(.hidden)
                 .background(Color("AppBackground"))
+                .sheet(isPresented: $isShowingSpeciesDetail) {
+                    let species = Species(code: "", fwpCode: "", name: "", imageName: "", color: "", active: "Y")
+                    SpeciesDetailView(species: species, isAddingSpecies: true)
+                        .onDisappear {
+                            isShowingSpeciesDetail = false
+                        }
+                }
                 
                 Spacer()
                 DoneButton(path: $path, nextView: K.MAINMENU)
