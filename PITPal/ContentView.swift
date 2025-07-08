@@ -70,7 +70,7 @@ struct ContentView: View {
                         .navigationTitle("Export Data").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                 }
-                else if navigation == K.LENGTH_CHART {
+                else if navigation == K.SINGLE_SPECIES_SIZE_CHART {
                     SizeChartView(path: $path)
                         .tint(Color("AccentColor"))
                         .navigationBarBackButtonHidden(false)

@@ -30,13 +30,13 @@ struct MainMenuView: View {
                     .padding(.bottom, 10)
                 
                 HStack {
-                    MenuCardView(path: $path, text: "Start", newPath: "TAG")
+                    MenuCardView(path: $path, text: "Start", subText: "", newPath: "TAG")
                         .padding(.horizontal, 120)
                 }
                     .padding(.bottom, 20)
                 
                 HStack {
-                    MenuCardView(path: $path, text: "Export Trip/Fish Data", newPath: "EXPORT")
+                    MenuCardView(path: $path, text: "Export Trip/Fish Data", subText: "", newPath: "EXPORT")
                         .padding(.horizontal, 120)
                 }
                     .padding(.bottom, 20)
@@ -50,7 +50,7 @@ struct MainMenuView: View {
 //                    .padding(.bottom, 20)
                 
                 HStack {
-                    MenuCardView(path: $path, text: "Settings", newPath: "SETTINGS")
+                    MenuCardView(path: $path, text: "Settings", subText: "", newPath: "SETTINGS")
                 }
                     .padding(.horizontal, 30)
                     .padding(.bottom, 40)
@@ -62,22 +62,22 @@ struct MainMenuView: View {
                     .padding(.bottom, 10)
                 
                 HStack {
-                    MenuCardView(path: $path, text: "Size Charts", newPath: "LENGTH_CHART")
+                    MenuCardView(path: $path, text: "Size Chart", subText: "Single bar chart style", newPath: K.SINGLE_SPECIES_SIZE_CHART)
                     Spacer()
-                    MenuCardView(path: $path, text: "Weight Charts", newPath: "WEIGHT_CHART")
+                    MenuCardView(path: $path, text: "Size Chart", subText: "Multiple bar chart style", newPath: K.DUAL_SPECIES_SIZE_CHART)
                 }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 20)
                 HStack {
-                    MenuCardView(path: $path, text: "Section Analysis", newPath: "")
+                    MenuCardView(path: $path, text: "Section Analysis", subText: "", newPath: "")
                     Spacer()
-                    MenuCardView(path: $path, text: "Species Analysis", newPath: "")
+                    MenuCardView(path: $path, text: "Species Analysis", subText: "", newPath: "")
                 }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 20)
                 HStack {
                     Spacer()
-                    MenuCardView(path: $path, text: "Lincoln-Petersen Estimator", newPath: "")
+                    MenuCardView(path: $path, text: "Lincoln-Petersen Estimator", subText: "", newPath: "")
                     Spacer()
                 }
                     .padding(.horizontal, 20)

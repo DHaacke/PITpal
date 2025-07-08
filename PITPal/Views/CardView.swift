@@ -12,6 +12,7 @@ struct CardView: View {
     @Binding var path: [String]
 
     var text: String = ""
+    var subText: String = ""
     
     var body: some View {
         GeometryReader { geometry in
@@ -24,6 +25,12 @@ struct CardView: View {
                         .font(.title)
                         .foregroundStyle(Color("TextForegroundWhite"))
                         .font(.system(size: 24, weight: .bold, design: .default))
+                    if !subText.isEmpty {
+                        Text(subText)
+                            .font(.subheadline)
+                            .foregroundStyle(Color("TextForegroundWhite"))
+                            .font(.system(size: 16, weight: .regular, design: .default))
+                    }
                 }
                 .multilineTextAlignment(.center)
             }

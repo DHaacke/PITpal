@@ -12,6 +12,7 @@ struct MenuCardView: View {
     @Binding var path: [String]
 
     var text: String = ""
+    var subText: String = ""
     var newPath: String = ""
     
     var body: some View {
@@ -22,9 +23,14 @@ struct MenuCardView: View {
                     .shadow(radius: 6, x: 1, y: 3)
                 VStack {
                     Text(text)
-                        .font(.title)
+                        // .font(.title)
                         .foregroundStyle(Color("TextForegroundWhite"))
                         .font(.system(size: 24, weight: .bold, design: .default))
+                    if !subText.isEmpty {
+                        Text(subText)
+                            .font(.system(size: 16, weight: .regular, design: .default))
+                            .foregroundStyle(Color("TextForegroundWhite"))
+                    }
                 }
                 .multilineTextAlignment(.center)
             }

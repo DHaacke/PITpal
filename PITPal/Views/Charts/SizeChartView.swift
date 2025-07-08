@@ -23,8 +23,8 @@ struct SizeChartView: View {
     
     @Binding var path: [String]
     
-    @State private var startDate: Date = "2024-04-01".toDate(format: "yyyy-MM-dd") // Date()
-    @State private var endDate:   Date = "2024-04-30".toDate(format: "yyyy-MM-dd") // Date()
+    @State private var startDate: Date = Date()         // = "2024-04-01".toDate(format: "yyyy-MM-dd") // Date()
+    @State private var endDate:   Date = Date()         // = "2024-04-30".toDate(format: "yyyy-MM-dd") // Date()
     @State private var selectedTitle: String = "{SPECIES} Size Distribution ({SECTION})"
     @State private var parsedTitle: String = ""
     @State private var selectedWatershed: String = ""
@@ -34,7 +34,6 @@ struct SizeChartView: View {
     @State private var selectedMinLength: Int = 0
     @State private var selectedMaxLength: Int = 0
     @State private var selectedBarColor: Color = .blue
-
     
     @State private var filteredTrips: [TripData] = []
     @State private var filteredFish: [FishData] = []
@@ -212,6 +211,8 @@ struct SizeChartView: View {
                         SizeBarChartView(
                             filteredFish: $filteredFish,
                             fishChartData: $fishChartData,
+                            startDate: $startDate,
+                            endDate: $endDate,
                             title: $parsedTitle,
                             species: $selectedSpecies,
                             color: $selectedBarColor
@@ -228,16 +229,16 @@ struct SizeChartView: View {
         .background(Color("AppBackground"))
         .frame(minWidth: 700, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         
-        .onChange(of: startDate) {
-            var dateComponents = DateComponents()
-            dateComponents.month = 3 // Add 3 months
-            let calendar = Calendar.current
-            if let futureDate = calendar.date(byAdding: dateComponents, to: self.startDate) {
-                self.endDate = futureDate
-            } else {
-                print("Error calculating future date.")
-            }
-        }
+//        .onChange(of: startDate) {
+//            var dateComponents = DateComponents()
+//            dateComponents.month = 3 // Add 3 months
+//            let calendar = Calendar.current
+//            if let futureDate = calendar.date(byAdding: dateComponents, to: self.startDate) {
+//                self.endDate = futureDate
+//            } else {
+//                print("Error calculating future date.")
+//            }
+//        }
         .onChange(of: selectedTripType) {
             tripTripType = selectedTripType
         }
@@ -250,9 +251,13 @@ struct SizeChartView: View {
             selectedMinLength = lengthMin
             selectedMaxLength = lengthMax
             
-            selectedWatershed = tripWatershed
-            selectedTripType  = tripTripType
-            selectedSurveySection = tripSurveySection
+//            selectedWatershed = tripWatershed
+//            selectedTripType  = tripTripType
+//            selectedSurveySection = tripSurveySection
+            
+            self.startDate = tripList.first?.date ?? Date()
+            self.endDate   = tripList.last?.date ?? Date()
+            print("End Date: \(endDate)")
         }
     }
 
@@ -277,7 +282,7 @@ struct SizeChartView: View {
             }
         } else {
             for trip in filteredTrips {
-                filteredFish.append(contentsOf: trip.fish)
+                filteredFish.append(contentsOf: trip.fish.filter { $0.length >= selectedMinLength && $0.length <= selectedMaxLength })
             }
         }
         return filteredFish
@@ -311,6 +316,8 @@ struct SizeBarChartView: View {
     
     @Binding var filteredFish: [FishData]
     @Binding var fishChartData: [FishChartData]
+    @Binding var startDate: Date
+    @Binding var endDate: Date
     @Binding var title: String
     @Binding var species: String
     @Binding var color: Color
@@ -323,7 +330,10 @@ struct SizeBarChartView: View {
                 Text(title)
                     .font(.title)
                     .foregroundColor(.black)
-                    .padding(.bottom, 10)
+                    .padding(.bottom, 4)
+                Text("\(startDate, format: .dateTime.day().month().year()) to \(endDate, format: .dateTime.day().month().year())")
+                    .font(.headline)
+                    .foregroundColor(.black)
                 Chart(fishChartData, id: \.id) { data in
                     BarMark(
                         x: .value("Size", data.sizeGroup),
@@ -340,6 +350,7 @@ struct SizeBarChartView: View {
                 .chartXAxis {
                     AxisMarks(values: [6, 8, 10, 12, 14, 16, 18, 20, 22, 24]) { value in
                         AxisValueLabel()
+                            .font(.headline)
                             .foregroundStyle(.black)
                             .offset(x: -8)
                     }
@@ -349,6 +360,7 @@ struct SizeBarChartView: View {
                     AxisMarks(values: .automatic) { value in
                         AxisGridLine()
                         AxisValueLabel()
+                            .font(.headline)
                             .foregroundStyle(.black)
                             .offset(x: 10)
                     }
@@ -362,7 +374,6 @@ struct SizeBarChartView: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .onTapGesture {
                 self.isShowingPDFAlert = true
-                
             }
             .alert(isPresented: $isShowingPDFAlert) {
                 Alert(
@@ -378,9 +389,25 @@ struct SizeBarChartView: View {
                 )
             }
         }
-        
         .padding(.horizontal, 12)
         .padding(.vertical, 20)
+        .overlay {
+            ZStack {
+                VStack {
+                    HStack {
+                        Spacer()
+                        Image("FWPLogo")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 50, height: 50)
+                            .shadow(radius: 16)
+                            .padding(.trailing, 30)
+                            .padding(.top, 30)
+                    }
+                    Spacer()
+                }
+            }
+        }
     }
     
     func createPDF() {
@@ -404,6 +431,8 @@ struct SizeBarChartView: View {
             let chartView = SizeBarChartView(
                 filteredFish: $filteredFish,
                 fishChartData: $fishChartData,
+                startDate: $startDate,
+                endDate: $endDate,
                 title: $title,
                 species: $species,
                 color: $color
