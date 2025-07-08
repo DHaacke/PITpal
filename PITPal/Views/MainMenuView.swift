@@ -62,14 +62,14 @@ struct MainMenuView: View {
                     .padding(.bottom, 10)
                 
                 HStack {
-                    MenuCardView(path: $path, text: "Size Chart", subText: "Single bar chart style", newPath: K.SINGLE_SPECIES_SIZE_CHART)
+                    MenuCardView(path: $path, text: "Size Chart", subText: "Single species bar chart style", newPath: K.SINGLE_SPECIES_SIZE_CHART)
                     Spacer()
-                    MenuCardView(path: $path, text: "Size Chart", subText: "Multiple bar chart style", newPath: K.DUAL_SPECIES_SIZE_CHART)
+                    MenuCardView(path: $path, text: "Size Chart", subText: "Multiple species bar chart style", newPath: K.DUAL_SPECIES_SIZE_CHART)
                 }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 20)
                 HStack {
-                    MenuCardView(path: $path, text: "Section Analysis", subText: "", newPath: "")
+                    MenuCardView(path: $path, text: "Size/Weight Model", subText: "Scatter plot style", newPath: K.SIZE_WEIGHT_MODEL_CHART)
                     Spacer()
                     MenuCardView(path: $path, text: "Species Analysis", subText: "", newPath: "")
                 }

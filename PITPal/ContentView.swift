@@ -78,10 +78,19 @@ struct ContentView: View {
                         .navigationTitle("Length Chart").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                 }
+                else if navigation == K.SIZE_WEIGHT_MODEL_CHART {
+                    SizeWeightModelChartView(path: $path)
+                        .tint(Color("AccentColor"))
+                        .navigationBarBackButtonHidden(false)
+                        .navigationBarHidden(false)
+                        .navigationTitle("Size/Weight Chart").foregroundStyle(Color("TextForegroundWhite"))
+                        .navigationBarTitleDisplayMode(.inline)
+                }
             }
+            
         }
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-        .background(Color("CardBackground"))
+        .background(Color("CardBackground").gradient)
         .preferredColorScheme(darkMode == true ? .dark : .light)
         .onChange(of: path) { oldPath, newPath in
             print("Path changed: \(newPath)")

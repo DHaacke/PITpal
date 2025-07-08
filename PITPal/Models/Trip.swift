@@ -34,9 +34,7 @@ final class Trip: Codable {
     var turbidity: String
     var isClosed: String
     @Relationship(deleteRule: .cascade, inverse: \Fish.trip) var fish: [Fish]
-    // var fish: [Fish]
-    
-    
+       
     init(
         date: Date = Date(),
         tripType: String = "M",

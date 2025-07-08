@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-final class FishData: Equatable {
+final class FishData: Equatable, Identifiable {
     var id: UUID = UUID()
     var trip: TripData?
     var date: Date

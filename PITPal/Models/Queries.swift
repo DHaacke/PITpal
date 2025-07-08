@@ -89,4 +89,54 @@ final class Queries {
             return "N/A" // Handle the error appropriately
         }
     }
+    
+    func fetchFishWithLengthAndWeight(context: ModelContext) -> [FishData] {
+        let descriptor = FetchDescriptor<Fish>(
+            predicate: #Predicate { fish in
+                fish.length > 0 && fish.weight > 0
+            }
+        )
+        do {
+            let list : [Fish] = try context.fetch(descriptor)
+            var fishList : [FishData] = []
+            for f in list {
+                fishList.append(f.deepCopy())
+            }
+            return fishList
+        } catch {
+            print("Error fetching Fish with length and weight: \(error)")
+            return []
+        }
+    }
+    
+    func fetchFishWithLengthAndWeight(context: ModelContext, tripType: String = "", watershed: String = "", surveySection: String = "") -> [FishData] {
+        
+        print("TripType:      \(tripType)")
+        print("SurveySection: \(surveySection)")
+        print("Watershed:     \(watershed)")
+        
+        let descriptor = FetchDescriptor<Trip>(
+            predicate: #Predicate<Trip> { trip in
+                (tripType == "" || trip.tripType == tripType) && (surveySection == "" || trip.surveySection == surveySection)  //  (watershed == "" || trip.watershed == watershed)
+            }
+        )
+        do {
+            let trips : [Trip] = try context.fetch(descriptor)
+            print("Trips returned: \(trips.count)")
+            var fishList : [FishData] = []
+            
+            for trip in trips {
+                print("Trip fish count: \(trip.fish.count)")
+                for fish in trip.fish {
+                    if fish.length > 0 && fish.weight > 0 {
+                        fishList.append(fish.deepCopy())
+                    }
+                }
+            }
+            return fishList
+        } catch {
+            print("Error fetching Fish with length, weight and other parameters: \(error)")
+            return []
+        }
+    }
 }
