@@ -12,7 +12,7 @@ import Charts
 
 
 
-struct LengthChartView: View {
+struct SizeChartView: View {
     
     @Environment(\.modelContext) var modelContext
     @Environment(LocationsHandler.self) var locationsHandler
@@ -73,9 +73,9 @@ struct LengthChartView: View {
                     displayedComponents: [.date]
                 ).datePickerStyle(.compact).frame(width: 250)
             }
-            .padding(.top, 40)
+            .padding(.top, 20)
             .padding(.horizontal, 100)
-            .padding(.bottom, 40)
+            .padding(.bottom, 20)
             
             VStack(alignment: .leading) {
                 
@@ -90,7 +90,7 @@ struct LengthChartView: View {
                         Text("Chart Title")
                     }.frame(width: 550)
                     Spacer()
-                }
+                }.padding(.leading, 100)
                 
                 HStack() {
                     LabeledContent {
@@ -105,7 +105,7 @@ struct LengthChartView: View {
                         Text("Watershed:")
                     }.frame(width: 400, height: 40)
                     Spacer()
-                }
+                }.padding(.leading, 100)
                 
                 HStack {
                     LabeledContent {
@@ -119,7 +119,7 @@ struct LengthChartView: View {
                     } label: {
                         Text("Trip Type:")
                     }.frame(width: 400, height: 40)
-                }
+                }.padding(.leading, 100)
                 
                 HStack {
                     LabeledContent {
@@ -133,7 +133,7 @@ struct LengthChartView: View {
                     } label: {
                         Text("Survey Section:")
                     }.frame(width: 400, height: 40)
-                }
+                }.padding(.leading, 100)
                 
                 HStack {
                     LabeledContent {
@@ -147,7 +147,7 @@ struct LengthChartView: View {
                     } label: {
                         Text("Species:")
                     }.frame(width: 400, height: 40)
-                }
+                }.padding(.leading, 100)
                 
                 HStack {
                     LabeledContent {
@@ -171,15 +171,17 @@ struct LengthChartView: View {
                     } label: {
                         Text("Max Length")
                     }.frame(width: 250)
-                }.padding(.bottom, 10)
+                }.padding(.bottom, 10).padding(.leading, 100)
                 
                 HStack {
                     LabeledContent {
                         ColorPicker("", selection: $selectedBarColor)
                     } label: {
                         Text("Bar Color")
-                    }.frame(width: 250).padding(.trailing, 60)
-                }
+                    }.frame(width: 220).padding(.trailing, 50)
+                    
+                    
+                }.padding(.leading, 100)
                 
                 HStack(alignment: .center) {
                     Spacer()
@@ -207,7 +209,7 @@ struct LengthChartView: View {
                 }
                 if isChartReady {
                     VStack {
-                        LengthBarChartView(
+                        SizeBarChartView(
                             filteredFish: $filteredFish,
                             fishChartData: $fishChartData,
                             title: $parsedTitle,
@@ -220,12 +222,11 @@ struct LengthChartView: View {
                 }
                 Spacer()
             }
-            .padding(.horizontal, 100)
+            .padding(.horizontal, 20)
         }
         .padding(.horizontal, 20)
         .background(Color("AppBackground"))
         .frame(minWidth: 700, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-        
         
         .onChange(of: startDate) {
             var dateComponents = DateComponents()
@@ -299,13 +300,13 @@ struct LengthChartView: View {
 }
 
 #Preview {
-    LengthChartView(path: .constant([]))
+    SizeChartView(path: .constant([]))
         .environment(LocationsHandler())
         .environment(JSONManager())
         .environment(NetworkMonitor())
 }
 
-struct LengthBarChartView: View {
+struct SizeBarChartView: View {
     @Environment(\.modelContext) var modelContext
     
     @Binding var filteredFish: [FishData]
@@ -313,6 +314,8 @@ struct LengthBarChartView: View {
     @Binding var title: String
     @Binding var species: String
     @Binding var color: Color
+    
+    @State private var isShowingPDFAlert: Bool = false
     
     var body: some View {
         VStack {
@@ -350,20 +353,34 @@ struct LengthBarChartView: View {
                             .offset(x: 10)
                     }
                 }
+                Text("Total fish:  \(filteredFish.count)")
+                    .font(.headline)
+                    .foregroundColor(.black)
             }
             .frame(minWidth: 300, maxWidth: .infinity, minHeight: 200, maxHeight: .infinity)
             .background(Color.black)
             .clipShape(RoundedRectangle(cornerRadius: 12))
+            .onTapGesture {
+                self.isShowingPDFAlert = true
+                
+            }
+            .alert(isPresented: $isShowingPDFAlert) {
+                Alert(
+                    title: Text("PDF Creation"),
+                    message: Text("Would you like to print this chart to a PDF?"),
+                    primaryButton: .default(Text("Yep!")) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            self.isShowingPDFAlert = false
+                            createPDF()
+                        }
+                    },
+                    secondaryButton: .cancel()
+                )
+            }
         }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 20)
-        VStack {
-            PDFButton(onPDFButtonTapped: {
-                print("Creating PDF...")
-                createPDF()
-            })
-            .padding(.bottom, 10)
-        }
+        
+        .padding(.horizontal, 12)
+        .padding(.vertical, 20)
     }
     
     func createPDF() {
@@ -384,7 +401,7 @@ struct LengthBarChartView: View {
             context.beginPage()
             
             // Create SwiftUI view
-            let chartView = LengthBarChartView(
+            let chartView = SizeBarChartView(
                 filteredFish: $filteredFish,
                 fishChartData: $fishChartData,
                 title: $title,

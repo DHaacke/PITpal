@@ -33,6 +33,7 @@ struct SpeciesListView: View {
                 TableColumn("Active", value: \.active)
             }
             .scrollContentBackground(.hidden)
+            .background(Color("CardBackground").gradient)
             .onChange(of: selectedSpeciesId) {
                 if selectedSpeciesId != nil {
                     isShowingSpeciesDetail = true

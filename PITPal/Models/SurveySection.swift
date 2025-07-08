@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 @Model
-final class SurveySection: Codable, Equatable {
+final class SurveySection: Codable, Equatable, Identifiable {
     @Attribute(.unique) var code: String
     var name: String
     var color: String
@@ -19,6 +19,9 @@ final class SurveySection: Codable, Equatable {
     var lonUp: Double
     var radius: Double
     var active: String
+    var id: String {
+        code
+    }
     
     init(
         code: String = "",

@@ -71,7 +71,7 @@ struct ContentView: View {
                         .navigationBarTitleDisplayMode(.inline)
                 }
                 else if navigation == K.LENGTH_CHART {
-                    LengthChartView(path: $path)
+                    SizeChartView(path: $path)
                         .tint(Color("AccentColor"))
                         .navigationBarBackButtonHidden(false)
                         .navigationBarHidden(false)

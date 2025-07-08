@@ -5,19 +5,25 @@
 //  Created by Doug Haacke on 6/22/25.
 //
 
+import Foundation
 import SwiftData
 import SwiftUI
 import Combine
 
 struct SurveySectionListView: View {
     @Environment(\.modelContext) var modelContext
-    // @Query(sort: [SortDescriptor(\Species.active)]) var speciesList: [Species]
-    // @Query(sort: \Species.active, order: .reverse) var speciesList: [Species]
-    @Query(sort: \SurveySection.active, order: .reverse) var surveySections: [SurveySection]
+
+    @Query(sort: \SurveySection.active, order: .reverse) var surveySectionList: [SurveySection]
     
+    @Binding var path: [String]
+    
+    @State private var selectedSurveySectionId: SurveySection.ID?
+    @State private var surveySection: SurveySection = SurveySection()
+    @State private var isShowingSurveySectionDetail = false
+
     var body: some View {
         VStack {
-            Table(surveySections) {
+            Table(surveySectionList, selection: $selectedSurveySectionId) {
                 TableColumn("Code") { ss in Text(ss.code) }.width(60)
                 TableColumn("Name", value: \.name).width(160)
                 TableColumn("Lat↓") { ss in Text("\(ss.latDown, specifier: "%.4f")") }
@@ -27,27 +33,41 @@ struct SurveySectionListView: View {
                 TableColumn("Active", value: \.active).width(50)
             }
             .scrollContentBackground(.hidden)
-            // .background(Color("AppBackground"))
+            .background(Color("CardBackground").gradient)
+            .onChange(of: selectedSurveySectionId) {
+                if selectedSurveySectionId != nil {
+                    isShowingSurveySectionDetail = true
+                }
+            }
+            .sheet(isPresented: $isShowingSurveySectionDetail) {
+                if let surveySectionId = selectedSurveySectionId, let surveySection = surveySectionList.first(where: { $0.id == surveySectionId }) {
+                    SurveySectionDetailView(surveySection: surveySection, isAddingSurveySection: false)
+                        .environment(\.modelContext, modelContext)
+                        .onDisappear {
+                            isShowingSurveySectionDetail = false
+                            // selectedSpeciesId = nil
+                        }
+                }
+            }
         }
         .tableStyle(.automatic)
         .frame(minWidth: 600, maxWidth: .infinity, minHeight: 160, maxHeight: .infinity  )
         .padding(.top, 8)
+        .onChange(of: selectedSurveySectionId) {
+            print("Selected Survey Section ID changed: \(selectedSurveySectionId ?? "nil")")
+        }
     }
 
-    init(sort: SortDescriptor<SurveySection>) {
-        _surveySections = Query(sort: [sort])
-            
-    }
-    
     func getRecordCount(modelContext: ModelContext) -> Int {
         let descriptor = FetchDescriptor<SurveySection>(predicate: #Predicate { $0.name != "" })
         return (try? modelContext.fetchCount(descriptor)) ?? 0
     }
 }
 
+/*
 #Preview {
     SurveySectionListView(sort: SortDescriptor(\SurveySection.name))
 }
-
+*/
 
 

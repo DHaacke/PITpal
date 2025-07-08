@@ -418,15 +418,18 @@ struct SettingsView: View {
                     ) {
                         SpeciesListView(path: $path)
                     }
-                    
-                    
-//                    Section(header: Text("Species").font(.title2).foregroundStyle(.white)) {
-//                        SpeciesListView(path: $path)
-//                    }
                     .listRowBackground(Color("CardBackground"))
                     
-                    Section(header: Text("Survey Sections").font(.title2).foregroundStyle(.white)) {
-                        SurveySectionListView(sort: SortDescriptor(\SurveySection.active))
+                    Section(header:
+                            HStack {
+                                Text("Survey Section").font(.title2).foregroundStyle(.white)
+                                Spacer()
+                                Button("+") {
+                                    isShowingSurveySectionDetail = true
+                                }.font(.system(size: 28, weight: .medium))
+                            }
+                    ) {
+                        SurveySectionListView(path: $path)
                     }
                     .listRowBackground(Color("CardBackground"))
                     
@@ -441,6 +444,13 @@ struct SettingsView: View {
                     SpeciesDetailView(species: species, isAddingSpecies: true)
                         .onDisappear {
                             isShowingSpeciesDetail = false
+                        }
+                }
+                .sheet(isPresented: $isShowingSurveySectionDetail) {
+                    let surveySection = SurveySection(code: "", name: "", active: "Y")
+                    SurveySectionDetailView(surveySection: surveySection, isAddingSurveySection: true)
+                        .onDisappear {
+                            isShowingSurveySectionDetail = false
                         }
                 }
                 
