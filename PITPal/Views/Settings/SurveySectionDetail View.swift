@@ -21,6 +21,16 @@ struct SurveySectionDetailView: View {
     
     @Query(sort: \SurveySection.name, order: .forward) var surveySectionList: [SurveySection]
     
+    enum FocusedField {
+        case int, dec
+    }
+    @FocusState private var focusedField: FocusedField?
+    @State private var latDownText = ""
+    @State private var lonDownText = ""
+    @State private var latUpText = ""
+    @State private var lonUpText = ""
+    @State private var radiusText = ""
+    
     var body: some View {
         VStack {
             Text("Edit \(surveySection.name)")
@@ -51,7 +61,10 @@ struct SurveySectionDetailView: View {
                 Text("Lat Down:")
                     .font(.headline)
                     .frame(width: 150, alignment: .leading)
-                TextField("", value: $surveySection.latDown, formatter: NumberFormatter())
+                TextField("", text: $latDownText)
+                    .focused($focusedField, equals: .dec)
+                    .numbersOnly($latDownText, includeDecimal: true)
+                    .disableAutocorrection(true)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(width: 100)
                     .foregroundColor(Color("TextForeground"))
@@ -61,7 +74,10 @@ struct SurveySectionDetailView: View {
                 Text("Lon Down:")
                     .font(.headline)
                     .frame(width: 150, alignment: .leading)
-                TextField("", value: $surveySection.lonDown, formatter: NumberFormatter())
+                TextField("", text: $lonDownText)
+                    .focused($focusedField, equals: .dec)
+                    .numbersOnly($lonDownText, includeDecimal: true)
+                    .disableAutocorrection(true)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(width: 100)
                     .foregroundColor(Color("TextForeground"))
@@ -71,7 +87,10 @@ struct SurveySectionDetailView: View {
                 Text("Lat Up:")
                     .font(.headline)
                     .frame(width: 150, alignment: .leading)
-                TextField("", value: $surveySection.latUp, formatter: NumberFormatter())
+                TextField("", text: $latUpText)
+                    .focused($focusedField, equals: .dec)
+                    .numbersOnly($latUpText, includeDecimal: true)
+                    .disableAutocorrection(true)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(width: 100)
                     .foregroundColor(Color("TextForeground"))
@@ -81,7 +100,10 @@ struct SurveySectionDetailView: View {
                 Text("Lon Up:")
                     .font(.headline)
                     .frame(width: 150, alignment: .leading)
-                TextField("", value: $surveySection.latUp, formatter: NumberFormatter())
+                TextField("", text: $lonUpText)
+                    .focused($focusedField, equals: .dec)
+                    .numbersOnly($lonUpText, includeDecimal: true)
+                    .disableAutocorrection(true)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(width: 100)
                     .foregroundColor(Color("TextForeground"))
@@ -92,7 +114,10 @@ struct SurveySectionDetailView: View {
                 Text("Radius:")
                     .font(.headline)
                     .frame(width: 150, alignment: .leading)
-                TextField("", value: $surveySection.radius, formatter: NumberFormatter())
+                TextField("", text: $radiusText)
+                    .focused($focusedField, equals: .dec)
+                    .numbersOnly($radiusText, includeDecimal: true)
+                    .disableAutocorrection(true)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(width: 100)
                     .foregroundColor(Color("TextForeground"))
@@ -161,11 +186,31 @@ struct SurveySectionDetailView: View {
         .presentationSizing(.padded)
         .background(Color("AppBackground"))
         .foregroundColor(Color("TextForegroundWhite"))
-        
+
+        .onChange(of: radiusText) {
+            surveySection.radius = Double(radiusText) ?? 0.0
+        }
+        .onChange(of: latUpText) {
+            surveySection.latUp   = Double(latUpText) ?? 0.0
+        }
+        .onChange(of: lonUpText) {
+            surveySection.lonUp   = Double(lonUpText) ?? 0.0
+        }
+        .onChange(of: latDownText) {
+            surveySection.latDown = Double(latDownText) ?? 0.0
+        }
+        .onChange(of: lonDownText) {
+            surveySection.lonDown = Double(lonDownText) ?? 0.0
+        }
         .onChange(of: isActive) {
             surveySection.active = isActive == true ? "Y" : "N"
         }
         .onAppear {
+            latDownText = String(format: "%.8f", surveySection.latDown)
+            lonDownText = String(format: "%.8f", surveySection.lonDown)
+            latUpText   = String(format: "%.8f", surveySection.latUp)
+            lonUpText   = String(format: "%.8f", surveySection.lonUp)
+            
             isActive = surveySection.active == "Y" ? true : false
         }
     }

@@ -56,7 +56,16 @@ struct TripHeaderView: View {
     @Query(sort: \TripType.code) var tripTypes: [TripType]
     
     //  @Query(sort: [SortDescriptor(\Destination.priority, order: .reverse), SortDescriptor(\Destination.name)]) var destinations: [Destination]
-
+    
+    enum FocusedField {
+        case int, dec
+    }
+    @FocusState private var focusedField: FocusedField?
+    @State private var latDownText = ""
+    @State private var lonDownText = ""
+    @State private var latUpText = ""
+    @State private var lonUpText = ""
+    @State private var radiusText = ""
     
     var body: some View {
         VStack {
@@ -167,58 +176,62 @@ struct TripHeaderView: View {
                         HStack {
 
                             LabeledContent {
-                                TextField("", value: $tripData.latDown, formatter: NumberFormatter())
+                                TextField("", text: $latDownText)
+                                    .focused($focusedField, equals: .dec)
+                                    .numbersOnly($latDownText, includeDecimal: true)
+                                    .disableAutocorrection(true)
                                     .foregroundColor(Color("TextForeground"))
                                     .textFieldStyle(.roundedBorder)
                                     .frame(width: 100)
-                                    .multilineTextAlignment(.trailing)
                             } label: {
                                 Text("Lat↓:")
                                     .onTapGesture {
-                                        Task {
-                                            await MainActor.run {
-                                                self.tripData.latDown = locationsHandler.lastLocation2D.latitude
-                                            }
-                                        }
+                                        latDownText = "\(locationsHandler.lastLocation2D.latitude.formatted(.number.precision(.fractionLength(8))))"
                                     }
                             }.frame(width: 160, height: 30).padding(.trailing, 20)
                            
                             LabeledContent {
-                                TextField("", value: $tripData.lonDown, formatter: NumberFormatter())
+                                TextField("", text: $lonDownText)
+                                    .focused($focusedField, equals: .dec)
+                                    .numbersOnly($lonDownText, includeDecimal: true)
+                                    .disableAutocorrection(true)
                                   .foregroundColor(Color("TextForeground"))
                                   .textFieldStyle(.roundedBorder)
                                   .frame(width: 120)
-                                  .multilineTextAlignment(.trailing)
                             } label: {
                                 Text("Lon↓:")
                                     .onTapGesture {
-                                        tripData.lonDown = locationsHandler.lastLocation2D.longitude
-                                    }
+                                        lonDownText = "\(locationsHandler.lastLocation2D.longitude.formatted(.number.precision(.fractionLength(8))))"
+                                    };
                             }.frame(width: 180, height: 30).padding(.trailing, 20)
                             
                             LabeledContent {
-                                TextField("", value: $tripData.latUp, formatter: NumberFormatter())
+                                TextField("", text: $latUpText)
+                                    .focused($focusedField, equals: .dec)
+                                    .numbersOnly($latUpText, includeDecimal: true)
+                                    .disableAutocorrection(true)
                                   .foregroundColor(Color("TextForeground"))
                                   .textFieldStyle(.roundedBorder)
                                   .frame(width: 100)
-                                  .multilineTextAlignment(.trailing)
                             } label: {
                                 Text("Lat↑:")
                                    .onTapGesture {
-                                       tripData.latUp = locationsHandler.lastLocation2D.latitude
+                                       latUpText = "\(locationsHandler.lastLocation2D.latitude.formatted(.number.precision(.fractionLength(8))))"
                                    }
                             }.frame(width: 160, height: 30).padding(.trailing, 20)
                             
                             LabeledContent {
-                                TextField("", value: $tripData.lonUp, formatter: NumberFormatter())
+                                TextField("", text: $lonUpText)
+                                    .focused($focusedField, equals: .dec)
+                                    .numbersOnly($lonUpText, includeDecimal: true)
+                                    .disableAutocorrection(true)
                                   .foregroundColor(Color("TextForeground"))
                                   .textFieldStyle(.roundedBorder)
                                   .frame(width: 120)
-                                  .multilineTextAlignment(.trailing)
                             } label: {
                                 Text("Lon↑:")
                                     .onTapGesture {
-                                        tripData.lonUp = locationsHandler.lastLocation2D.longitude
+                                        lonUpText = "\(locationsHandler.lastLocation2D.longitude.formatted(.number.precision(.fractionLength(8))))"
                                     }
                             }.frame(width: 180, height: 30).padding(.trailing, 10)
                         }
@@ -347,8 +360,24 @@ struct TripHeaderView: View {
                 }  // ZStack
                 .onAppear {
                     // print("width: \(geometry.size.width)")
+                    latDownText = tripData.latDown.formatted(.number.precision(.fractionLength(8)))
+                    lonDownText = tripData.lonDown.formatted(.number.precision(.fractionLength(8)))
+                    latUpText   = tripData.latUp.formatted(.number.precision(.fractionLength(8)))
+                    lonUpText   = tripData.lonUp.formatted(.number.precision(.fractionLength(8)))
                 }
-                
+                onChange(of: latDownText) {
+                    tripData.latDown = Double(latDownText) ?? 0.0
+                }
+                .onChange(of: lonDownText) {
+                    tripData.lonDown = Double(lonDownText) ?? 0.0
+                }
+                .onChange(of: latUpText) {
+                    tripData.latUp = Double(latUpText) ?? 0.0
+                }
+                .onChange(of: lonUpText) {
+                    tripData.lonUp = Double(lonUpText) ?? 0.0
+                }
+                    
                 .onChange(of: selectedStartTime) {
                     tripData.startTime = selectedStartTime.formatted(date: .omitted, time: .shortened)
                 }

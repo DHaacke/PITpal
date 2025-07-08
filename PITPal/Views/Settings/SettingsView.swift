@@ -37,8 +37,8 @@ struct SettingsView: View {
     //   P I T   T A G S
     @AppStorage("usingPitTags") private var usingPitTags: Bool = true
     @AppStorage("pitManufacturer") private var pitManufacturer: String = "Biomark"
-    @AppStorage("pitSize") private var pitSize: Double = 8.0
-    @AppStorage("pitFrequency") private var pitFrequency: Double = 134.2
+    @AppStorage("pitSize") private var pitSize: String = "8.0"
+    @AppStorage("pitFrequency") private var pitFrequency: String = "134.2"
     @AppStorage("pitTagType") private var pitTagType: String = "Passive"
     @AppStorage("pitTagPrefix") private var pitTagPrefix: String = ""
     @AppStorage("pitTagSuffix") private var pitTagSuffix: String = ""
@@ -57,6 +57,15 @@ struct SettingsView: View {
     
     @State private var isShowingSpeciesDetail = false
     @State private var isShowingSurveySectionDetail = false
+    
+    enum FocusedField {
+        case int, dec
+    }
+    @FocusState private var focusedField: FocusedField?
+    @State private var lengthMinText: String = "0"
+    @State private var lengthMaxText: String = "3000"
+    @State private var weightMinText: String = "0"
+    @State private var weightMaxText: String = "2000"
 
     
     let decimalFormatter: NumberFormatter = {
@@ -332,17 +341,23 @@ struct SettingsView: View {
                         }.frame(width: 600, height: 40)
                         
                         LabeledContent {
-                            TextField("", value: $lengthMin, formatter: NumberFormatter())
+                            TextField("", text: $lengthMinText)
+                                .focused($focusedField, equals: .int)
+                                .numbersOnly($lengthMinText, includeDecimal: false)
+                                .disableAutocorrection(true)
                                 .foregroundColor(Color("TextForeground"))
                                 .textFieldStyle(.roundedBorder)
                                 .frame(width: 100)
-                                .multilineTextAlignment(.leading)
                             Text(uomFishLength).frame(width: 40, alignment: .leading)
                         } label: {
                             Text("Min Length")
                         }.frame(width: 600)
+
                         LabeledContent {
-                            TextField("", value: $lengthMax, formatter: NumberFormatter())
+                            TextField("", text: $lengthMaxText)
+                                .focused($focusedField, equals: .int)
+                                .numbersOnly($lengthMaxText, includeDecimal: false)
+                                .disableAutocorrection(true)
                                 .foregroundColor(Color("TextForeground"))
                                 .textFieldStyle(.roundedBorder)
                                 .frame(width: 100)
@@ -351,6 +366,7 @@ struct SettingsView: View {
                         } label: {
                             Text("Max Length")
                         }.frame(width: 600)
+                        
                         LabeledContent {
                             Toggle("", isOn: $useBluetoothLength)
                                 .frame(width: 50, height: 40)
@@ -376,7 +392,10 @@ struct SettingsView: View {
                         }.frame(width: 600, height: 40)
                         
                         LabeledContent {
-                            TextField("", value: $weightMin, formatter: NumberFormatter())
+                            TextField("", text: $weightMinText)
+                                .focused($focusedField, equals: .int)
+                                .numbersOnly($weightMinText, includeDecimal: false)
+                                .disableAutocorrection(true)
                                 .foregroundColor(Color("TextForeground"))
                                 .textFieldStyle(.roundedBorder)
                                 .frame(width: 100)
@@ -386,7 +405,10 @@ struct SettingsView: View {
                             Text("Min Weight")
                         }.frame(width: 600)
                         LabeledContent {
-                            TextField("", value: $weightMax, formatter: NumberFormatter())
+                            TextField("", text: $weightMaxText)
+                                .focused($focusedField, equals: .int)
+                                .numbersOnly($weightMinText, includeDecimal: false)
+                                .disableAutocorrection(true)
                                 .foregroundColor(Color("TextForeground"))
                                 .textFieldStyle(.roundedBorder)
                                 .frame(width: 100)
@@ -435,6 +457,18 @@ struct SettingsView: View {
                     
                     
                 } // end of form
+                .onChange(of: lengthMinText) {
+                    lengthMin = Int(lengthMinText) ?? 0
+                }
+                .onChange(of: lengthMaxText) {
+                    lengthMax = Int(lengthMaxText) ?? 3000
+                }
+                .onChange(of: weightMinText) {
+                    weightMin = Int(weightMinText) ?? 0
+                }
+                .onChange(of: weightMaxText) {
+                    weightMax = Int(weightMaxText) ?? 2000
+                }
                 .toolbarBackground(Color("AppBackground"), for: .navigationBar)
                 .toolbarBackground(.automatic, for: .navigationBar)
                 .scrollContentBackground(.hidden)

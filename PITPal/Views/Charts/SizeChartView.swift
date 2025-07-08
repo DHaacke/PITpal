@@ -55,6 +55,14 @@ struct SizeChartView: View {
     @Query(sort: \SurveySection.name, order: .forward) var surveySectionList: [SurveySection]
     @Query(sort: \Watershed.name, order: .forward) var watershedList: [Watershed]
     
+    enum FocusedField {
+        case int, dec
+    }
+    @FocusState private var focusedField: FocusedField?
+    @State private var selectedMinLengthText: String = ""
+    @State private var selectedMaxLengthText: String = ""
+
+    
     let q = Queries()
     
     var body: some View {
@@ -150,22 +158,27 @@ struct SizeChartView: View {
                 
                 HStack {
                     LabeledContent {
-                        TextField("", value: $selectedMinLength, formatter: NumberFormatter())
-                          .foregroundColor(Color("TextForeground"))
-                          .textFieldStyle(.roundedBorder)
-                          .frame(width: 70)
-                          .multilineTextAlignment(.leading)
+                        TextField("", text: $selectedMinLengthText)
+                            .focused($focusedField, equals: .int)
+                            .numbersOnly($selectedMinLengthText, includeDecimal: false)
+                            .disableAutocorrection(true)
+                            .foregroundColor(Color("TextForeground"))
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 90)
+                            // .multilineTextAlignment(.leading)
                         Text(uomFishLength).frame(width: 40, alignment: .leading)
                     } label: {
                         Text("Min Length")
                     }.frame(width: 250).padding(.trailing, 60)
                     
                     LabeledContent {
-                        TextField("", value: $selectedMaxLength, formatter: NumberFormatter())
-                          .foregroundColor(Color("TextForeground"))
-                          .textFieldStyle(.roundedBorder)
-                          .frame(width: 70)
-                          .multilineTextAlignment(.leading)
+                        TextField("", text: $selectedMaxLengthText)
+                            .focused($focusedField, equals: .int)
+                            .numbersOnly($selectedMaxLengthText, includeDecimal: false)
+                            .disableAutocorrection(true)
+                            .foregroundColor(Color("TextForeground"))
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 90)
                         Text(uomFishLength).frame(width: 40, alignment: .leading)
                     } label: {
                         Text("Max Length")
@@ -202,6 +215,10 @@ struct SizeChartView: View {
                         if parsedTitle.contains("{TYPE}") {
                             parsedTitle = parsedTitle.replacingOccurrences(of: "{TRIPTYPE}", with: q.fetchNameFromCode(context: modelContext, model: "TripType", code: selectedSpecies))
                         }
+                        
+                        self.selectedMinLength = Int(selectedMinLength)
+                        self.selectedMaxLength = Int(selectedMaxLength)
+                        
                         self.isChartReady = filteredFish.count > 0 ? true : false
                     })
                     Spacer()
@@ -247,13 +264,14 @@ struct SizeChartView: View {
         }
             
         .onAppear {
+            UITextField.appearance().clearButtonMode = .whileEditing
+            
             print("LengthChartView appeared")
             selectedMinLength = lengthMin
             selectedMaxLength = lengthMax
             
-//            selectedWatershed = tripWatershed
-//            selectedTripType  = tripTripType
-//            selectedSurveySection = tripSurveySection
+            selectedMinLengthText = String(selectedMinLength)
+            selectedMaxLengthText = String(selectedMaxLength)
             
             self.startDate = tripList.first?.date ?? Date()
             self.endDate   = tripList.last?.date ?? Date()
@@ -304,12 +322,12 @@ struct SizeChartView: View {
     }
 }
 
-#Preview {
-    SizeChartView(path: .constant([]))
-        .environment(LocationsHandler())
-        .environment(JSONManager())
-        .environment(NetworkMonitor())
-}
+//#Preview {
+//    SizeChartView(path: .constant([]))
+//        .environment(LocationsHandler())
+//        .environment(JSONManager())
+//        .environment(NetworkMonitor())
+//}
 
 struct SizeBarChartView: View {
     @Environment(\.modelContext) var modelContext

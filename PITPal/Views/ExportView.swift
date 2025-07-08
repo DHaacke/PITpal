@@ -55,6 +55,15 @@ struct ExportView: View {
     @Query(sort: \Watershed.name, order: .forward) var watershedList: [Watershed]
     @Query(sort: \Trip.date, order: .forward) var tripList: [Trip]
     
+    enum FocusedField {
+        case int, dec
+    }
+    @FocusState private var focusedField: FocusedField?
+    @State private var selectedMinWeightText = ""
+    @State private var selectedMaxWeightText = ""
+    @State private var selectedMinLengthText = ""
+    @State private var selectedMaxLengthText = ""
+    
     var body: some View {
         VStack {
             HStack {
@@ -151,22 +160,26 @@ struct ExportView: View {
                 
                 HStack {
                     LabeledContent {
-                        TextField("", value: $selectedMinWeight, formatter: NumberFormatter())
-                          .foregroundColor(Color("TextForeground"))
-                          .textFieldStyle(.roundedBorder)
-                          .frame(width: 70)
-                          .multilineTextAlignment(.trailing)
+                        TextField("", text: $selectedMinWeightText)
+                            .focused($focusedField, equals: .dec)
+                            .numbersOnly($selectedMinWeightText, includeDecimal: false)
+                            .disableAutocorrection(true)
+                            .foregroundColor(Color("TextForeground"))
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 70)
                         Text(uomFishWeight).frame(width: 40, alignment: .leading)
                     } label: {
                         Text("Min Weight")
                     }.frame(width: 250).padding(.trailing, 60)
                     
                     LabeledContent {
-                        TextField("", value: $selectedMaxWeight, formatter: NumberFormatter())
-                          .foregroundColor(Color("TextForeground"))
-                          .textFieldStyle(.roundedBorder)
-                          .frame(width: 70)
-                          .multilineTextAlignment(.trailing)
+                        TextField("", text: $selectedMaxWeightText)
+                            .focused($focusedField, equals: .dec)
+                            .numbersOnly($selectedMaxWeightText, includeDecimal: false)
+                            .disableAutocorrection(true)
+                            .foregroundColor(Color("TextForeground"))
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 70)
                         Text(uomFishWeight).frame(width: 40, alignment: .leading)
                     } label: {
                         Text("Max Weight")
@@ -175,22 +188,26 @@ struct ExportView: View {
                 
                 HStack {
                     LabeledContent {
-                        TextField("", value: $selectedMinLength, formatter: NumberFormatter())
+                        TextField("", text: $selectedMinLengthText)
+                            .focused($focusedField, equals: .dec)
+                            .numbersOnly($selectedMinLengthText, includeDecimal: false)
+                            .disableAutocorrection(true)
                           .foregroundColor(Color("TextForeground"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 70)
-                          .multilineTextAlignment(.trailing)
                         Text(uomFishLength).frame(width: 40, alignment: .leading)
                     } label: {
                         Text("Min Length")
                     }.frame(width: 250).padding(.trailing, 60)
                     
                     LabeledContent {
-                        TextField("", value: $selectedMaxLength, formatter: NumberFormatter())
-                          .foregroundColor(Color("TextForeground"))
-                          .textFieldStyle(.roundedBorder)
-                          .frame(width: 70)
-                          .multilineTextAlignment(.trailing)
+                        TextField("", text: $selectedMaxLengthText)
+                            .focused($focusedField, equals: .dec)
+                            .numbersOnly($selectedMaxLengthText, includeDecimal: false)
+                            .disableAutocorrection(true)
+                            .foregroundColor(Color("TextForeground"))
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 70)
                         Text(uomFishLength).frame(width: 40, alignment: .leading)
                     } label: {
                         Text("Max Length")
@@ -219,7 +236,6 @@ struct ExportView: View {
                             exportCSV()
                         }
                     })
-                        
                     Spacer()
                 }
                 
@@ -235,6 +251,19 @@ struct ExportView: View {
                 Text(exportingMessage)
                     .foregroundColor(isShowingExportError ? .red : Color("TextForegroundWhite"))
             }
+            .onChange(of: selectedMinWeightText) {
+                selectedMinWeight = Int(selectedMinWeightText) ?? 0
+            }
+            .onChange(of: selectedMaxWeightText) {
+                selectedMaxWeight = Int(selectedMaxWeightText) ?? 0
+            }
+            .onChange(of: selectedMinLengthText) {
+                selectedMinLength = Int(selectedMinLengthText) ?? 0
+            }
+            .onChange(of: selectedMaxLengthText) {
+                selectedMaxLength = Int(selectedMaxLengthText) ?? 0
+            }
+                
             .padding(.horizontal, 100)
         }
         
@@ -258,6 +287,11 @@ struct ExportView: View {
             selectedMaxWeight = weightMax
             selectedMinLength = lengthMin
             selectedMaxLength = lengthMax
+            
+            selectedMinWeightText = "\(selectedMinWeight)"
+            selectedMaxWeightText = "\(selectedMaxWeight)"
+            selectedMinLengthText = "\(selectedMinLength)"
+            selectedMaxLengthText = "\(selectedMaxLength)"
             
             selectedWatershed = tripWatershed
             selectedTripType  = tripTripType
