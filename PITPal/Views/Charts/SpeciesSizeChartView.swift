@@ -1,8 +1,8 @@
 //
-//  LengthChartView.swift
+//  SpeciesSizeChartView.swift
 //  PITPal
 //
-//  Created by Doug Haacke on 6/29/25.
+//  Created by Doug Haacke on 7/8/25.
 //
 
 import Foundation
@@ -10,9 +10,13 @@ import SwiftUI
 import SwiftData
 import Charts
 
+struct Series {
+    var groupName: String
+    var fishCount: [Int]
+}
 
 
-struct SizeChartView: View {
+struct SpeciesSizeChartView: View {
     
     @Environment(\.modelContext) var modelContext
     @Environment(LocationsHandler.self) var locationsHandler
@@ -25,19 +29,21 @@ struct SizeChartView: View {
     
     @State private var startDate: Date = Date()         // = "2024-04-01".toDate(format: "yyyy-MM-dd") // Date()
     @State private var endDate:   Date = Date()         // = "2024-04-30".toDate(format: "yyyy-MM-dd") // Date()
-    @State private var selectedTitle: String = "{SPECIES} Size Distribution ({SECTION})"
+    @State private var selectedTitle: String = "Size Distribution Comparison"
     @State private var parsedTitle: String = ""
     @State private var selectedWatershed: String = ""
     @State private var selectedTripType: String = ""
     @State private var selectedSurveySection: String = ""
-    @State private var selectedSpecies: String = ""
+    @State private var selectedSpecies1: String = "LL"
+    @State private var selectedSpecies2: String = "RB"
     @State private var selectedMinLength: Int = 0
     @State private var selectedMaxLength: Int = 0
-    @State private var selectedBarColor: Color = .blue
+    @State private var selectedBarColor1: Color = .orange
+    @State private var selectedBarColor2: Color = .green
     
     @State private var filteredTrips: [TripData] = []
     @State private var filteredFish: [FishData] = []
-    @State private var fishChartData: [FishChartData] = []
+    @State private var matrix : [Series] = []
     @State private var isChartReady: Bool = false
     
     @AppStorage("tripTripType") private var tripTripType: String = "M"
@@ -144,16 +150,26 @@ struct SizeChartView: View {
                 
                 HStack {
                     LabeledContent {
-                        Picker("", selection: $selectedSpecies) {
-                            Text("All Species").tag("")
+                        Picker("", selection: $selectedSpecies1) {
                             ForEach(speciesList, id: \.code) { species in
                                 Text(species.name)
-                                    .frame(width: 400)
+                                    .frame(width: 200)
                             }
                         }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
                     } label: {
                         Text("Species:")
-                    }.frame(width: 400, height: 40)
+                    }.frame(width: 300, height: 40).padding(.trailing, 50)
+                    
+                    LabeledContent {
+                        Picker("", selection: $selectedSpecies2) {
+                            ForEach(speciesList, id: \.code) { species in
+                                Text(species.name)
+                                    .frame(width: 200)
+                            }
+                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                    } label: {
+                        Text("Species:")
+                    }.frame(width: 300, height: 40)
                 }.padding(.leading, 100)
                 
                 HStack {
@@ -187,9 +203,15 @@ struct SizeChartView: View {
                 
                 HStack {
                     LabeledContent {
-                        ColorPicker("", selection: $selectedBarColor)
+                        ColorPicker("", selection: $selectedBarColor1)
                     } label: {
-                        Text("Bar Color")
+                        Text("1st Bar Color")
+                    }.frame(width: 220).padding(.trailing, 50)
+                    
+                    LabeledContent {
+                        ColorPicker("", selection: $selectedBarColor2)
+                    } label: {
+                        Text("2nd Bar Color")
                     }.frame(width: 220).padding(.trailing, 50)
                     
                     
@@ -198,14 +220,15 @@ struct SizeChartView: View {
                 HStack(alignment: .center) {
                     Spacer()
                     ChartButton(onChartButtonTapped: {
-                        filteredFish = filterFish()
-                        print("Filtered Fish Found: \(filteredFish.count)")
-                        fishChartData = buildMatrix(species: selectedSpecies)
+                        filteredFish = filterFish(species1: selectedSpecies1, species2: selectedSpecies2)
+                      
+                        let species1Fish = filteredFish.filter { $0.species == selectedSpecies1 }
+                        let species2Fish = filteredFish.filter { $0.species == selectedSpecies2 }
+                        
+                        matrix.append(buildMatrix(species: selectedSpecies1, filteredFish: species1Fish))
+                        matrix.append(buildMatrix(species: selectedSpecies2, filteredFish: species2Fish))
                         
                         parsedTitle = selectedTitle
-                        if parsedTitle.contains("{SPECIES}") {
-                            parsedTitle = parsedTitle.replacingOccurrences(of: "{SPECIES}", with: q.fetchNameFromCode(context: modelContext, model: "Species", code: selectedSpecies))
-                        }
                         if parsedTitle.contains("{WATERSHED}") {
                             parsedTitle = parsedTitle.replacingOccurrences(of: "{WATERSHED}", with: q.fetchNameFromCode(context: modelContext, model: "Watershed", code: selectedWatershed))
                         }
@@ -219,23 +242,26 @@ struct SizeChartView: View {
                         self.selectedMinLength = Int(selectedMinLength)
                         self.selectedMaxLength = Int(selectedMaxLength)
                         
-                        self.isChartReady = filteredFish.count > 0 ? true : false
+                        self.isChartReady = true
                     })
                     Spacer()
                 }
                 if isChartReady {
                     VStack {
-                        SizeBarChartView(
+                        SpeciesSizeBarChartView(
+                            selectedTitle: $selectedTitle,
                             filteredFish: $filteredFish,
-                            fishChartData: $fishChartData,
+                            matrix: $matrix,
                             startDate: $startDate,
                             endDate: $endDate,
                             title: $parsedTitle,
-                            species: $selectedSpecies,
-                            color: $selectedBarColor
+                            species1: $selectedSpecies1,
+                            species2: $selectedSpecies2,
+                            color1: $selectedBarColor1,
+                            color2: $selectedBarColor2
                         )
-                            .padding(.top, 20)
-                            .padding(.bottom, 20)
+                        .padding(.top, 20)
+                        .padding(.bottom, 20)
                     }
                 }
                 Spacer()
@@ -246,27 +272,12 @@ struct SizeChartView: View {
         .background(Color("AppBackground"))
         .frame(minWidth: 700, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         
-//        .onChange(of: startDate) {
-//            var dateComponents = DateComponents()
-//            dateComponents.month = 3 // Add 3 months
-//            let calendar = Calendar.current
-//            if let futureDate = calendar.date(byAdding: dateComponents, to: self.startDate) {
-//                self.endDate = futureDate
-//            } else {
-//                print("Error calculating future date.")
-//            }
-//        }
         .onChange(of: selectedTripType) {
             tripTripType = selectedTripType
         }
-        .onChange(of: selectedSpecies) {
-            tripSpecies = selectedSpecies
-        }
-            
         .onAppear {
             UITextField.appearance().clearButtonMode = .whileEditing
-            
-            print("LengthChartView appeared")
+
             selectedMinLength = lengthMin
             selectedMaxLength = lengthMax
             
@@ -275,13 +286,12 @@ struct SizeChartView: View {
             
             self.startDate = tripList.first?.date ?? Date()
             self.endDate   = tripList.last?.date ?? Date()
-            print("End Date: \(endDate)")
         }
     }
 
     
-    func filterFish() -> [FishData] {
-        var filteredTrips : [TripData] = []
+    func filterFish(species1: String, species2: String) -> [FishData] {
+        // var filteredTrips : [TripData] = []
         var filteredFish  : [FishData] = []
         
         for trip in tripList {
@@ -294,53 +304,53 @@ struct SizeChartView: View {
                 filteredTrips.append(tripData)
             }
         }
-        if !selectedSpecies.isEmpty {
+        if !species1.isEmpty && !species2.isEmpty {
             for trip in filteredTrips {
-                filteredFish.append(contentsOf: trip.fish.filter { $0.species == selectedSpecies && $0.length >= selectedMinLength && $0.length <= selectedMaxLength })
-            }
-        } else {
-            for trip in filteredTrips {
-                filteredFish.append(contentsOf: trip.fish.filter { $0.length >= selectedMinLength && $0.length <= selectedMaxLength })
+                for fish in trip.fish {
+                    if ( (fish.species == species1 || fish.species == species2) && fish.length >= selectedMinLength && fish.length <= selectedMaxLength) {
+                        filteredFish.append(fish)
+                    }
+                }
             }
         }
         return filteredFish
     }
     
-    func buildMatrix(species: String) -> [FishChartData] {
-        DispatchQueue.main.async {
-            fishChartData.removeAll()
-            fishChartData.append(FishChartData(id:  1,  sizeGroup:  6,  count: filteredFish.filter { $0.length <= 125}.count, species: species))
-            fishChartData.append(FishChartData(id:  2,  sizeGroup:  8,  count: filteredFish.filter { $0.length >  125 && $0.length <= 203 }.count ,species: species))
-            fishChartData.append(FishChartData(id:  3,  sizeGroup: 10,  count: filteredFish.filter { $0.length >  203 && $0.length <= 253 }.count ,species: species))
-            fishChartData.append(FishChartData(id:  4,  sizeGroup: 12,  count: filteredFish.filter { $0.length >  253 && $0.length <= 305 }.count ,species: species))
-            fishChartData.append(FishChartData(id:  5,  sizeGroup: 14,  count: filteredFish.filter { $0.length >  305 && $0.length <= 355 }.count ,species: species))
-            fishChartData.append(FishChartData(id:  6,  sizeGroup: 16,  count: filteredFish.filter { $0.length >  355 && $0.length <= 406 }.count ,species: species))
-            fishChartData.append(FishChartData(id:  7,  sizeGroup: 18,  count: filteredFish.filter { $0.length >  406 && $0.length <= 458 }.count ,species: species))
-            fishChartData.append(FishChartData(id:  8,  sizeGroup: 20,  count: filteredFish.filter { $0.length >  458 }.count, species: species))
-        }
-        return fishChartData
+    func buildMatrix(species: String, filteredFish: [FishData]) -> Series {
+        
+        let group6:  Int = filteredFish.filter { $0.species == species && $0.length <= 125 }.count
+        let group8:  Int = filteredFish.filter { $0.species == species && $0.length >  125 && $0.length <= 203 }.count
+        let group10: Int = filteredFish.filter { $0.species == species && $0.length >  203 && $0.length <= 253 }.count
+        let group12: Int = filteredFish.filter { $0.species == species && $0.length >  253 && $0.length <= 305 }.count
+        let group14: Int = filteredFish.filter { $0.species == species && $0.length >  305 && $0.length <= 355 }.count
+        let group16: Int = filteredFish.filter { $0.species == species && $0.length >  355 && $0.length <= 406 }.count
+        let group18: Int = filteredFish.filter { $0.species == species && $0.length >  406 && $0.length <= 458 }.count
+        let group20: Int = filteredFish.filter { $0.species == species && $0.length >  458 && $0.length <= 500 }.count
+        let group22: Int = filteredFish.filter { $0.species == species && $0.length >  500 }.count
+
+        let series = Series(groupName: species, fishCount: [ group6, group8, group10, group12, group14, group16, group18, group20, group22 ])
+        
+        return series
     }
 }
 
-//#Preview {
-//    SizeChartView(path: .constant([]))
-//        .environment(LocationsHandler())
-//        .environment(JSONManager())
-//        .environment(NetworkMonitor())
-//}
-
-struct SizeBarChartView: View {
+struct SpeciesSizeBarChartView: View {
     @Environment(\.modelContext) var modelContext
-    
+
+    @Binding var selectedTitle: String
     @Binding var filteredFish: [FishData]
-    @Binding var fishChartData: [FishChartData]
+    @Binding var matrix: [Series]
     @Binding var startDate: Date
     @Binding var endDate: Date
     @Binding var title: String
-    @Binding var species: String
-    @Binding var color: Color
+    @Binding var species1: String
+    @Binding var species2: String
+    @Binding var color1: Color
+    @Binding var color2: Color
     
     @State private var isShowingPDFAlert: Bool = false
+    
+    let xAxisLabels = ["6", "8", "10", "12", "14", "16", "18", "20", "22"]
     
     var body: some View {
         VStack {
@@ -352,25 +362,30 @@ struct SizeBarChartView: View {
                 Text("\(startDate, format: .dateTime.day().month().year()) to \(endDate, format: .dateTime.day().month().year())")
                     .font(.headline)
                     .foregroundColor(.black)
-                Chart(fishChartData, id: \.id) { data in
-                    BarMark(
-                        x: .value("Size", data.sizeGroup),
-                        y: .value("Count", data.count),
-                        width: 40)
-                    .foregroundStyle(color.gradient)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                Chart(matrix, id: \.groupName) { fish in
+                    ForEach(0..<fish.fishCount.count, id: \.self) { i in
+                        let sizeGroup = 6 + (i * 2) // Assuming size groups are 6, 8, 10, ..., 22
+                        BarMark(
+                            x: .value("SizeGroup", String(sizeGroup)),
+                            y: .value("Length", fish.fishCount[i]),
+                            width: 30
+                        )
+                        .foregroundStyle(by: .value("Species", fish.groupName))
+                        .position(by: .value("Species", fish.groupName))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
                 }
                 .padding(.horizontal, 20)
-                .padding(.vertical, 30)
-                .chartXScale(domain: [6, 24])
-                // .chartYScale(domain: [minStockPrice ?? 0, maxStockPrice ?? 0])
+                .padding(.vertical, 20)
+                
                 .chartXAxisLabel("Fish Size (inches)", alignment: .leading)
                 .chartXAxis {
-                    AxisMarks(values: [6, 8, 10, 12, 14, 16, 18, 20, 22, 24]) { value in
-                        AxisValueLabel()
+                    AxisMarks(values: xAxisLabels.map { $0 }) { value in
+                        AxisValueLabel(centered: true)
                             .font(.headline)
                             .foregroundStyle(.black)
-                            .offset(x: -8)
+                        AxisGridLine()
+                        AxisTick()
                     }
                 }
                 .chartYAxisLabel("Fish Count", alignment: .topTrailing)
@@ -383,6 +398,11 @@ struct SizeBarChartView: View {
                             .offset(x: 10)
                     }
                 }
+                .chartForegroundStyleScale([
+                    "LL": .orange,
+                    "RB": .green
+                ])
+                .padding()
                 Text("Total fish:  \(filteredFish.count)")
                     .font(.headline)
                     .foregroundColor(.black)
@@ -440,7 +460,6 @@ struct SizeBarChartView: View {
         
         // Define PDF page size
         let pageSize = CGSize(width: 842, height: 595) // A4 size
-        // let pageSize = CGSize(width: 595, height: 842) // A4 size
         let renderer = UIGraphicsPDFRenderer(bounds: CGRect(origin: .zero, size: pageSize), format: format)
         
         // Create PDF data
@@ -448,14 +467,17 @@ struct SizeBarChartView: View {
             context.beginPage()
             
             // Create SwiftUI view
-            let chartView = SizeBarChartView(
+            let chartView = SpeciesSizeBarChartView(
+                selectedTitle: $selectedTitle,
                 filteredFish: $filteredFish,
-                fishChartData: $fishChartData,
+                matrix: $matrix,
                 startDate: $startDate,
                 endDate: $endDate,
                 title: $title,
-                species: $species,
-                color: $color
+                species1: $species1,
+                species2: $species2,
+                color1: $color1,
+                color2: $color2
             )
             
             // Convert SwiftUI view to UIImage
@@ -475,7 +497,7 @@ struct SizeBarChartView: View {
             print("Error creating PDF directory (or directory already exists): \(error)")
         }
         
-        let pdfURL = URL.documentsDirectory.appending(path: "PDF", directoryHint: .isDirectory).appending(path: "\(title).pdf")
+        let pdfURL = URL.documentsDirectory.appending(path: "PDF", directoryHint: .isDirectory).appending(path: "\(selectedTitle).pdf")
         do {
             try data.write(to: pdfURL)
             print("PDF saved at: \(pdfURL)")
@@ -485,12 +507,3 @@ struct SizeBarChartView: View {
 
     }
 }
-    
-/*
- struct FishData: Identifiable {
- var id: Int
- var sizeGroup: Int
- var count: Int
- var species: String
- }
-*/

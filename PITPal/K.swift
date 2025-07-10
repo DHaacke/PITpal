@@ -18,7 +18,7 @@ struct K {
     static let SINGLE_SPECIES_SIZE_CHART: String    = "SINGLE_SPECIES_SIZE_CHART"
     static let DUAL_SPECIES_SIZE_CHART: String      = "DUAL_SPECIES_SIZE_CHART"
     static let SIZE_WEIGHT_MODEL_CHART: String      = "SIZE_WEIGHT_MODEL_CHART"
-//    static let SPECIES_DETAIL: String       = "SPECIES_DETAIL"
+    static let TESTVIEW: String                     = "TESTVIEW"
 //    static let SECTION_DETAIL: String       = "SECTION_DETAIL"
 
     

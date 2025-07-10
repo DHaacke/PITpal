@@ -110,11 +110,6 @@ final class Queries {
     }
     
     func fetchFishWithLengthAndWeight(context: ModelContext, tripType: String = "", watershed: String = "", surveySection: String = "") -> [FishData] {
-        
-        print("TripType:      \(tripType)")
-        print("SurveySection: \(surveySection)")
-        print("Watershed:     \(watershed)")
-        
         let descriptor = FetchDescriptor<Trip>(
             predicate: #Predicate<Trip> { trip in
                 (tripType == "" || trip.tripType == tripType) && (surveySection == "" || trip.surveySection == surveySection)  //  (watershed == "" || trip.watershed == watershed)
@@ -122,11 +117,9 @@ final class Queries {
         )
         do {
             let trips : [Trip] = try context.fetch(descriptor)
-            print("Trips returned: \(trips.count)")
             var fishList : [FishData] = []
             
             for trip in trips {
-                print("Trip fish count: \(trip.fish.count)")
                 for fish in trip.fish {
                     if fish.length > 0 && fish.weight > 0 {
                         fishList.append(fish.deepCopy())

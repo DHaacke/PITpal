@@ -86,6 +86,22 @@ struct ContentView: View {
                         .navigationTitle("Size/Weight Chart").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                 }
+                else if navigation == K.DUAL_SPECIES_SIZE_CHART {
+                    SpeciesSizeChartView(path: $path)
+                        .tint(Color("AccentColor"))
+                        .navigationBarBackButtonHidden(false)
+                        .navigationBarHidden(false)
+                        .navigationTitle("Species Size/Weight Chart").foregroundStyle(Color("TextForegroundWhite"))
+                        .navigationBarTitleDisplayMode(.inline)
+                }
+                else if navigation == K.TESTVIEW {
+                    TestView()
+                        .tint(Color("AccentColor"))
+                        .navigationBarBackButtonHidden(false)
+                        .navigationBarHidden(false)
+                        .navigationTitle("Species Size/Weight Chart").foregroundStyle(Color("TextForegroundWhite"))
+                        .navigationBarTitleDisplayMode(.inline)
+                }
             }
             
         }

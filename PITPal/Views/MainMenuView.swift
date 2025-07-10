@@ -50,7 +50,7 @@ struct MainMenuView: View {
 //                    .padding(.bottom, 20)
                 
                 HStack {
-                    MenuCardView(path: $path, text: "Settings", subText: "", newPath: "SETTINGS")
+                    MenuCardView(path: $path, text: "Settings and Defaults", subText: "", newPath: "SETTINGS")
                 }
                     .padding(.horizontal, 30)
                     .padding(.bottom, 40)
@@ -77,7 +77,7 @@ struct MainMenuView: View {
                     .padding(.bottom, 20)
                 HStack {
                     Spacer()
-                    MenuCardView(path: $path, text: "Lincoln-Petersen Estimator", subText: "", newPath: "")
+                    MenuCardView(path: $path, text: "Lincoln-Petersen Estimator", subText: "", newPath: "TESTVIEW")
                     Spacer()
                 }
                     .padding(.horizontal, 20)

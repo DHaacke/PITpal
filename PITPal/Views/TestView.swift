@@ -6,31 +6,73 @@
 //
 
 import SwiftUI
+import Charts
 
 struct TestView: View {
-    @Binding var path: [String]
     
     var body: some View {
-        VStack {
-            GeometryReader { geometry in
-                ZStack {
-                    RoundedRectangle(cornerRadius: 25)
-                        .fill(Color("CardBackground"))
-                        .shadow(radius: 6, x: 1, y: 3)
-                    
-                    VStack {
-                        
-                    }
-                }
+        let fishArray = [
+            (species: "LL", fishCount:[81, 234, 64, 227, 103, 247, 819, 339, 125]),
+            (species: "RB", fishCount:[21, 10, 1, 93, 62, 52, 220, 268, 175])
+        ]
+        // let xAxisLabels = [6, 8, 10, 12, 14, 16, 18, 20, 22]
+        let xAxisLabels = ["6", "8", "10", "12", "14", "16", "18", "20", "22"]
+//        Species: LL, 81, 234, 64, 227, 103, 247, 819, 339, 125
+//        Species: RB, 21, 10, 1, 93, 62, 52, 220, 268, 175
+        
+        Chart(fishArray, id: \.species) { fish in
+            ForEach(0..<fish.fishCount.count, id: \.self) { i in
+                let sizeGroup = 6 + (i * 2) // Assuming size groups are 6, 8, 10, ..., 22
+                BarMark(
+                    x: .value("SizeGroup", String(sizeGroup)),
+                    y: .value("Length", fish.fishCount[i]),
+                    width: 30
+                )
+                .foregroundStyle(by: .value("Species", fish.species))
+                .position(by: .value("Species", fish.species))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             }
         }
-        .frame(height: 150)
+        .padding()
+        // .chartXScale(domain: [6, 22])
+        .chartXAxisLabel("Fish Size (inches)", alignment: .leading)
+        .chartXAxis {
+            AxisMarks(values: xAxisLabels.map { $0 }) { value in
+                AxisValueLabel(centered: true)
+                    .font(.headline)
+                    .foregroundStyle(.black)
+                // AxisGridLine()
+                // AxisTick()
+            }
+        }
+//        .chartXAxis {
+//            AxisMarks(values: [6,8,10,12,14,16,18,20,22]) { value in
+//                AxisValueLabel(centered: false)
+//                    .font(.headline)
+//                    .foregroundStyle(.black)
+//                    .offset(x: -8)
+//            }
+//        }
+        .chartYAxisLabel("Fish Count", alignment: .topTrailing)
+        .chartYAxis {
+            AxisMarks(values: .automatic) { value in
+                AxisGridLine()
+                AxisValueLabel()
+                    .font(.headline)
+                    .foregroundStyle(.black)
+                    .offset(x: 10)
+            }
+        }
+        .chartForegroundStyleScale([
+            "LL": .orange,
+            "RB": .green
+        ])
+        .padding()
     }
 }
 
-
 #Preview {
-    TestView(path: .constant([]))
+    TestView()
 }
 
 
