@@ -32,7 +32,6 @@ struct ChooseTripView: View {
     @AppStorage("tripShocktime") private var tripShocktime: String = "6"
     @AppStorage("tripAnesthetic") private var tripAnesthetic: String = "222"
     @AppStorage("tripDosage") private var tripDosage: String = ""
-
     
     var body: some View {
 
@@ -101,6 +100,7 @@ struct ChooseTripView: View {
                     print("\(tripSelection.date.formatted(date: .numeric, time: .omitted)) - \(q.fetchNameFromCode(context: modelContext, model: "SurveySection", code: tripSelection.surveySection)), \(q.fetchNameFromCode(context: modelContext, model: "TripType", code: tripSelection.tripType)), \(tripSelection.fish.count) Fish")
                     self.tripData = tripSelection.deepCopy()
                     self.isChoosingTrip.toggle()
+                    print("Exiting ChooseTripView...")
                 }
             }
 

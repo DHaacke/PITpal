@@ -14,36 +14,39 @@ struct TripFishListView: View {
     //@Query(sort: \Fish.date, order: .forward) var fishList: [Fish]
     
     @Binding var tripData: TripData
-
-    @State private var fishList: [FishData] = []
     
     var body: some View {
         ScrollView {
-            Grid(alignment: .leadingFirstTextBaseline, horizontalSpacing: 15, verticalSpacing: 10) {
+            Grid(alignment: .leadingFirstTextBaseline, horizontalSpacing: -8, verticalSpacing: 2) {
                 GridRow {
                     Text("Species").font(.subheadline)
-                    Text("FWP").font(.subheadline)
                     Text("Weight").font(.subheadline)
                     Text("Length").font(.subheadline)
-                    Text("Mort").font(.subheadline)
+                    Text("M/C").font(.subheadline)
                     Text("Comment").font(.subheadline)
+                    Text("Tag").font(.subheadline)
+                    Text("Mort").font(.subheadline)
+                    
                 }
                 .font(.title2)
+                
                 Divider()
-                ForEach(fishList, id: \.id) { fish in
+               
+                ForEach(tripData.fish, id: \.self) { fish in
                     GridRow {
                         Text(fish.species).font(.system(size: 16, weight: .bold))
-                        Text(fish.fwpSpecies).font(.system(size: 16, weight: .bold))
-                        Text(fish.weight, format: .number)
-                        Text(fish.length, format: .number)
-                        Text(fish.mort == "Y" ? "Yes" : "No")
+                        Text("\(fish.weight)")
+                        Text("\(fish.length)")
+                        Text("\(fish.mc)")
                         Text(fish.comment)
+                        Text("\(fish.pitTag.isEmpty ? "" : fish.pitTag)")
+                        Text("\(fish.mort == "Y" ? "Yes" : "No")")
                     }
                 }
             }
         }
         .onAppear {
-            fishList = tripData.fish.sorted { $0.length > $1.length }
+            
         }
    }
 }

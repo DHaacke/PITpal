@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-final class FishData: Equatable, Identifiable {
+final class FishData: Equatable, Identifiable, Hashable {
     var id: UUID = UUID()
     var trip: TripData?
     var date: Date
@@ -54,6 +54,28 @@ final class FishData: Equatable, Identifiable {
         self.comment = comment
     }
     
+    enum CodingKeys: String, CodingKey {
+        case id
+        case trip
+        case date
+        case pitTag
+        case lat
+        case lon
+        case species
+        case fwpSpecies
+        case weight
+        case length
+        case gender
+        case mort
+        case mc
+        case count
+        case comment
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+        
     static func ==(lhs: FishData, rhs: FishData) -> Bool {
         return lhs.id == rhs.id
     }
