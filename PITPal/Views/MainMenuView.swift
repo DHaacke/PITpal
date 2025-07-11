@@ -71,7 +71,7 @@ struct MainMenuView: View {
                 HStack {
                     MenuCardView(path: $path, text: "Size/Weight Model", subText: "Scatter plot style", newPath: K.SIZE_WEIGHT_MODEL_CHART)
                     Spacer()
-                    MenuCardView(path: $path, text: "Species Analysis", subText: "", newPath: "")
+                    MenuCardView(path: $path, text: "Survey Summary", subText: "Filtered by date range", newPath: K.SURVEY_SUMMARY)
                 }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 20)

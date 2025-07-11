@@ -132,4 +132,50 @@ final class Queries {
             return []
         }
     }
+    
+   
+    func fetchTripsByDateRange(context: ModelContext, startDate: Date, endDate: Date) -> [TripData] {
+        let descriptor = FetchDescriptor<Trip>(
+            predicate: #Predicate<Trip> { trip in
+                trip.date >= startDate && trip.date <= endDate
+            },
+            sortBy: [SortDescriptor(\.date)]
+        )
+        do {
+            let trips : [Trip] = try context.fetch(descriptor)
+            var tripDataList : [TripData] = []
+            for trip in trips {
+                tripDataList.append(trip.deepCopy())
+            }
+            return tripDataList
+        } catch {
+            print("Error fetching Trips by date range: \(error)")
+            return []
+        }
+    }
+    
+    func fetchFishByDateRange(context: ModelContext, startDate: Date, endDate: Date) -> [FishData] {
+        let descriptor = FetchDescriptor<Trip>(
+            predicate: #Predicate<Trip> { trip in
+                trip.date >= startDate && trip.date <= endDate
+            },
+            sortBy: [SortDescriptor(\.date)]
+        )
+        do {
+            let trips : [Trip] = try context.fetch(descriptor)
+            var fishList : [FishData] = []
+            
+            for trip in trips {
+                for fish in trip.fish {
+                    fishList.append(fish.deepCopy())
+                }
+            }
+            return fishList
+        } catch {
+            print("Error fetching Fish by date range: \(error)")
+            return []
+        }
+        }
+
+        
 }

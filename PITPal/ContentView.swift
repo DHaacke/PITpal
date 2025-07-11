@@ -94,8 +94,17 @@ struct ContentView: View {
                         .navigationTitle("Species Size/Weight Chart").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                 }
+                else if navigation == K.SURVEY_SUMMARY {
+                    SurveySummaryView()
+                        .tint(Color("AccentColor"))
+                        .navigationBarBackButtonHidden(false)
+                        .navigationBarHidden(false)
+                        .navigationTitle("Survey Summary").foregroundStyle(Color("TextForegroundWhite"))
+                        .navigationBarTitleDisplayMode(.inline)
+                }
                 else if navigation == K.TESTVIEW {
-                    TestView()
+                    // FontPreview()
+                    PDFTestView()
                         .tint(Color("AccentColor"))
                         .navigationBarBackButtonHidden(false)
                         .navigationBarHidden(false)

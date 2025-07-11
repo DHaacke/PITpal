@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-final class TripData {
+final class TripData: Identifiable {
+    var id = UUID()
     var date: Date
     var tripType: String  // M or R
     var surveySection: String

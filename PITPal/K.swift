@@ -19,9 +19,8 @@ struct K {
     static let DUAL_SPECIES_SIZE_CHART: String      = "DUAL_SPECIES_SIZE_CHART"
     static let SIZE_WEIGHT_MODEL_CHART: String      = "SIZE_WEIGHT_MODEL_CHART"
     static let TESTVIEW: String                     = "TESTVIEW"
-//    static let SECTION_DETAIL: String       = "SECTION_DETAIL"
+    static let SURVEY_SUMMARY: String               = "SURVEY_SUMMARY"
 
-    
     // bluetooth
     static let BLUETOOTH_OFF: Int            = 0
     static let BLUETOOTH_UNAUTHORIZED: Int   = 1
@@ -38,7 +37,10 @@ struct K {
     static let EXPORT_JSON: String           = "JSON"
     static let EXPORT_MYSQL: String          = "MYSQL"
     
-    // charts
+    // PDFs
+    static let dotsPerInch: CGFloat         = 72.0
+    static let pageWidth: CGFloat           = 8.5
+    static let pageHeight: CGFloat          = 11.0
     
 }
 
