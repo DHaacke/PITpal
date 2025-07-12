@@ -77,7 +77,7 @@ struct MainMenuView: View {
                     .padding(.bottom, 20)
                 HStack {
                     Spacer()
-                    MenuCardView(path: $path, text: "Lincoln-Petersen Estimator", subText: "", newPath: "TESTVIEW")
+                    MenuCardView(path: $path, text: "Lincoln-Petersen Estimator", subText: "", newPath: "POPULATION_ESTIMATE")
                     Spacer()
                 }
                     .padding(.horizontal, 20)

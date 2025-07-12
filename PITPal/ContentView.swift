@@ -75,7 +75,7 @@ struct ContentView: View {
                         .tint(Color("AccentColor"))
                         .navigationBarBackButtonHidden(false)
                         .navigationBarHidden(false)
-                        .navigationTitle("Length Chart").foregroundStyle(Color("TextForegroundWhite"))
+                        .navigationTitle("Size Chart").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                 }
                 else if navigation == K.SIZE_WEIGHT_MODEL_CHART {
@@ -91,7 +91,7 @@ struct ContentView: View {
                         .tint(Color("AccentColor"))
                         .navigationBarBackButtonHidden(false)
                         .navigationBarHidden(false)
-                        .navigationTitle("Species Size/Weight Chart").foregroundStyle(Color("TextForegroundWhite"))
+                        .navigationTitle("Species Size Chart").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                 }
                 else if navigation == K.SURVEY_SUMMARY {
@@ -102,13 +102,13 @@ struct ContentView: View {
                         .navigationTitle("Survey Summary").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                 }
-                else if navigation == K.TESTVIEW {
+                else if navigation == K.POPULATION_ESTIMATE {
                     // FontPreview()
-                    FontPreview()
+                    PopulationEstimateView()
                         .tint(Color("AccentColor"))
                         .navigationBarBackButtonHidden(false)
                         .navigationBarHidden(false)
-                        .navigationTitle("Species Size/Weight Chart").foregroundStyle(Color("TextForegroundWhite"))
+                        .navigationTitle("Population Estimates").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                 }
             }

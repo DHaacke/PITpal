@@ -20,6 +20,7 @@ struct K {
     static let SIZE_WEIGHT_MODEL_CHART: String      = "SIZE_WEIGHT_MODEL_CHART"
     static let TESTVIEW: String                     = "TESTVIEW"
     static let SURVEY_SUMMARY: String               = "SURVEY_SUMMARY"
+    static let POPULATION_ESTIMATE: String          = "POPULATION_ESTIMATE"
 
     // bluetooth
     static let BLUETOOTH_OFF: Int            = 0

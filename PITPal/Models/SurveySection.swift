@@ -8,6 +8,10 @@
 import SwiftUI
 import SwiftData
 
+// upper 45.362514,-107.830852
+// lower 45.34681,-107.87468
+
+
 @Model
 final class SurveySection: Codable, Equatable, Identifiable {
     @Attribute(.unique) var code: String
