@@ -27,6 +27,8 @@ struct SizeWeightModelChartView: View {
     
     @State private var fishList: [FishData] = []
     @State private var isChartReady: Bool = false
+    
+    @State var pdfURL = URL(string: "https://bighornriver.org")!
 
     
     @Query(sort: \TripType.name, order: .forward) var tripTypeList: [TripType]
@@ -47,7 +49,7 @@ struct SizeWeightModelChartView: View {
                 } label: {
                     Text("Chart Title")
                 }.frame(width: 400)
-            }.padding(.leading, 100)
+            }
             
             HStack() {
                 LabeledContent {
@@ -61,7 +63,7 @@ struct SizeWeightModelChartView: View {
                 } label: {
                     Text("Watershed:")
                 }.frame(width: 400, height: 40)
-            }.padding(.leading, 100)
+            }
             
             HStack {
                 LabeledContent {
@@ -75,7 +77,7 @@ struct SizeWeightModelChartView: View {
                 } label: {
                     Text("Trip Type:")
                 }.frame(width: 400, height: 40)
-            }.padding(.leading, 100)
+            }
             
             HStack {
                 LabeledContent {
@@ -90,7 +92,7 @@ struct SizeWeightModelChartView: View {
                     Text("Survey Section:")
                 }.frame(width: 400, height: 40)
 
-            }.padding(.leading, 100)
+            }
             
             ChartButton(onChartButtonTapped: {
                 // fishList = q.fetchFishWithLengthAndWeight(context: modelContext)
@@ -110,7 +112,9 @@ struct SizeWeightModelChartView: View {
                 
                 isChartReady = true
             })
+            .padding(.horizontal, 20)
             .padding(.bottom, 20)
+            
 
             if isChartReady {
                 VStack {
@@ -119,8 +123,17 @@ struct SizeWeightModelChartView: View {
                         selectedWatershed: $selectedWatershed,
                         selectedTripType: $selectedTripType,
                         selectedSurveySection: $selectedSurveySection,
-                        fishList: $fishList
+                        fishList: $fishList,
+                        pdfURL: $pdfURL
                     )
+                }
+                HStack {
+                    Spacer()
+                    if pdfURL.absoluteString != "https://bighornriver.org" {
+                        ShareLink("Export PDF", item: URL(string: pdfURL.absoluteString)!)
+                            .padding(.bottom, 8)
+                    }
+                    Spacer()
                 }
             }
             Spacer()
@@ -139,6 +152,7 @@ struct SizeWeightChartView: View {
     @Binding var selectedTripType: String
     @Binding var selectedSurveySection: String
     @Binding var fishList: [FishData]
+    @Binding var pdfURL: URL
     
     @State private var isShowingPDFAlert: Bool = false
     
@@ -215,7 +229,7 @@ struct SizeWeightChartView: View {
                     primaryButton: .default(Text("Yep!")) {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             self.isShowingPDFAlert = false
-                            createPDF()
+                            pdfURL = createPDF(view: self)
                         }
                     },
                     secondaryButton: .cancel()
@@ -227,7 +241,7 @@ struct SizeWeightChartView: View {
         
     }
     
-    func createPDF() {
+    func createPDF(view: SizeWeightChartView) -> URL {
             // Create PDF context
         let pdfMetaData = [
             kCGPDFContextCreator: "Chart PDF Creator",
@@ -245,13 +259,7 @@ struct SizeWeightChartView: View {
             context.beginPage()
             
             // Create SwiftUI view
-            let chartView = SizeWeightChartView(
-                selectedTitle: $selectedTitle,
-                selectedWatershed: $selectedWatershed,
-                selectedTripType: $selectedTripType,
-                selectedSurveySection: $selectedSurveySection,
-                fishList: $fishList
-            )
+            let chartView = view
             
             // Convert SwiftUI view to UIImage
             let controller = UIHostingController(rootView: chartView)
@@ -278,5 +286,6 @@ struct SizeWeightChartView: View {
             print("Error saving PDF: \(error)")
         }
 
+        return pdfURL
     }
 }

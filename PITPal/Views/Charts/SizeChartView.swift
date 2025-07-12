@@ -62,6 +62,7 @@ struct SizeChartView: View {
     @State private var selectedMinLengthText: String = ""
     @State private var selectedMaxLengthText: String = ""
 
+    @State var pdfURL = URL(string: "https://bighornriver.org")!
     
     let q = Queries()
     
@@ -232,11 +233,21 @@ struct SizeChartView: View {
                             endDate: $endDate,
                             title: $parsedTitle,
                             species: $selectedSpecies,
-                            color: $selectedBarColor
+                            color: $selectedBarColor,
+                            pdfURL: $pdfURL
                         )
                             .padding(.top, 20)
                             .padding(.bottom, 20)
+                        if pdfURL.absoluteString != "https://bighornriver.org" {
+                            HStack {
+                                Spacer()
+                                ShareLink("Export PDF", item: URL(string: pdfURL.absoluteString)!)
+                                    .padding(.bottom, 8)
+                                Spacer()
+                            }
+                        }
                     }
+                    
                 }
                 Spacer()
             }
@@ -339,6 +350,7 @@ struct SizeBarChartView: View {
     @Binding var title: String
     @Binding var species: String
     @Binding var color: Color
+    @Binding var pdfURL: URL
     
     @State private var isShowingPDFAlert: Bool = false
     
@@ -400,7 +412,7 @@ struct SizeBarChartView: View {
                     primaryButton: .default(Text("Yep!")) {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             self.isShowingPDFAlert = false
-                            createPDF()
+                            pdfURL = createPDF(view: self)
                         }
                     },
                     secondaryButton: .cancel()
@@ -429,7 +441,7 @@ struct SizeBarChartView: View {
         
     }
     
-    func createPDF() {
+    func createPDF(view: SizeBarChartView) -> URL {
             // Create PDF context
         let pdfMetaData = [
             kCGPDFContextCreator: "Chart PDF Creator",
@@ -447,16 +459,8 @@ struct SizeBarChartView: View {
         let data = renderer.pdfData { context in
             context.beginPage()
             
-            // Create SwiftUI view
-            let chartView = SizeBarChartView(
-                filteredFish: $filteredFish,
-                fishChartData: $fishChartData,
-                startDate: $startDate,
-                endDate: $endDate,
-                title: $title,
-                species: $species,
-                color: $color
-            )
+            // Create SwiftUI view;
+            let chartView = view
             
             // Convert SwiftUI view to UIImage
             let controller = UIHostingController(rootView: chartView)
@@ -482,15 +486,9 @@ struct SizeBarChartView: View {
         } catch {
             print("Error saving PDF: \(error)")
         }
+        
+        return pdfURL
 
     }
 }
-    
-/*
- struct FishData: Identifiable {
- var id: Int
- var sizeGroup: Int
- var count: Int
- var species: String
- }
-*/
+

@@ -14,6 +14,8 @@ struct SurveySummaryView: View {
     @State private var startDate: Date = "2024-04-01".toDate(format: "yyyy-MM-dd") // Date()
     @State private var endDate:   Date = "2024-04-30".toDate(format: "yyyy-MM-dd") // Date()
     
+    @State var pdfURL = URL(string: "https://bighornriver.org")!
+    
     var body: some View {
         VStack {
             HStack {
@@ -29,17 +31,20 @@ struct SurveySummaryView: View {
                     displayedComponents: [.date]
                 ).datePickerStyle(.compact).frame(width: 250)
             }
-                .padding(.top, 20)
+                .padding(.top, 8)
                 .padding(.horizontal, 100)
-                .padding(.bottom, 4)
             Spacer()
-            SurveySummaryReport(startDate: $startDate, endDate: $endDate)
+            SurveySummaryReport(startDate: $startDate, endDate: $endDate, pdfURL: $pdfURL)
                 .padding(.horizontal, 20)
-                .padding(.vertical, 20)
+                .padding(.vertical, 10)
+            Spacer()
+            if pdfURL.absoluteString != "https://bighornriver.org" {
+                ShareLink("Export PDF", item: URL(string: pdfURL.absoluteString)!)
+                    .padding(.bottom, 8)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color("AppBackground"))
-
     }
 }
 
@@ -54,11 +59,13 @@ struct SurveySummaryReport: View {
     
     @Binding var startDate: Date
     @Binding var endDate: Date
+    @Binding var pdfURL: URL
     
     @State private var tripList: [TripData] = []
     @State private var fishList: [FishData] = []
     @State private var isShowingPDFAlert: Bool = false
     
+    @State private var isValidPDF: Bool = false
     
     let q = Queries()
     
@@ -149,7 +156,7 @@ struct SurveySummaryReport: View {
                     }
                 }.foregroundColor(.black)
                 Spacer()
-                   
+
                 .onTapGesture {
                     self.isShowingPDFAlert = true
                 }
@@ -159,8 +166,7 @@ struct SurveySummaryReport: View {
                         message: Text("Would you like to print this chart to a PDF?"),
                         primaryButton: .default(Text("Yep!")) {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                createPDF(view: self)
-                                isShowingPDFAlert = false
+                                pdfURL = createPDF(view: self)
                             }
                         },
                         secondaryButton: .cancel()
@@ -251,7 +257,7 @@ struct SurveySummaryReport: View {
     }
     
     @MainActor
-    func createPDF(view: SurveySummaryReport) {
+    func createPDF(view: SurveySummaryReport) -> URL {
             // Create PDF context
         let pdfMetaData = [
             kCGPDFContextCreator: "Report PDF Creator",
@@ -295,6 +301,9 @@ struct SurveySummaryReport: View {
         } catch {
             print("Error saving PDF: \(error)")
         }
+        
+        return pdfURL
+        
     }
 }
 

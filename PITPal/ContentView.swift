@@ -104,7 +104,7 @@ struct ContentView: View {
                 }
                 else if navigation == K.TESTVIEW {
                     // FontPreview()
-                    PDFTestView()
+                    FontPreview()
                         .tint(Color("AccentColor"))
                         .navigationBarBackButtonHidden(false)
                         .navigationBarHidden(false)
