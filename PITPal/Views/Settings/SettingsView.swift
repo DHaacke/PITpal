@@ -264,10 +264,10 @@ struct SettingsView: View {
                         
                         LabeledContent {
                             Picker("", selection: $pitSize) {
-                                Text("8mm").tag(8.0)
-                                Text("9mm").tag(9.0)
-                                Text("10mm").tag(10.0)
-                                Text("12mm").tag(12.0)
+                                Text("8mm").tag("8.0")
+                                Text("9mm").tag("9.0")
+                                Text("10mm").tag("10.0")
+                                Text("12mm").tag("12.0")
                             }.tint(Color("TextForegroundWhite"))
                         } label: {
                             Text("PIT tag size (length)")

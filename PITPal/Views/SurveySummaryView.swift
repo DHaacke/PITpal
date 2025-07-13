@@ -10,6 +10,7 @@ import SwiftUI
 import SwiftData
 
 struct SurveySummaryView: View {
+    @Environment(\.colorScheme) var colorScheme
 
     @State private var startDate: Date = "2024-04-01".toDate(format: "yyyy-MM-dd") // Date()
     @State private var endDate:   Date = "2024-04-30".toDate(format: "yyyy-MM-dd") // Date()
@@ -56,6 +57,7 @@ struct SurveySummaryView: View {
 
 struct SurveySummaryReport: View {
     @Environment(\.modelContext) var modelContext
+    @Environment(\.colorScheme) var colorScheme
     
     @Binding var startDate: Date
     @Binding var endDate: Date
@@ -75,11 +77,11 @@ struct SurveySummaryReport: View {
                 VStack {
                     Text("Survey Summary Report")
                         .font(.title)
-                        .foregroundColor(.black)
+                        .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                         .padding(.top, 8)
                     Text("\(startDate, format: .dateTime.day().month().year()) to \(endDate, format: .dateTime.day().month().year())")
                         .font(.headline)
-                        .foregroundColor(.black)
+                        .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                 }
                 .padding(.bottom, 15)
 

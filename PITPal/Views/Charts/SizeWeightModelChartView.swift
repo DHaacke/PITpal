@@ -42,7 +42,7 @@ struct SizeWeightModelChartView: View {
             HStack {
                 LabeledContent {
                     TextField("", text: $selectedTitle)
-                      .foregroundColor(Color("TextForeground"))
+                      .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                       .textFieldStyle(.roundedBorder)
                       .frame(width: 300)
                       .multilineTextAlignment(.leading)
@@ -59,7 +59,7 @@ struct SizeWeightModelChartView: View {
                             Text(water.name)
                                 .frame(width: 400)
                         }
-                    }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                    }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                 } label: {
                     Text("Watershed:")
                 }.frame(width: 400, height: 40)
@@ -73,7 +73,7 @@ struct SizeWeightModelChartView: View {
                             Text(type.name)
                                 .frame(width: 400)
                         }
-                    }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                    }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                 } label: {
                     Text("Trip Type:")
                 }.frame(width: 400, height: 40)
@@ -87,33 +87,42 @@ struct SizeWeightModelChartView: View {
                             Text(section.name)
                                 .frame(width: 400)
                         }
-                    }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                    }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                 } label: {
                     Text("Survey Section:")
                 }.frame(width: 400, height: 40)
 
             }
             
-            ChartButton(onChartButtonTapped: {
-                // fishList = q.fetchFishWithLengthAndWeight(context: modelContext)
-                fishList = q.fetchFishWithLengthAndWeight(context: modelContext, tripType: selectedTripType, watershed: selectedWatershed, surveySection: selectedSurveySection )
-                
-                var parsedTitle = self.selectedTitle
-                if parsedTitle.contains("{WATERSHED}") {
-                    parsedTitle = parsedTitle.replacingOccurrences(of: "{WATERSHED}", with: q.fetchNameFromCode(context: modelContext, model: "Watershed", code: selectedWatershed))
+            HStack {
+                Button( action: {
+
+                    fishList = q.fetchFishWithLengthAndWeight(context: modelContext, tripType: selectedTripType, watershed: selectedWatershed, surveySection: selectedSurveySection )
+                    
+                    var parsedTitle = self.selectedTitle
+                    if parsedTitle.contains("{WATERSHED}") {
+                        parsedTitle = parsedTitle.replacingOccurrences(of: "{WATERSHED}", with: q.fetchNameFromCode(context: modelContext, model: "Watershed", code: selectedWatershed))
+                    }
+                    if parsedTitle.contains("{SECTION}") {
+                        parsedTitle = parsedTitle.replacingOccurrences(of: "{SECTION}", with: q.fetchNameFromCode(context: modelContext, model: "SurveySection", code: selectedSurveySection))
+                    }
+                    if parsedTitle.contains("{TYPE}") {
+                        parsedTitle = parsedTitle.replacingOccurrences(of: "{TRIPTYPE}", with: q.fetchNameFromCode(context: modelContext, model: "TripType", code: selectedTripType))
+                    }
+                    selectedTitle = parsedTitle
+                    
+                    isChartReady = true
+                }) {
+                    Text("Chart")
+                        .font(.system(size: 24, weight: .bold))
+                        .frame(maxWidth: 80, minHeight: 36)
+                        .foregroundColor(Color("TextForegroundWhite"))
+                        .shadow(color: Color(.black), radius: 2, x: 1, y: 2)
+                        .cornerRadius(10)
                 }
-                if parsedTitle.contains("{SECTION}") {
-                    parsedTitle = parsedTitle.replacingOccurrences(of: "{SECTION}", with: q.fetchNameFromCode(context: modelContext, model: "SurveySection", code: selectedSurveySection))
-                }
-                if parsedTitle.contains("{TYPE}") {
-                    parsedTitle = parsedTitle.replacingOccurrences(of: "{TRIPTYPE}", with: q.fetchNameFromCode(context: modelContext, model: "TripType", code: selectedTripType))
-                }
-                selectedTitle = parsedTitle
-                
-                isChartReady = true
-            })
-            .padding(.horizontal, 20)
-            .padding(.bottom, 20)
+                .padding(.bottom, 10)
+                .buttonStyle(.borderedProminent)
+            }
             
 
             if isChartReady {
@@ -146,6 +155,7 @@ struct SizeWeightModelChartView: View {
 
 struct SizeWeightChartView: View {
     @Environment(\.modelContext) var modelContext
+    @Environment(\.colorScheme) var colorScheme
 
     @Binding var selectedTitle: String
     @Binding var selectedWatershed: String
@@ -161,7 +171,7 @@ struct SizeWeightChartView: View {
             GroupBox {
                 Text("\(selectedTitle)")
                     .font(.title)
-                    .foregroundColor(.black)
+                    .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                     .padding(.bottom, 14)
                 Chart(fishList) { fish in
                     PointMark(
@@ -169,7 +179,7 @@ struct SizeWeightChartView: View {
                         y: .value("Weight", fish.weight)
                     )
                     .position(by: .value("Species", fish.species))
-                    .foregroundStyle(fish.species == "LL" ? .orange : .green)
+                    .foregroundStyle(fish.species == "LL" ? Color("TroutYellow") : Color("TroutGreen"))
                     .symbolSize(CGSize(width: 3, height: 3)) // Adjust point size
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
@@ -179,7 +189,7 @@ struct SizeWeightChartView: View {
                         AxisGridLine()
                         AxisValueLabel()
                             .font(.headline)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                             .offset(x: -8)
                     }
                 }
@@ -189,7 +199,7 @@ struct SizeWeightChartView: View {
                         AxisGridLine()
                         AxisValueLabel()
                             .font(.headline)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                             .offset(x: 10)
                     }
                 }

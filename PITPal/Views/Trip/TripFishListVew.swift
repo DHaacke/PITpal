@@ -26,7 +26,6 @@ struct TripFishListView: View {
                     Text("Comment").font(.subheadline)
                     Text("Tag").font(.subheadline)
                     Text("Mort").font(.subheadline)
-                    
                 }
                 .font(.title2)
                 

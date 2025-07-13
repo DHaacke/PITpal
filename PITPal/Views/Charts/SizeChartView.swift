@@ -90,7 +90,7 @@ struct SizeChartView: View {
                 HStack {
                     LabeledContent {
                         TextField("", text: $selectedTitle)
-                          .foregroundColor(Color("TextForeground"))
+                          .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 400)
                           .multilineTextAlignment(.leading)
@@ -108,7 +108,7 @@ struct SizeChartView: View {
                                 Text(water.name)
                                     .frame(width: 400)
                             }
-                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                     } label: {
                         Text("Watershed:")
                     }.frame(width: 400, height: 40)
@@ -123,7 +123,7 @@ struct SizeChartView: View {
                                 Text(type.name)
                                     .frame(width: 400)
                             }
-                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                     } label: {
                         Text("Trip Type:")
                     }.frame(width: 400, height: 40)
@@ -137,7 +137,7 @@ struct SizeChartView: View {
                                 Text(section.name)
                                     .frame(width: 400)
                             }
-                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                     } label: {
                         Text("Survey Section:")
                     }.frame(width: 400, height: 40)
@@ -196,9 +196,10 @@ struct SizeChartView: View {
                     
                 }.padding(.leading, 100)
                 
+                
                 HStack(alignment: .center) {
                     Spacer()
-                    ChartButton(onChartButtonTapped: {
+                    Button(action: {
                         filteredFish = filterFish()
                         print("Filtered Fish Found: \(filteredFish.count)")
                         fishChartData = buildMatrix(species: selectedSpecies)
@@ -221,7 +222,16 @@ struct SizeChartView: View {
                         self.selectedMaxLength = Int(selectedMaxLength)
                         
                         self.isChartReady = filteredFish.count > 0 ? true : false
-                    })
+                    }) {
+                        Text("Chart")
+                            .font(.system(size: 24, weight: .bold))
+                            .frame(maxWidth: 80, minHeight: 36)
+                            .foregroundColor(Color("TextForegroundWhite"))
+                            .shadow(color: Color(.black), radius: 2, x: 1, y: 2)
+                            .cornerRadius(10)
+                    }
+                    .padding(.bottom, 10)
+                    .buttonStyle(.borderedProminent)
                     Spacer()
                 }
                 if isChartReady {
@@ -342,6 +352,7 @@ struct SizeChartView: View {
 
 struct SizeBarChartView: View {
     @Environment(\.modelContext) var modelContext
+    @Environment(\.colorScheme) var colorScheme
     
     @Binding var filteredFish: [FishData]
     @Binding var fishChartData: [FishChartData]
@@ -359,11 +370,11 @@ struct SizeBarChartView: View {
             GroupBox {
                 Text(title)
                     .font(.title)
-                    .foregroundColor(.black)
+                    .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                     .padding(.bottom, 4)
                 Text("\(startDate, format: .dateTime.day().month().year()) to \(endDate, format: .dateTime.day().month().year())")
                     .font(.headline)
-                    .foregroundColor(.black)
+                    .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                 Chart(fishChartData, id: \.id) { data in
                     BarMark(
                         x: .value("Size", data.sizeGroup),
@@ -375,13 +386,12 @@ struct SizeBarChartView: View {
                 .padding(.horizontal, 20)
                 .padding(.vertical, 30)
                 .chartXScale(domain: [6, 24])
-                // .chartYScale(domain: [minStockPrice ?? 0, maxStockPrice ?? 0])
+//                // .chartYScale(domain: [minStockPrice ?? 0, maxStockPrice ?? 0])
                 .chartXAxisLabel("Fish Size (inches)", alignment: .leading)
                 .chartXAxis {
                     AxisMarks(values: [6, 8, 10, 12, 14, 16, 18, 20, 22, 24]) { value in
                         AxisValueLabel()
                             .font(.headline)
-                            .foregroundStyle(.black)
                             .offset(x: -8)
                     }
                 }
@@ -391,16 +401,15 @@ struct SizeBarChartView: View {
                         AxisGridLine()
                         AxisValueLabel()
                             .font(.headline)
-                            .foregroundStyle(.black)
                             .offset(x: 10)
                     }
                 }
                 Text("Total fish:  \(filteredFish.count)")
                     .font(.headline)
-                    .foregroundColor(.black)
+                    .foregroundColor(Color("TextForegroundWhite"))
             }
             .frame(minWidth: 300, maxWidth: .infinity, minHeight: 300, maxHeight: .infinity)
-            .background(Color.black)
+            .background(Color("TextForegroundWhite"))
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .onTapGesture {
                 self.isShowingPDFAlert = true
@@ -491,4 +500,3 @@ struct SizeBarChartView: View {
 
     }
 }
-

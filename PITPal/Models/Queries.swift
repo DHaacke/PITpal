@@ -175,7 +175,28 @@ final class Queries {
             print("Error fetching Fish by date range: \(error)")
             return []
         }
+    }
+    
+    func fetchSurveySectionFromCode(context: ModelContext, code: String) -> SurveySection {
+        let descriptor = FetchDescriptor<SurveySection>(
+            predicate: #Predicate { section in
+                section.code == code
+            }
+        )
+        do {
+            let sections : [SurveySection] = try context.fetch(descriptor)
+            var section: SurveySection? { sections.first }
+            if let section = section {
+                return section
+            } else {
+                return SurveySection(code: "", name: "", color: "", latDown: 0.0, lonDown: 0.0, latUp: 0.0, lonUp: 0.0, radius: 0.0, active: "N")
+            }
+        } catch {
+            print("Error fetching SurveySection name: \(error)")
+            return SurveySection(code: "", name: "", color: "", latDown: 0.0, lonDown: 0.0, latUp: 0.0, lonUp: 0.0, radius: 0.0, active: "N")
         }
+        
+    }
 
         
 }

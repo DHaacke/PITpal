@@ -48,8 +48,22 @@ struct ChooseTripView: View {
                             tripSelection = trip
                         }
                 }
-                .padding(.top, 0)
-                AddTripButton(isAddingTrip: $isAddingTrip)
+                .listStyle(.plain)
+                .padding(.horizontal, 8)
+                
+                Button(action: {
+                    isAddingTrip.toggle()
+                }) {
+                    Text("Add New Trip")
+                        .font(.system(size: 24, weight: .bold))
+                        .frame(maxWidth: 160, minHeight: 36)
+                        .foregroundColor(Color("TextForegroundWhite"))
+                        .shadow(color: Color(.black), radius: 2, x: 1, y: 2)
+                        .cornerRadius(10)
+                }
+                .padding(.bottom, 10)
+                .buttonStyle(.borderedProminent)
+                  
             }
             .frame(minWidth: 0, maxWidth: 500, minHeight: 0, maxHeight: 600)
             // .background(Color("CardBackground"))

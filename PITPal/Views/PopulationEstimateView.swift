@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import MapKit
+import CoreLocation
 
 struct PopulationEstimateView: View {
     @Environment(\.modelContext) var modelContext
@@ -21,18 +22,23 @@ struct PopulationEstimateView: View {
     @State private var totalMarkingRun: Int = 0
     @State private var totalRecapRun: Int = 0
     @State private var totalRecaptured: Int = 0
-
+    @State private var filteredFish: [FishData] = []
+    @State private var coordFish: [FishData] = []
+    
+    @State private var midPoint: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 45.39395000, longitude: -107.80418000)
+    @State private var radius: Double = 3800 // meters
+    @State private var mapSpan: MKCoordinateSpan = MKCoordinateSpan(latitudeDelta: 0.8, longitudeDelta: 0.8)
     // upper 45.362514,-107.830852
     // lower 45.34681,-107.87468
-
-    @State private var camera: MapCameraPosition = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 45.362514, longitude: -107.830852), span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)))
+    
+    @State private var camera: MapCameraPosition = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 45.362514, longitude: -107.830852), span: MKCoordinateSpan(latitudeDelta: 0.09, longitudeDelta: 0.05)))
     
     @Query(filter: #Predicate<Fish> { f in f.species == "RB" || f.species == "LL"},  sort: \Fish.species) var fishList: [Fish]
     @Query(sort: \SurveySection.name, order: .forward) var surveySectionList: [SurveySection]
     
-    @Namespace var mapScope
-    
     let q = Queries()
+    
+    @Namespace var mapScope
     
     var body: some View {
         VStack {
@@ -49,8 +55,8 @@ struct PopulationEstimateView: View {
                     displayedComponents: [.date]
                 ).datePickerStyle(.compact).frame(width: 250)
             }
-                .padding(.top, 8)
-                .padding(.horizontal, 100)
+            .padding(.top, 8)
+            .padding(.horizontal, 100)
             
             HStack {
                 LabeledContent {
@@ -67,23 +73,24 @@ struct PopulationEstimateView: View {
             
             
             HStack {
-                Button(action: {
+                Button( action: {
                     self.totalMarkingRun = fishList.filter { ($0.trip?.surveySection == selectedSurveySection && $0.trip?.tripType == "M" && $0.species == "RB" || $0.species == "LL") && ($0.date >= startDate && $0.date <= endDate) }.count
                     self.totalRecapRun   = fishList.filter { ($0.trip?.surveySection == selectedSurveySection && $0.trip?.tripType == "R" && $0.species == "RB" || $0.species == "LL") && ($0.date >= startDate && $0.date <= endDate) }.count
                     self.totalRecaptured = fishList.filter { ($0.trip?.surveySection == selectedSurveySection && $0.species == "RB" || $0.species == "LL") && ($0.date >= startDate && $0.date <= endDate) && $0.mc != 0 }.count
                     if totalRecaptured > 0 {
                         self.populationEstimate = (((Double(totalMarkingRun) * Double(totalRecapRun)) / Double(totalRecaptured)) * 3) / 13.0 // (18,800 * 3) / 13
-                        // print("Estimated Population: \(populationEstimate) fish per mile for \(q.fetchNameFromCode(context: modelContext, model: SurveySection, code: selectedSurveySection))")
                     }
-                }, label: {
+                    self.camera = .region(MKCoordinateRegion(center: self.midPoint, span: MKCoordinateSpan(latitudeDelta: 0.09, longitudeDelta: 0.05)))
+                }) {
                     Text("Estimate")
-                        .font(.system(size: 24, weight: .medium))
-                        .frame(width: 120, height: 38)
-                        .foregroundColor(.white)
-                        .background(Color("ButtonBackground"))
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                })
-                    .padding(.bottom, 30)
+                        .font(.system(size: 24, weight: .bold))
+                        .frame(maxWidth: 160, minHeight: 36)
+                        .foregroundColor(Color("TextForegroundWhite"))
+                        .shadow(color: Color(.black), radius: 2, x: 1, y: 2)
+                        .cornerRadius(10)
+                }
+                .padding(.bottom, 10)
+                .buttonStyle(.borderedProminent)
             }
             if self.populationEstimate > 0 {
                 HStack {
@@ -92,27 +99,25 @@ struct PopulationEstimateView: View {
                         .font(.system(size: 20, weight: .medium))
                     Spacer()
                 }
-            
+                
                 VStack {
                     MapReader { mapProxy in
                         Map(position: $camera, bounds: .none, interactionModes: .all, selection: .constant(nil)) {
-//                            ForEach(fishList, id: \.self.id) { fish in
-//                                Annotation(coordinate: CLLocationCoordinate2D(latitude: fish.lat, longitude: fish.lon), anchor: .center) {
-//                                    if fish.species == "RB" {
-//                                        Image("fish.fill")
-//                                            .resizable()
-//                                            .scaledToFit()
-//                                            .frame(width: 6, height: 6)
-//                                            .tint(Color("Green"))
-//                                    } else {
-//                                        Image("fish.fill")
-//                                            .resizable()
-//                                            .scaledToFit()
-//                                            .frame(width: 6, height: 6)
-//                                            .tint(Color("Yellow"))
-//                                    }
-//                                }
-//                            }
+                            MapCircle(center: midPoint, radius: 3800)
+                                .stroke(.blue.opacity(0.8), style: StrokeStyle(lineWidth: 1))
+                                .mapOverlayLevel(level: .aboveRoads)
+                                .foregroundStyle(.blue.opacity(0.1))
+                            ForEach(coordFish, id: \.self) { fish in
+                                Annotation("", coordinate: CLLocationCoordinate2D(latitude: fish.lat, longitude: fish.lon)) {
+                                    Image(systemName: "fish.fill")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 10, height: 10)
+                                        .foregroundColor(
+                                            fish.species == "RB" ? Color("TroutGreen") : Color("TroutYellow")
+                                        )
+                                }
+                            }
                         }
                         .mapScope(mapScope)
                         .edgesIgnoringSafeArea(.all)
@@ -126,9 +131,73 @@ struct PopulationEstimateView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color("AppBackground"))
+        
+        .onChange(of: selectedSurveySection) {
+            coordFish.removeAll()
+            setMidPoint()
+            updateCameraPosition()
+        }
+        
+        .onAppear {
+            var list : [FishData] = []
+            for fish in fishList {
+                list.append(fish.deepCopy())
+            }
+            filteredFish = list
+            setMidPoint()
+        }
     }
+    
+    func filterFishByCoordinate() -> [FishData] {
+        var list: [FishData] = []
+        let filtered: [FishData] = filteredFish.filter { ($0.trip?.surveySection == selectedSurveySection && $0.species == "RB" || $0.species == "LL") && ($0.date >= startDate && $0.date <= endDate) }
+        var coords: [CLLocationCoordinate2D] = []
+        for fish in filtered {
+            let coord = CLLocationCoordinate2D(latitude: fish.lat, longitude: fish.lon)
+            if coord.latitude != 0.0 && coord.longitude != 0.0 {
+                if !coords.contains(coord) {
+                    coords.append(coord)
+                    list.append(fish)
+                }
+            }
+        }
+        print("Filtered fish count for section \(selectedSurveySection): \(list.count)")
+        return list
+    }
+    
+    func setMidPoint() {
+        coordFish = filterFishByCoordinate()
+        let ss = q.fetchSurveySectionFromCode(context: modelContext, code: selectedSurveySection)
+        let upperTop = CLLocationCoordinate2D(latitude: ss.latUp, longitude: ss.lonUp)
+        let upperBottom: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: ss.latDown, longitude: ss.lonDown)
+        //                    let upperTop:    CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 45.39395000, longitude: -107.80418000)
+        //                    let upperBottom: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 45.34681000, longitude: -107.87468000)
+        self.midPoint = upperTop.midLocation(to: upperBottom)
+        self.radius   = ss.radius
+        print("Section \(ss.name),  Midpoint: \(midPoint.latitude), \(midPoint.longitude) with radius: \(radius) meters")
+    }
+    
+    func updateCameraPosition() {
+        let userRegion = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(
+                latitude: midPoint.latitude,
+                longitude: midPoint.longitude),
+            span: mapSpan
+        )
+        withAnimation {
+            camera = .region(userRegion)
+        }
+    }
+    
 }
 
 #Preview {
     PopulationEstimateView()
 }
+
+/*
+
+ Upper: (latDown, lonDown, latUp, lonUp) VALUES (45.39395000, -107.80418000, 45.34681000, 45.34681000);
+ Lower: (latDown, lonDown, latUp, lonUp) VALUES (45.34681000, -107.87468000, 45.36251400, -107.83085200);
+  */
+

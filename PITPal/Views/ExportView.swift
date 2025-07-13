@@ -229,13 +229,22 @@ struct ExportView: View {
                 
                 HStack(alignment: .center) {
                     Spacer()
-                    ExportButton(onExportButtonTapped: {
+                    Button(action: {
                         if selectedFormat == K.EXPORT_JSON {
                             exportJSON()
                         } else if selectedFormat == K.EXPORT_CSV {
                             exportCSV()
                         }
-                    })
+                    }) {
+                        Text("Export")
+                            .font(.system(size: 24, weight: .bold))
+                            .frame(maxWidth: 80, minHeight: 36)
+                            .foregroundColor(Color("TextForegroundWhite"))
+                            .shadow(color: Color(.black), radius: 2, x: 1, y: 2)
+                            .cornerRadius(10)
+                    }
+                    .padding(.bottom, 10)
+                    .buttonStyle(.borderedProminent)
                     Spacer()
                 }
                 

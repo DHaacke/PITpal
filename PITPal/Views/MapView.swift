@@ -68,9 +68,9 @@ struct MapView: View {
                                 isLoadingLocation = false
                             }
                         }  // end of MapReader
-                        // .edgesIgnoringSafeArea(.all)
+                        .edgesIgnoringSafeArea(.all)
                     }
-                    // .edgesIgnoringSafeArea(.all)
+                    .edgesIgnoringSafeArea(.all)
                 }
             }
         }

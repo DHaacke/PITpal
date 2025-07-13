@@ -38,8 +38,8 @@ struct SpeciesSizeChartView: View {
     @State private var selectedSpecies2: String = "RB"
     @State private var selectedMinLength: Int = 0
     @State private var selectedMaxLength: Int = 0
-    @State private var selectedBarColor1: Color = .orange
-    @State private var selectedBarColor2: Color = .green
+    @State private var selectedBarColor1: Color = Color("TroutYellow")
+    @State private var selectedBarColor2: Color = Color("TroutGreen")
     
     @State private var filteredTrips: [TripData] = []
     @State private var filteredFish: [FishData] = []
@@ -97,7 +97,7 @@ struct SpeciesSizeChartView: View {
                 HStack {
                     LabeledContent {
                         TextField("", text: $selectedTitle)
-                          .foregroundColor(Color("TextForeground"))
+                          .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                           .textFieldStyle(.roundedBorder)
                           .frame(width: 400)
                           .multilineTextAlignment(.leading)
@@ -115,7 +115,7 @@ struct SpeciesSizeChartView: View {
                                 Text(water.name)
                                     .frame(width: 400)
                             }
-                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                     } label: {
                         Text("Watershed:")
                     }.frame(width: 400, height: 40)
@@ -130,7 +130,7 @@ struct SpeciesSizeChartView: View {
                                 Text(type.name)
                                     .frame(width: 400)
                             }
-                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                     } label: {
                         Text("Trip Type:")
                     }.frame(width: 400, height: 40)
@@ -144,7 +144,7 @@ struct SpeciesSizeChartView: View {
                                 Text(section.name)
                                     .frame(width: 400)
                             }
-                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                     } label: {
                         Text("Survey Section:")
                     }.frame(width: 400, height: 40)
@@ -157,7 +157,7 @@ struct SpeciesSizeChartView: View {
                                 Text(species.name)
                                     .frame(width: 200)
                             }
-                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                     } label: {
                         Text("Species:")
                     }.frame(width: 300, height: 40).padding(.trailing, 50)
@@ -168,7 +168,7 @@ struct SpeciesSizeChartView: View {
                                 Text(species.name)
                                     .frame(width: 200)
                             }
-                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                        }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                     } label: {
                         Text("Species:")
                     }.frame(width: 300, height: 40)
@@ -180,7 +180,7 @@ struct SpeciesSizeChartView: View {
                             .focused($focusedField, equals: .int)
                             .numbersOnly($selectedMinLengthText, includeDecimal: false)
                             .disableAutocorrection(true)
-                            .foregroundColor(Color("TextForeground"))
+                            .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                             .textFieldStyle(.roundedBorder)
                             .frame(width: 90)
                             // .multilineTextAlignment(.leading)
@@ -194,7 +194,7 @@ struct SpeciesSizeChartView: View {
                             .focused($focusedField, equals: .int)
                             .numbersOnly($selectedMaxLengthText, includeDecimal: false)
                             .disableAutocorrection(true)
-                            .foregroundColor(Color("TextForeground"))
+                            .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                             .textFieldStyle(.roundedBorder)
                             .frame(width: 90)
                         Text(uomFishLength).frame(width: 40, alignment: .leading)
@@ -221,7 +221,7 @@ struct SpeciesSizeChartView: View {
                 
                 HStack(alignment: .center) {
                     Spacer()
-                    ChartButton(onChartButtonTapped: {
+                    Button( action: {
                         filteredFish = filterFish(species1: selectedSpecies1, species2: selectedSpecies2)
                       
                         let species1Fish = filteredFish.filter { $0.species == selectedSpecies1 }
@@ -245,7 +245,16 @@ struct SpeciesSizeChartView: View {
                         self.selectedMaxLength = Int(selectedMaxLength)
                         
                         self.isChartReady = true
-                    })
+                    }) {
+                        Text("Chart")
+                           .font(.system(size: 24, weight: .bold))
+                           .frame(maxWidth: 80, minHeight: 36)
+                           .foregroundColor(Color("TextForegroundWhite"))
+                           .shadow(color: Color(.black), radius: 2, x: 1, y: 2)
+                           .cornerRadius(10)
+                   }
+                   .padding(.bottom, 10)
+                   .buttonStyle(.borderedProminent)
                     Spacer()
                 }
                 if isChartReady {
@@ -347,6 +356,7 @@ struct SpeciesSizeChartView: View {
 
 struct SpeciesSizeBarChartView: View {
     @Environment(\.modelContext) var modelContext
+    @Environment(\.colorScheme) var colorScheme
 
     @Binding var selectedTitle: String
     @Binding var filteredFish: [FishData]
@@ -369,11 +379,11 @@ struct SpeciesSizeBarChartView: View {
             GroupBox {
                 Text(title)
                     .font(.title)
-                    .foregroundColor(.black)
+                    .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                     .padding(.bottom, 4)
                 Text("\(startDate, format: .dateTime.day().month().year()) to \(endDate, format: .dateTime.day().month().year())")
                     .font(.headline)
-                    .foregroundColor(.black)
+                    .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                 Chart(matrix, id: \.groupName) { fish in
                     ForEach(0..<fish.fishCount.count, id: \.self) { i in
                         let sizeGroup = 6 + (i * 2) // Assuming size groups are 6, 8, 10, ..., 22
@@ -395,7 +405,7 @@ struct SpeciesSizeBarChartView: View {
                     AxisMarks(values: xAxisLabels.map { $0 }) { value in
                         AxisValueLabel(centered: true)
                             .font(.headline)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                         AxisGridLine()
                         AxisTick()
                     }
@@ -406,18 +416,18 @@ struct SpeciesSizeBarChartView: View {
                         AxisGridLine()
                         AxisValueLabel()
                             .font(.headline)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                             .offset(x: 10)
                     }
                 }
                 .chartForegroundStyleScale([
-                    "LL": .orange,
-                    "RB": .green
+                    "LL": color1,  // Color("TroutYellow"),
+                    "RB": color2   // Color("TroutGreen")
                 ])
                 .padding()
                 Text("Total fish:  \(filteredFish.count)")
                     .font(.headline)
-                    .foregroundColor(.black)
+                    .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
             }
             .frame(minWidth: 300, maxWidth: .infinity, minHeight: 300, maxHeight: .infinity)
             .background(Color.black)

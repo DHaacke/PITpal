@@ -188,9 +188,8 @@ struct TripFishView: View {
                                     .multilineTextAlignment(.leading)
                                 Spacer()
                             }
-                            .frame(width: 700, height: 30)
+                            .frame(width: 670, height: 30)
                             .padding(.bottom, 12)
-                            
                             Spacer()
                        }
                            .padding(.horizontal, 20)
@@ -289,6 +288,7 @@ struct TripFishView: View {
                                     Picker("", selection: $selectedGender) {
                                         Text("Male").tag("M")
                                         Text("Female").tag("F")
+                                        Text("None").tag("")
                                     }
                                         .frame(width: 300)
                                         .tint(Color("TextForegroundWhite"))

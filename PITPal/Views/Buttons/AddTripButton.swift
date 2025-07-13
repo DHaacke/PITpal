@@ -29,7 +29,7 @@ struct AddTripButton: View {
                         .stroke(Color.white, lineWidth: 2)
                         .background(Color("ButtonBackground"))
                         .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .shadow(color: Color(.darkGray), radius: 3, x: 2, y: 3)
+                        //.shadow(color: Color(.darkGray), radius: 3, x: 2, y: 3)
                     )
             })
         }
@@ -42,3 +42,4 @@ struct AddTripButton: View {
     @Previewable @State var isAddingTrip: Bool = false
     AddTripButton(isAddingTrip: $isAddingTrip)
 }
+

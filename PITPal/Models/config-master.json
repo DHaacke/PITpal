@@ -112,18 +112,18 @@
             "lonDown": -107.80418,
             "latUp": 45.34681,
             "lonUp": -107.87468,
-            "radius": 3540,
+            "radius": 3800,
             "active": "Y"
         },
         {
             "code": "L",
             "name": "Bighorn (Lower)",
             "color": "green",
-            "latDown": 45.39395,
-            "lonDown": -107.80418,
-            "latUp": 45.34681,
-            "lonUp": -107.87468,
-            "radius": 3540,
+            "latDown": 45.526200,
+            "lonDown": -107.72570,
+            "latUp": 45.47820,
+            "lonUp": -107.7366,
+            "radius": 4000,
             "active": "Y"
         }
     ],

@@ -33,27 +33,15 @@ struct MainMenuView: View {
                     MenuCardView(path: $path, text: "Start", subText: "", newPath: "TAG")
                         .padding(.horizontal, 120)
                 }
+                    .padding(.horizontal, 30)
                     .padding(.bottom, 20)
-                
-                HStack {
-                    MenuCardView(path: $path, text: "Export Trip/Fish Data", subText: "", newPath: "EXPORT")
-                        .padding(.horizontal, 120)
-                }
-                    .padding(.bottom, 20)
-                
-//                HStack {
-//                    MenuCardView(path: $path, text: "View / Edit History of\n Tagging Run", newPath: "")
-//                    Spacer()
-//                    MenuCardView(path: $path, text: "View / Edit History of\n Recapture Run", newPath: "")
-//                }
-//                    .padding(.horizontal, 30)
-//                    .padding(.bottom, 20)
-                
                 HStack {
                     MenuCardView(path: $path, text: "Settings and Defaults", subText: "", newPath: "SETTINGS")
+                        .padding(.horizontal, 120)
                 }
                     .padding(.horizontal, 30)
                     .padding(.bottom, 40)
+              
                 
                 Text("Data Export and Visualization")
                     .font(.system(size: 32, weight: .bold, design: .default))
@@ -61,6 +49,12 @@ struct MainMenuView: View {
                     .padding(.horizontal, 20)
                     .padding(.bottom, 10)
                 
+                HStack {
+                    MenuCardView(path: $path, text: "Export Trip/Fish Data", subText: "", newPath: "EXPORT")
+                        .padding(.horizontal, 120)
+                }
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 20)
                 HStack {
                     MenuCardView(path: $path, text: "Size Chart", subText: "Single species bar chart style", newPath: K.SINGLE_SPECIES_SIZE_CHART)
                     Spacer()
@@ -78,6 +72,7 @@ struct MainMenuView: View {
                 HStack {
                     Spacer()
                     MenuCardView(path: $path, text: "Lincoln-Petersen Estimator", subText: "", newPath: "POPULATION_ESTIMATE")
+                        .padding(.horizontal, 100)
                     Spacer()
                 }
                     .padding(.horizontal, 20)

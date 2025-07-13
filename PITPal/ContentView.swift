@@ -110,6 +110,8 @@ struct ContentView: View {
                         .navigationBarHidden(false)
                         .navigationTitle("Population Estimates").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
+                        .toolbarBackground(Color("AppBackground"), for: .navigationBar)
+                        .toolbarBackground(.visible, for: .navigationBar) // Ensure it's visible
                 }
             }
             

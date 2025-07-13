@@ -41,11 +41,10 @@ struct SegmentedPickerSpecies: View {
                         
                         ForEach(activeSpecies) { sp in
                             Text(sp.name)
-                                .padding(.vertical, 10)
-                                .frame(width: 120)
+                                .padding(.vertical, 8)
+                                .frame(width: 60)
                                 .foregroundStyle(selectedItem == sp.code ? Color("TextForegroundWhite") : Color("TextForeground"))
                                 .bold(selectedItem == sp.code)
-
                                 .background {
                                     ZStack {
                                         if selectedItem == sp.code {
