@@ -12,6 +12,7 @@ struct SettingsView: View {
     
     @Binding var path: [String]
     
+    @Query(sort: \TripType.name, order: .forward) var tripType: [TripType]
     @Query(sort: \Watershed.name, order: .forward) var watersheds: [Watershed]
     @Query(sort: \SurveySection.name, order: .forward) var surveySections: [SurveySection]
     
@@ -102,8 +103,9 @@ struct SettingsView: View {
                     Section(header: Text("Trip Defaults \(tripTripType)").font(.title2).foregroundStyle(.white)) {
                         LabeledContent {
                             Picker("", selection: $tripTripType) {
-                                Text("Marking").tag("M")
-                                Text("Recapture").tag("R")
+                                ForEach(tripType, id: \.code) { type in
+                                    Text(type.name).tag(type.code)
+                                }
                             }.tint(Color("TextForegroundWhite"))
                         } label: {
                             Text("Trip Type:")

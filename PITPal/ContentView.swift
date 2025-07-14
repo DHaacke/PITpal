@@ -119,7 +119,7 @@ struct ContentView: View {
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .preferredColorScheme(darkMode == true ? .dark : .light)
         // .background(Color("CardBackground").gradient)
-        // .tint(Color("TextForegroundWhite"))
+        .tint(Color("TextForegroundWhite"))
         
         .onChange(of: path) { oldPath, newPath in
             print("Path changed: \(newPath)")

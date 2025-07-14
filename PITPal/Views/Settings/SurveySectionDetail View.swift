@@ -18,6 +18,7 @@ struct SurveySectionDetailView: View {
     @State private var isActive: Bool = true
     @State private var isShowingAddAlert: Bool = false
     @State private var isShowingDeleteAlert: Bool = false
+    @State private var isChanged = false
     
     @Query(sort: \SurveySection.name, order: .forward) var surveySectionList: [SurveySection]
     
@@ -174,6 +175,9 @@ struct SurveySectionDetailView: View {
             HStack {
                 Spacer()
                 EditDoneButton(onEditDoneButtonTapped: {
+                    if isChanged {
+                        try! modelContext.save()
+                    }
                     dismiss()
                 })
                 Spacer()
@@ -186,24 +190,36 @@ struct SurveySectionDetailView: View {
         .presentationSizing(.padded)
         .background(Color("AppBackground"))
         .foregroundColor(Color("TextForegroundWhite"))
-
+        
+        .onChange(of: $surveySection.code.wrappedValue) {
+            isChanged = true
+        }
+        .onChange(of: $surveySection.name.wrappedValue) {
+            isChanged = true
+        }
         .onChange(of: radiusText) {
             surveySection.radius = Double(radiusText) ?? 0.0
+            isChanged = true
         }
         .onChange(of: latUpText) {
             surveySection.latUp   = Double(latUpText) ?? 0.0
+            isChanged = true
         }
         .onChange(of: lonUpText) {
             surveySection.lonUp   = Double(lonUpText) ?? 0.0
+            isChanged = true
         }
         .onChange(of: latDownText) {
             surveySection.latDown = Double(latDownText) ?? 0.0
+            isChanged = true
         }
         .onChange(of: lonDownText) {
             surveySection.lonDown = Double(lonDownText) ?? 0.0
+            isChanged = true
         }
         .onChange(of: isActive) {
             surveySection.active = isActive == true ? "Y" : "N"
+            isChanged = true
         }
         .onAppear {
             latDownText = String(format: "%.8f", surveySection.latDown)

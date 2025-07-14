@@ -509,7 +509,7 @@ struct TripFishView: View {
                                         }
                                     }
                                 })
-                                    .padding(.vertical, 2)
+                                    .padding(.vertical, 8)
                                     .opacity(selectedSpecies.isEmpty ? 0.2 : 1)
                                     .disabled(!isValidSpecies)
                                     .alert("Oops!", isPresented: $isShowingDuplicateAlert) {
@@ -518,7 +518,8 @@ struct TripFishView: View {
                                         Text("This trip already. Please choose a different date or trip type, section or watershed.")
                                     }
                             }
-                        }.padding(.horizontal, 20)
+                        }.padding(.horizontal, 12)
+                         .padding(.bottom, 20)
                         
                     }
                     .onChange(of: bluetoothManager.pitTagNumber) {
@@ -582,7 +583,7 @@ struct TripFishView: View {
             }
         }
         .padding(.vertical, 12)
-        .frame(height: 280)
+        .frame(height: 290)
     }
     
     func validatePitTag(tag: String) -> Bool {

@@ -179,13 +179,13 @@ struct TripHeaderView: View {
                                      .disableAutocorrection(true)
                                      .foregroundColor(Color("TextForeground"))
                                      .textFieldStyle(.roundedBorder)
-                                     .frame(width: 100)
+                                     .frame(width: 120)
                              } label: {
-                                 Text("Lat↓:")
+                                 Text("Lat↓")
                                      .onTapGesture {
                                          latDownText = "\(locationsHandler.lastLocation2D.latitude.formatted(.number.precision(.fractionLength(8))))"
                                      }
-                             }.frame(width: 160, height: 30).padding(.trailing, 20)
+                             }.frame(width: 170, height: 30).padding(.trailing, 12)
                              
                              LabeledContent {
                                  TextField("", text: $lonDownText)
@@ -196,11 +196,11 @@ struct TripHeaderView: View {
                                      .textFieldStyle(.roundedBorder)
                                      .frame(width: 120)
                              } label: {
-                                 Text("Lon↓:")
+                                 Text("Lon↓")
                                      .onTapGesture {
                                          lonDownText = "\(locationsHandler.lastLocation2D.longitude.formatted(.number.precision(.fractionLength(8))))"
                                      };
-                             }.frame(width: 180, height: 30).padding(.trailing, 20)
+                             }.frame(width: 180, height: 30).padding(.trailing, 12)
                              
                              LabeledContent {
                                  TextField("", text: $latUpText)
@@ -209,13 +209,13 @@ struct TripHeaderView: View {
                                      .disableAutocorrection(true)
                                      .foregroundColor(Color("TextForeground"))
                                      .textFieldStyle(.roundedBorder)
-                                     .frame(width: 100)
+                                     .frame(width: 120)
                              } label: {
-                                 Text("Lat↑:")
+                                 Text("Lat↑")
                                     .onTapGesture {
                                         latUpText = "\(locationsHandler.lastLocation2D.latitude.formatted(.number.precision(.fractionLength(8))))"
                                     }
-                             }.frame(width: 160, height: 30).padding(.trailing, 20)
+                             }.frame(width: 170, height: 30).padding(.trailing, 12)
                              
                              LabeledContent {
                                  TextField("", text: $lonUpText)
@@ -226,11 +226,11 @@ struct TripHeaderView: View {
                                      .textFieldStyle(.roundedBorder)
                                      .frame(width: 120)
                              } label: {
-                                 Text("Lon↑:")
+                                 Text("Lon↑")
                                      .onTapGesture {
                                          lonUpText = "\(locationsHandler.lastLocation2D.longitude.formatted(.number.precision(.fractionLength(8))))"
                                      }
-                             }.frame(width: 180, height: 30).padding(.trailing, 10)
+                             }.frame(width: 180, height: 30)
                              Spacer()
                          }
                          .padding(.horizontal, 20)
@@ -239,9 +239,18 @@ struct TripHeaderView: View {
                          
                          HStack {
                              Spacer()
-                             Image(systemName: "ellipsis.rectangle.fill")
+                             Image(systemName: "bolt.fill")
+                                 .offset(x:10)
+                             if isShowingTripExtras {
+                                 Image(systemName: "arrowshape.up")
+                             } else {
+                                 Image(systemName: "arrowshape.down")
+                             }
+                             Image(systemName: "bolt.fill")
+                                 .offset(x:-10)
                              Spacer()
                          }
+                         .foregroundColor(.yellow)
                          .padding(.horizontal, 10)
                          .frame(height : 30)
                          .onTapGesture {
@@ -400,8 +409,8 @@ struct TripHeaderView: View {
                      }
                  } // ZStack
             } // GeometryReader
-        } // VStack
-        .frame(height: isShowingTripExtras ? 410 : 160)  // 160
+        }// VStack
+        .frame(height: isShowingTripExtras ? 380 : 160)  // 160
     }
 }
 

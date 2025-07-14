@@ -19,6 +19,8 @@ struct SpeciesDetailView: View {
     @State private var isShowingAddAlert: Bool = false
     @State private var isShowingDeleteAlert: Bool = false
     
+    @State private var isChanged: Bool = false
+    
     @Query(sort: \Species.name, order: .forward) var speciesList: [Species]
     @Query(sort: \Fish.species, order: .forward) var fishList: [Fish]
     
@@ -126,6 +128,9 @@ struct SpeciesDetailView: View {
             HStack {
                 Spacer()
                 EditDoneButton(onEditDoneButtonTapped: {
+                    if isChanged {
+                        try! modelContext.save()
+                    }
                     dismiss()
                 })
                 Spacer()
@@ -141,6 +146,22 @@ struct SpeciesDetailView: View {
         
         .onChange(of: isActive) {
             species.active = isActive == true ? "Y" : "N"
+            isChanged = true
+        }
+        .onChange(of: $species.code.wrappedValue) {
+            isChanged = true
+        }
+        .onChange(of: $species.fwpCode.wrappedValue) {
+            isChanged = true
+        }
+        .onChange(of: $species.name.wrappedValue) {
+            isChanged = true
+        }
+        .onChange(of: $species.imageName.wrappedValue) {
+            isChanged = true
+        }
+        .onChange(of: $species.color.wrappedValue) {
+            isChanged = true
         }
         .onAppear {
             isActive = species.active == "Y" ? true : false

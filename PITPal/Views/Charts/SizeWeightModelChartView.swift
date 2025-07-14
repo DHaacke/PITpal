@@ -203,6 +203,10 @@ struct SizeWeightChartView: View {
                             .offset(x: 10)
                     }
                 }
+                .chartForegroundStyleScale([
+                    "LL": Color("TroutYellow"),
+                    "RB": Color("TroutGreen")
+                ])
                 .frame(height: 350)
                 
                 Text("Total fish:  \(fishList.count)")

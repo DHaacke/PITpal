@@ -407,6 +407,7 @@ struct ExportView: View {
         }
         let jsonData = buffer.data(using: .utf8)
         let jsonURL = URL.documentsDirectory.appending(path: "JSON", directoryHint: .isDirectory).appending(path: "\(self.exportFilename).json")
+        print("JSON URL:  \(jsonURL.path)")
         do {
             try jsonData?.write(to: jsonURL, options: [.atomic, .completeFileProtection])
             self.exportingMessage = "JSON exported successfully to \(jsonURL.path)"
@@ -428,7 +429,7 @@ struct ExportView: View {
         
         self.isExporting = true
         
-        buffer += "date,type,section,watershed,gear,rectifying_unit,volts,amps,shocktime,anesthetic,dosage,lat_down,lon_down,lat_up,long_up,length,start,end,temp,discharge,date,pitTag,lat,lon,species,fwpSpecies,weight,length,gender,mort,mc,count,comment\n"
+        buffer += "date,type,section,watershed,gear,rectifying_unit,volts,amps,shocktime,anesthetic,dosage,lat_down,lon_down,lat_up,long_up,length,start,end,temp,discharge,turbidity,date,pitTag,lat,lon,species,fwpSpecies,weight,length,gender,mort,mc,count,comment\n"
         for trip in filteredTrips {
             print("Exporting \(trip.fish.count) fish for trip \(trip.id)")
             for fish in trip.fish {
@@ -446,6 +447,7 @@ struct ExportView: View {
         
         let csvData = buffer.data(using: .utf8)
         let csvURL = URL.documentsDirectory.appending(path: "CSV", directoryHint: .isDirectory).appending(path: "\(self.exportFilename).csv")
+        print("CSV URL: \(csvURL.path)")
         do {
             try csvData?.write(to: csvURL, options: [.atomic, .completeFileProtection])
             self.exportingMessage = "CSV exported successfully to \(csvURL.path)"

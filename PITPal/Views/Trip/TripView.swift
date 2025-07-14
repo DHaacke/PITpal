@@ -27,7 +27,7 @@ struct TripView: View {
             if !isChoosingTrip {
                 TripStatusView(path: $path, tripData: $tripData)
                 TripHeaderView(path: $path, tripData: $tripData, isAddingTrip: $isAddingTrip)
-                if tripData.isClosed == "N" {
+               if tripData.isClosed == "N" {
                     TripFishView(path: $path, tripData: $tripData, isAddingTrip: $isAddingTrip)
                 } else {
                     VStack {
@@ -40,6 +40,7 @@ struct TripView: View {
                 ChooseTripView(path: $path, tripData: $tripData, isChoosingTrip: $isChoosingTrip, isAddingTrip: $isAddingTrip)
             }
         }
+        .padding(.horizontal, 12)
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .background(Color("AppBackground"))
         .onAppear {

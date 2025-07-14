@@ -50,6 +50,7 @@ struct SurveySectionListView: View {
                 }
             }
         }
+        .cornerRadius(16)
         .tableStyle(.automatic)
         .frame(minWidth: 600, maxWidth: .infinity, minHeight: 160, maxHeight: .infinity  )
         .padding(.top, 8)

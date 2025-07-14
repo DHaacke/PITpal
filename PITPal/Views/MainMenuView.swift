@@ -12,94 +12,102 @@ struct MainMenuView: View {
     
     @Binding var path: [String]
     
+    @State private var isAnimatingBackground: Bool = false
+    
     private let startColor: Color = Color("AppBackground")
     private let midColor: Color = Color("CardBackground")
     private let endColor: Color = Color("TroutGreen")
 
     var body: some View {
         VStack {
-            ScrollView {
-                Section {
-                    Image("FWPLogo")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 200, height: 200)
-                        .shadow(radius: 16)
-                        .padding(.top, 20)
-                        .padding(.bottom, 20)
-                    
-                    Text("Data Collection")
-                        .font(.system(size: 32, weight: .bold, design: .default))
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 10)
-                    
-                    HStack {
-                        MenuCardView(path: $path, text: "Start", subText: "", newPath: "TAG")
-                            .padding(.horizontal, 120)
-                    }
-                        .padding(.horizontal, 30)
-                        .padding(.bottom, 20)
-                    HStack {
-                        MenuCardView(path: $path, text: "Settings and Defaults", subText: "", newPath: "SETTINGS")
-                            .padding(.horizontal, 120)
-                    }
-                        .padding(.horizontal, 30)
-                        .padding(.bottom, 40)
-                  
-                    
-                    Text("Data Export and Visualization")
-                        .font(.system(size: 32, weight: .bold, design: .default))
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 10)
-                    
-                    HStack {
-                        MenuCardView(path: $path, text: "Export Trip/Fish Data", subText: "", newPath: "EXPORT")
-                            .padding(.horizontal, 120)
-                    }
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 20)
-                    HStack {
-                        MenuCardView(path: $path, text: "Size Chart", subText: "Single species bar chart style", newPath: K.SINGLE_SPECIES_SIZE_CHART)
-                        Spacer()
-                        MenuCardView(path: $path, text: "Size Chart", subText: "Multiple species bar chart style", newPath: K.DUAL_SPECIES_SIZE_CHART)
-                    }
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 20)
-                    HStack {
-                        MenuCardView(path: $path, text: "Size/Weight Model", subText: "Scatter plot style", newPath: K.SIZE_WEIGHT_MODEL_CHART)
-                        Spacer()
-                        MenuCardView(path: $path, text: "Survey Summary", subText: "Filtered by date range", newPath: K.SURVEY_SUMMARY)
-                    }
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 20)
-                    HStack {
-                        Spacer()
-                        MenuCardView(path: $path, text: "Lincoln-Petersen Estimator", subText: "", newPath: "POPULATION_ESTIMATE")
-                            .padding(.horizontal, 100)
-                        Spacer()
-                    }
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 20)
-                }
+            Image("FWPLogo")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 200, height: 200)
+                .shadow(radius: 16)
+                .padding(.top, 20)
+                .padding(.bottom, 20)
+            
+            Text("Data Collection")
+                .font(.system(size: 32, weight: .bold, design: .default))
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 10)
+            
+            HStack {
+                MenuCardView(path: $path, text: "Start", subText: "", newPath: "TAG")
+                    .padding(.horizontal, 120)
             }
-            .frame(minWidth: 800, maxWidth: .infinity, minHeight: 900, maxHeight: 1200)
-            .padding(.horizontal, 20)
-            .background(Color("AppBackground"))
+                .padding(.horizontal, 30)
+                .padding(.bottom, 20)
+            HStack {
+                MenuCardView(path: $path, text: "Settings and Defaults", subText: "", newPath: "SETTINGS")
+                    .padding(.horizontal, 120)
+            }
+                .padding(.horizontal, 30)
+                .padding(.bottom, 40)
+          
+            Text("Data Export and Visualization")
+                .font(.system(size: 32, weight: .bold, design: .default))
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 10)
+            HStack {
+                MenuCardView(path: $path, text: "Export Trip/Fish Data", subText: "", newPath: "EXPORT")
+                    .padding(.horizontal, 120)
+            }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
+            HStack {
+                MenuCardView(path: $path, text: "Size Chart", subText: "Single species bar chart style", newPath: K.SINGLE_SPECIES_SIZE_CHART)
+                Spacer()
+                MenuCardView(path: $path, text: "Size Chart", subText: "Multiple species bar chart style", newPath: K.DUAL_SPECIES_SIZE_CHART)
+            }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
+            HStack {
+                MenuCardView(path: $path, text: "Size/Weight Model", subText: "Scatter plot style", newPath: K.SIZE_WEIGHT_MODEL_CHART)
+                Spacer()
+                MenuCardView(path: $path, text: "Survey Summary", subText: "Filtered by date range", newPath: K.SURVEY_SUMMARY)
+            }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
+            HStack {
+                Spacer()
+                MenuCardView(path: $path, text: "Lincoln-Petersen Estimator", subText: "", newPath: "POPULATION_ESTIMATE")
+                    .padding(.horizontal, 100)
+                Spacer()
+            }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
+
+            Spacer()
+            
         }
-//        .background {
-//            LinearGradient(colors: [startColor, midColor, endColor], startPoint: .topLeading, endPoint: .bottomTrailing)
-//                .edgesIgnoringSafeArea(.all)
-//                .hueRotation(.degrees(isAnimatingBackground ? 45 : 0))
-//                .onAppear {
-//                    withAnimation(.easeInOut(duration: 6).repeatForever(autoreverses: true)) {
-//                        isAnimatingBackground.toggle()
-//                    }
-//                }
-//        }
+        .frame(minWidth: 800, maxWidth: .infinity)
+        .scrollContentBackground(.hidden)
+        .edgesIgnoringSafeArea(.all)
+        // .frame(minWidth: 800, maxWidth: .infinity, minHeight: 800, maxHeight: .infinity)
+        .padding(.horizontal, 20)
+        .background {
+                LinearGradient(
+                    gradient: Gradient(
+                        colors: [startColor, endColor]
+                    ),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .edgesIgnoringSafeArea(.all)
+                .hueRotation(.degrees(isAnimatingBackground ? 30 : 0))
+                .animation(isAnimatingBackground ? .linear(duration: 6).repeatForever(autoreverses: true) : .default, value: isAnimatingBackground)
+        }
+        .onAppear {
+            isAnimatingBackground = true
+        }
+        .onDisappear {
+            isAnimatingBackground = false
+        }
     }
-    
 }
 
 #Preview {
