@@ -130,7 +130,7 @@ struct TripHeaderView: View {
                          } // HStack
                          .frame(height : 30)
                          .padding(.top, 6)
-                         .padding(.horizontal, 10)
+                         .padding(.horizontal, 20)
                          
                          HStack {
                              if tripData.isClosed == "N" {
@@ -168,12 +168,11 @@ struct TripHeaderView: View {
                                  ).datePickerStyle(.compact).frame(width: 140).disabled(isAddingTrip ? true : false)
  
                          } // HStack
-                         .padding(.horizontal, 10)
+                         .padding(.horizontal, 20)
                          .frame(height : 30)
 
                          HStack {
- 
-                             LabeledContent {
+                              LabeledContent {
                                  TextField("", text: $latDownText)
                                      .focused($focusedField, equals: .dec)
                                      .numbersOnly($latDownText, includeDecimal: true)
@@ -232,7 +231,9 @@ struct TripHeaderView: View {
                                          lonUpText = "\(locationsHandler.lastLocation2D.longitude.formatted(.number.precision(.fractionLength(8))))"
                                      }
                              }.frame(width: 180, height: 30).padding(.trailing, 10)
+                             Spacer()
                          }
+                         .padding(.horizontal, 20)
                          .padding(.top, 10)
                          .frame(height : 30)
                          
@@ -397,13 +398,6 @@ struct TripHeaderView: View {
                              isValidTripType = true
                          }
                      }
-
-     
-
-
-                     
-                     
-                     
                  } // ZStack
             } // GeometryReader
         } // VStack

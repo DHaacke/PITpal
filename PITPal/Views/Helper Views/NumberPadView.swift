@@ -40,7 +40,7 @@ struct NumberPadView: View {
                 isPresented = false // Dismiss the popover
             }.foregroundColor(Color("TextForeground"))
         }
-        .frame(width: 180, height: 280)
+        .frame(width: 220, height: 350)
         .padding()
     }
 }

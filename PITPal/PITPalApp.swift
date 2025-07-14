@@ -20,7 +20,7 @@ struct PITPalApp: App {
     @State private var networkMonitor   = NetworkMonitor()
 
     @State private var isWaitingForLaunchView = true
-    @State private var launchTimer  = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
+    @State private var launchTimer  = Timer.publish(every: 2.0, on: .main, in: .common).autoconnect()
     
     var body: some Scene {
         WindowGroup {
@@ -35,14 +35,14 @@ struct PITPalApp: App {
                         LocationDeniedView()
                     }
                 } else {
-                    Text("Loading PIT Pal...")
+                    Text("Loading PIT Pal \(getAppVersion()) (Build \(getBuildNumber()))")
                     ProgressView()
                 }
             }
             // .environment(\.colorScheme, darkMode == true ? .dark : .light)
             // .preferredColorScheme(darkMode == true ? .dark : .light)
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-            .background(Color("AppBackground"))
+            // .background(Color("AppBackground"))
             .onReceive(launchTimer) { time in
                 isWaitingForLaunchView = false
                 launchTimer.upstream.connect().cancel()
@@ -51,12 +51,19 @@ struct PITPalApp: App {
                 print("Autosave disabled: \(modelContext.autosaveEnabled)")
             }
             .task {
-                print("App is starting...")
                 print(modelContext.sqliteCommand)
                 locationsHandler.updatesStarted = true
                 // networkManager.checkNetworkConnection()
             }
         }
         .modelContainer(for: [Trip.self, Fish.self, Species.self, Gender.self, SurveySection.self, Watershed.self, TripType.self, Comment.self])
+    }
+    
+    func getAppVersion() -> String {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "N/A"
+    }
+
+    func getBuildNumber() -> String {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "N/A"
     }
 }

@@ -17,8 +17,15 @@ struct NumberedButtonView: View {
             self.enteredNumber = buttonText
         }) {
             ZStack {
-                Text(buttonText)
-                    .font(.system(size: 36, weight: .regular, design: .default))
+                if buttonText == "<" {
+                    Image(systemName: "delete.left")
+                        .resizable()
+                        .frame(width: 32, height: 30)
+                } else {
+                    Text(buttonText)
+                        .font(.system(size: 36, weight: .regular, design: .default))
+                }
+
             }
             .frame(width: 36)
             .padding(6)

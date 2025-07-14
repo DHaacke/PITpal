@@ -18,7 +18,8 @@ struct ContentView: View {
     @AppStorage("darkMode") private var darkMode: Bool = false
     
     @State private var path = [String]()
-
+    @State private var isAnimatingBackground: Bool = false
+    
     // TODO, these are here to help populate the database
     @Query(sort: \Trip.date) var tripList: [Trip]
     @Query(sort: \Species.code) var speciesList: [Species]
@@ -114,11 +115,12 @@ struct ContentView: View {
                         .toolbarBackground(.visible, for: .navigationBar) // Ensure it's visible
                 }
             }
-            
         }
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-        .background(Color("CardBackground").gradient)
         .preferredColorScheme(darkMode == true ? .dark : .light)
+        // .background(Color("CardBackground").gradient)
+        // .tint(Color("TextForegroundWhite"))
+        
         .onChange(of: path) { oldPath, newPath in
             print("Path changed: \(newPath)")
         }

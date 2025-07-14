@@ -11,6 +11,10 @@ import SwiftData
 // @AppStorage("usingPitTags") private var usingPitTags: Bool = true
 
 struct TripFishView: View {
+//    init() {
+//        // Set background color for unselected segments
+//        UISegmentedControl.appearance().backgroundColor = UIColor.lightGray
+//    }
     
     @Environment(\.modelContext) var modelContext
     @Environment(LocationsHandler.self) var locationsHandler
@@ -30,6 +34,8 @@ struct TripFishView: View {
     @AppStorage("tripShocktime") private var tripShocktime: String = "6"
     @AppStorage("tripAnesthetic") private var tripAnesthetic: String = "222"
     @AppStorage("tripDosage") private var tripDosage: String = ""
+    @AppStorage("lengthMax") private var lengthMax: Int = 700
+    @AppStorage("weightMax") private var weightMax: Int = 2400
     
     @State private var bluetoothManager = BluetoothManager()
    
@@ -75,8 +81,6 @@ struct TripFishView: View {
     @Query(filter: #Predicate<Fish> { fish in
         fish.pitTag != ""
     }, sort: \.pitTag) var taggedFish: [Fish]
-    
-    
     // @Query var comments: [Comment]
     // @Query(filter: #Predicate<Comment> { c in c.active == "Y"}, sort: \Comment.sort) var activeComments: [Comment]
 
@@ -106,9 +110,9 @@ struct TripFishView: View {
                                         }
                                 } label: {
                                     if isValidPitTag {
-                                        Text(Image(systemName: "checkmark.circle.fill")) + Text(" PIT Tag #")
+                                        Text(Image(systemName: "checkmark.circle.fill")) + Text(" PIT Tag #:")
                                     } else {
-                                        Text(" PIT Tag #")
+                                        Text(" PIT Tag #:")
                                     }
                                     
                                 }.frame(width: 450)
@@ -178,7 +182,7 @@ struct TripFishView: View {
                                         Text(species.name).tag(species.code)
                                     }
                                 }
-                                    .frame(width: 470)
+                                    .frame(width: 440)
                                     .tint(Color("TextForegroundWhite"))
                                     .pickerStyle(.segmented)
                                     .scaleEffect(1.4)
@@ -505,8 +509,8 @@ struct TripFishView: View {
                                         }
                                     }
                                 })
-                                    .padding(.vertical, 20)
-                                    .opacity(selectedLength.isEmpty || selectedWeight.isEmpty || selectedSpecies.isEmpty ? 0.2 : 1)
+                                    .padding(.vertical, 2)
+                                    .opacity(selectedSpecies.isEmpty ? 0.2 : 1)
                                     .disabled(!isValidSpecies)
                                     .alert("Oops!", isPresented: $isShowingDuplicateAlert) {
                                         Button("OK", role: .cancel) { }
@@ -547,6 +551,9 @@ struct TripFishView: View {
                         }
                         enteredLength = ""
                         isValidLength = !selectedLength.isEmpty ? true : false
+                        if let length = Int(selectedLength), length > lengthMax {
+                            isValidLength = false
+                        }
                     }
                     
                     .onChange(of: enteredWeight) {
@@ -569,11 +576,12 @@ struct TripFishView: View {
                     }
                     
                     .onAppear {
+                        UISegmentedControl.appearance().backgroundColor = UIColor.lightGray
                     }
                 }
             }
         }
-        .padding(.vertical, 30)
+        .padding(.vertical, 12)
         .frame(height: 280)
     }
     

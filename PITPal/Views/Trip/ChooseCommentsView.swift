@@ -68,7 +68,7 @@ struct ChooseCommentsView: View {
             .padding()
         }
         .background(Color("AppBackground"))
-        .frame(width: 200, height: 760)
+        .frame(width: 200, height: 780)
         .onAppear {
             for c in commentList {
                 comments.append(c.deepCopy())

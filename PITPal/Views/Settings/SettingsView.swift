@@ -47,12 +47,12 @@ struct SettingsView: View {
     
     @AppStorage("uomFishLength") private var uomFishLength: String = "mm"
     @AppStorage("lengthMin") private var lengthMin: Int = 0
-    @AppStorage("lengthMax") private var lengthMax: Int = 2000
+    @AppStorage("lengthMax") private var lengthMax: Int = 700
     @AppStorage("useBluetoothLength") private var useBluetoothLength: Bool = false
 
     @AppStorage("uomFishWeight") private var uomFishWeight: String = "gm"
     @AppStorage("weightMin") private var weightMin: Int = 0
-    @AppStorage("weightMax") private var weightMax: Int = 1000
+    @AppStorage("weightMax") private var weightMax: Int = 2400
     @AppStorage("useBluetoothWeight") private var useBluetoothWeight: Bool = false
     
     @State private var isShowingSpeciesDetail = false
