@@ -280,6 +280,9 @@ struct SizeChartView: View {
         .onChange(of: selectedTripType) {
             tripTripType = selectedTripType
         }
+        .onChange(of: selectedSurveySection) {
+            setStartEndDates()
+        }
         .onChange(of: selectedSpecies) {
             tripSpecies = selectedSpecies
         }
@@ -300,6 +303,11 @@ struct SizeChartView: View {
         }
     }
 
+    func setStartEndDates() {
+        let ss = q.fetchSurveySectionFromCode(context: modelContext, code: selectedSurveySection)
+        startDate = ss.startDate
+        endDate   = ss.endDate
+    }
     
     func filterFish() -> [FishData] {
         var filteredTrips : [TripData] = []

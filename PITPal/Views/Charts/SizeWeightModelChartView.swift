@@ -166,6 +166,8 @@ struct SizeWeightChartView: View {
     
     @State private var isShowingPDFAlert: Bool = false
     
+    let q = Queries()
+    
     var body: some View {
         VStack {
             GroupBox {
@@ -255,7 +257,6 @@ struct SizeWeightChartView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 20)
-        
     }
     
     func createPDF(view: SizeWeightChartView) -> URL {

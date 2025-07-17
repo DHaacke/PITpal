@@ -36,6 +36,30 @@ struct SurveySectionDetailView: View {
         VStack {
             Text("Edit \(surveySection.name)")
                 .font(.title)
+            
+            HStack {
+                Text("Start Date:")
+                    .font(.headline)
+                    .frame(width: 150, alignment: .leading)
+                DatePicker(
+                    "",
+                    selection: $surveySection.startDate,
+                    displayedComponents: [.date]
+                ).datePickerStyle(.compact).frame(width: 250).labelsHidden()
+                Spacer()
+            }
+            HStack {
+                Text("End Date:")
+                    .font(.headline)
+                    .frame(width: 150, alignment: .leading)
+                DatePicker(
+                    "",
+                    selection: $surveySection.endDate,
+                    displayedComponents: [.date]
+                ).datePickerStyle(.compact).frame(width: 250).labelsHidden()
+                Spacer()
+            }
+            
             HStack {
                 Text("Code:")
                     .font(.headline)

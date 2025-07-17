@@ -64,6 +64,8 @@ struct ExportView: View {
     @State private var selectedMinLengthText = ""
     @State private var selectedMaxLengthText = ""
     
+    let q = Queries()
+    
     var body: some View {
         VStack {
             HStack {
@@ -272,6 +274,10 @@ struct ExportView: View {
             .onChange(of: selectedMaxLengthText) {
                 selectedMaxLength = Int(selectedMaxLengthText) ?? 0
             }
+            .onChange(of: selectedSurveySection) {
+                setStartEndDates()
+            }
+                
                 
             .padding(.horizontal, 100)
         }
@@ -329,6 +335,12 @@ struct ExportView: View {
         
             
             
+    }
+    
+    func setStartEndDates() {
+        let ss = q.fetchSurveySectionFromCode(context: modelContext, code: selectedSurveySection)
+        startDate = ss.startDate
+        endDate   = ss.endDate
     }
     
     func updateFilename() {

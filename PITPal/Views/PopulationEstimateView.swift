@@ -106,19 +106,20 @@ struct PopulationEstimateView: View {
                             var recapturedArray: [Int] = []
                             var captured    = 0
                             var marked      = 0
+                            var markedMinus = 0
                             var recaptured  = 0
                             var index       = 0
                             for t in filteredTrips {
-                                print("Trip: \(t.date.description)")
+                                print("Trip: \(t.date.description) - \(t.tripType) - \(t.surveySection)")
                                 for f in t.fish {
                                     if f.species == "RB" || f.species == "LL" {
                                         if t.tripType == "M" && f.mc == 0 {
                                             captured += 1
-                                            if index > 0 {
-                                                marked += 1
+                                            marked += 1
+                                            if index == 0 {
+                                              markedMinus += 1
                                             }
-                                        }
-                                        if t.tripType == "R" && f.mc != 0 {
+                                        } else if t.tripType == "R" && f.mc > 0 {
                                             recaptured += 1
                                         }
                                     }
@@ -127,12 +128,18 @@ struct PopulationEstimateView: View {
                                 capturedArray.append(captured)
                                 markedArray.append(marked)
                                 recapturedArray.append(recaptured)
+                                
+                                captured    = 0
+                                marked      = 0
+                                recaptured  = 0
                             }
+                          
                             captured   = capturedArray.reduce(0, +)
                             marked     = markedArray.reduce(0, +)
-                            recaptured = capturedArray.reduce(0, +)
+                            recaptured = recapturedArray.reduce(0, +)
                             
-                            self.populationEstimate = (Double(marked) * Double(captured)) / Double(recaptured)
+                            self.populationEstimate = (((Double(captured) * Double(marked - markedMinus)) / Double(recaptured)) * 2.75) / 13  // (23,231.1 * 2.75) / 13
+                            // Note: The estimate is for a 4.4 mile section, so we multiply by 2.75 to get ~ 13 miles, then divide by 13 to get the estimate per mile.
                         }
                     }
                     self.camera = .region(MKCoordinateRegion(center: self.midPoint, span: MKCoordinateSpan(latitudeDelta: 0.09, longitudeDelta: 0.05)))
@@ -192,6 +199,7 @@ struct PopulationEstimateView: View {
         .background(Color("AppBackground"))
         
         .onChange(of: selectedSurveySection) {
+            setStartEndDates()
             coordFish.removeAll()
             setMidPoint()
             updateCameraPosition()
@@ -205,6 +213,12 @@ struct PopulationEstimateView: View {
             filteredFish = list
             setMidPoint()
         }
+    }
+    
+    func setStartEndDates() {
+        let ss = q.fetchSurveySectionFromCode(context: modelContext, code: selectedSurveySection)
+        startDate = ss.startDate
+        endDate   = ss.endDate
     }
     
     func filterTripsByDateAndSection() -> [TripData] {

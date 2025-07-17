@@ -164,7 +164,10 @@ struct ContentView: View {
 //                                lonDown: surveySection.lonDown,
 //                                latUp: surveySection.latUp,
 //                                lonUp: surveySection.lonUp,
-//                                radius: surveySection.radius
+//                                radius: surveySection.radius,
+//                                startDate: : surveySection.startDate,
+//                                endDate: surveySection.endDate,
+//                                active: surveySection.active
 //                            )
 //                            modelContext.insert(surveySection)
 //                        }

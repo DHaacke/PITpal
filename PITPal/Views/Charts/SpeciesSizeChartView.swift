@@ -295,6 +295,9 @@ struct SpeciesSizeChartView: View {
         .onChange(of: selectedTripType) {
             tripTripType = selectedTripType
         }
+        .onChange(of: selectedSurveySection) {
+            setStartEndDates()
+        }
         .onAppear {
             UITextField.appearance().clearButtonMode = .whileEditing
 
@@ -334,6 +337,12 @@ struct SpeciesSizeChartView: View {
             }
         }
         return filteredFish
+    }
+    
+    func setStartEndDates() {
+        let ss = q.fetchSurveySectionFromCode(context: modelContext, code: selectedSurveySection)
+        startDate = ss.startDate
+        endDate   = ss.endDate
     }
     
     func buildMatrix(species: String, filteredFish: [FishData]) -> Series {

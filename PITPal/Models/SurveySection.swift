@@ -22,6 +22,8 @@ final class SurveySection: Codable, Equatable, Identifiable {
     var latUp: Double
     var lonUp: Double
     var radius: Double
+    var startDate: Date
+    var endDate: Date
     var active: String
     var id: String {
         code
@@ -36,6 +38,8 @@ final class SurveySection: Codable, Equatable, Identifiable {
         latUp: Double = 45.34681,
         lonUp: Double = -107.87468,
         radius: Double = 0.0,
+        startDate: Date = Date(),
+        endDate: Date = Date(),
         active: String = "Y"
     ) {
         self.code = code
@@ -46,6 +50,8 @@ final class SurveySection: Codable, Equatable, Identifiable {
         self.latUp = latUp
         self.lonUp = lonUp
         self.radius = radius
+        self.startDate = startDate
+        self.endDate = endDate
         self.active = active
     }
     
@@ -58,11 +64,17 @@ final class SurveySection: Codable, Equatable, Identifiable {
         case latUp
         case lonUp
         case radius
+        case startDate
+        case endDate
         case active
     }
     
     required init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"  // was "yyyy-MM-dd HH:mm"
+        let startDateString = try container.decode(String.self, forKey: .startDate)
+        let endDateString = try container.decode(String.self, forKey: .endDate)
         self.code = try container.decode(String.self, forKey: .code)
         self.name = try container.decode(String.self, forKey: .name)
         self.color = try container.decode(String.self, forKey: .color)
@@ -71,6 +83,8 @@ final class SurveySection: Codable, Equatable, Identifiable {
         self.latUp = try container.decode(Double.self, forKey: .latUp)
         self.lonUp = try container.decode(Double.self, forKey: .lonUp)
         self.radius = try container.decode(Double.self, forKey: .radius)
+        self.startDate = dateFormatter.date(from: startDateString)!
+        self.endDate = dateFormatter.date(from: endDateString)!
         self.active = try container.decode(String.self, forKey: .active)
     }
     
@@ -84,6 +98,8 @@ final class SurveySection: Codable, Equatable, Identifiable {
         try container.encode(latUp, forKey: .latUp)
         try container.encode(lonUp, forKey: .lonUp)
         try container.encode(radius, forKey: .radius)
+        try container.encode(startDate, forKey: .startDate)
+        try container.encode(endDate, forKey: .endDate)
         try container.encode(active, forKey: .active)
     }
     
