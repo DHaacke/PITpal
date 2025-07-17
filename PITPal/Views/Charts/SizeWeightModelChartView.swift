@@ -173,6 +173,9 @@ struct SizeWeightChartView: View {
                     .font(.title)
                     .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                     .padding(.bottom, 14)
+                Text("(Fish without weight and length not considered)")
+                    .font(.headline)
+                    .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
                 Chart(fishList) { fish in
                     PointMark(
                         x: .value("Length", fish.length),

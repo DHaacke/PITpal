@@ -5,6 +5,7 @@
 //  Created by Doug Haacke on 6/16/25.
 //
 
+import Foundation
 import SwiftUI
 import SwiftData
 
@@ -34,8 +35,10 @@ struct TripFishView: View {
     @AppStorage("tripShocktime") private var tripShocktime: String = "6"
     @AppStorage("tripAnesthetic") private var tripAnesthetic: String = "222"
     @AppStorage("tripDosage") private var tripDosage: String = ""
+    @AppStorage("tripTurbidity") private var tripTurbidity: String = "MAX"
     @AppStorage("lengthMax") private var lengthMax: Int = 700
     @AppStorage("weightMax") private var weightMax: Int = 2400
+    @AppStorage("pitTagPrefix") private var pitTagPrefix: String = "3D6."
     
     @State private var bluetoothManager = BluetoothManager()
    
@@ -292,7 +295,7 @@ struct TripFishView: View {
                                     Picker("", selection: $selectedGender) {
                                         Text("Male").tag("M")
                                         Text("Female").tag("F")
-                                        Text("None").tag("")
+                                        Text("Unspecifed").tag("")
                                     }
                                         .frame(width: 300)
                                         .tint(Color("TextForegroundWhite"))
@@ -524,9 +527,7 @@ struct TripFishView: View {
                     }
                     .onChange(of: bluetoothManager.pitTagNumber) {
                         if bluetoothManager.pitTagNumber.isEmpty { return }
-                        self.pitTagNumber = bluetoothManager.pitTagNumber
-                        bluetoothManager.pitTagNumber = ""
-                        
+                        self.pitTagNumber = pitTagPrefix + bluetoothManager.pitTagNumber
                         let timesSeen = checkFishHistoryForPitTag(tag: pitTagNumber)
                         if timesSeen > 0 {
                             print("PIT Tag \(pitTagNumber) has been seen \(timesSeen) times")
@@ -667,8 +668,6 @@ struct TripFishView: View {
         }
     }
 }
-
-
 
 //#Preview {
 //    @Previewable @State var path: [String] = [K.TAG]

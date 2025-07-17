@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import JiggleKit
 
 struct MainMenuView: View {
     @Environment(\.scenePhase) var scenePhase
@@ -15,8 +16,13 @@ struct MainMenuView: View {
     @State private var isAnimatingBackground: Bool = false
     
     private let startColor: Color = Color("AppBackground")
-    private let midColor: Color = Color("CardBackground")
+    private let midColor: Color = .yellow // Color("CardBackground")
     private let endColor: Color = Color("TroutGreen")
+
+    @State private var isJiggling: Bool = false
+    @State private var jiggleTimer  = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var jiggleElapsed: Int = 0
+    @State private var intensity: JiggleIntensity = .subtle
 
     var body: some View {
         VStack {
@@ -35,16 +41,19 @@ struct MainMenuView: View {
                 .padding(.bottom, 10)
             
             HStack {
+                Spacer()
                 MenuCardView(path: $path, text: "Start", subText: "", newPath: "TAG")
-                    .padding(.horizontal, 120)
+                    .jiggling(isJiggling: self.isJiggling, intensity: self.intensity)
+                    .frame(width: 400)
+                Spacer()
             }
-                .padding(.horizontal, 30)
-                .padding(.bottom, 20)
+                .padding(.bottom, 40)
             HStack {
+                Spacer()
                 MenuCardView(path: $path, text: "Settings and Defaults", subText: "", newPath: "SETTINGS")
-                    .padding(.horizontal, 120)
+                    .frame(width: 400)
+                Spacer()
             }
-                .padding(.horizontal, 30)
                 .padding(.bottom, 40)
           
             Text("Data Export and Visualization")
@@ -53,33 +62,38 @@ struct MainMenuView: View {
                 .padding(.horizontal, 20)
                 .padding(.bottom, 10)
             HStack {
+                Spacer()
                 MenuCardView(path: $path, text: "Export Trip/Fish Data", subText: "", newPath: "EXPORT")
-                    .padding(.horizontal, 120)
+                    .frame(width: 400)
+                Spacer()
             }
-                .padding(.horizontal, 20)
                 .padding(.bottom, 20)
             HStack {
+                Spacer()
                 MenuCardView(path: $path, text: "Size Chart", subText: "Single species bar chart style", newPath: K.SINGLE_SPECIES_SIZE_CHART)
                 Spacer()
                 MenuCardView(path: $path, text: "Size Chart", subText: "Multiple species bar chart style", newPath: K.DUAL_SPECIES_SIZE_CHART)
+                Spacer()
             }
-                .padding(.horizontal, 20)
                 .padding(.bottom, 20)
             HStack {
+                Spacer()
                 MenuCardView(path: $path, text: "Size/Weight Model", subText: "Scatter plot style", newPath: K.SIZE_WEIGHT_MODEL_CHART)
                 Spacer()
                 MenuCardView(path: $path, text: "Survey Summary", subText: "Filtered by date range", newPath: K.SURVEY_SUMMARY)
+                Spacer()
             }
-                .padding(.horizontal, 20)
                 .padding(.bottom, 20)
             HStack {
                 Spacer()
-                MenuCardView(path: $path, text: "Lincoln-Petersen Estimator", subText: "", newPath: "POPULATION_ESTIMATE")
-                    .padding(.horizontal, 100)
+                MenuCardView(path: $path, text: "Population Estimator", subText: "", newPath: "POPULATION_ESTIMATE")
+                    .frame(width: 500)
                 Spacer()
             }
-                .padding(.horizontal, 20)
                 .padding(.bottom, 20)
+            HStack {
+                Text("Version \(getAppVersion()) (Build \(getBuildNumber()))")
+            }
 
             Spacer()
             
@@ -98,8 +112,8 @@ struct MainMenuView: View {
                     endPoint: .bottomTrailing
                 )
                 .edgesIgnoringSafeArea(.all)
-                .hueRotation(.degrees(isAnimatingBackground ? 30 : 0))
-                .animation(isAnimatingBackground ? .linear(duration: 6).repeatForever(autoreverses: true) : .default, value: isAnimatingBackground)
+                .hueRotation(.degrees(isAnimatingBackground ? 75 : 0))
+                .animation(isAnimatingBackground ? .linear(duration: 10).repeatForever(autoreverses: true) : .default, value: isAnimatingBackground)
         }
         .onAppear {
             isAnimatingBackground = true
@@ -107,6 +121,35 @@ struct MainMenuView: View {
         .onDisappear {
             isAnimatingBackground = false
         }
+        .onReceive(jiggleTimer) { _ in
+            self.jiggleElapsed += 1
+            switch(self.jiggleElapsed) {
+                case 0...5:
+                    self.isJiggling = false
+                case 6...20:
+                    self.isJiggling = true
+                    self.intensity = .subtle
+                case 21...30:
+                    self.isJiggling = true
+                    self.intensity = .moderate
+                case 31...40:
+                    self.isJiggling = true
+                    self.intensity = .subtle
+                case 41:
+                    self.jiggleElapsed = 0
+                    self.isJiggling = false
+                default:
+                    break;
+            }
+        }
+    }
+    
+    func getAppVersion() -> String {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "N/A"
+    }
+
+    func getBuildNumber() -> String {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "N/A"
     }
 }
 

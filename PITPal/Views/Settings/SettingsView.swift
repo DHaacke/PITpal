@@ -30,6 +30,7 @@ struct SettingsView: View {
     @AppStorage("tripShocktime") private var tripShocktime: String = "6"
     @AppStorage("tripAnesthetic") private var tripAnesthetic: String = "222"
     @AppStorage("tripDosage") private var tripDosage: String = ""
+    @AppStorage("tripTurbidity") private var tripTurbidity: String = "MAX"
     
     //   P E R S O N N E L   A N D   G E A R
     @AppStorage("observers") private var observers: String = "Blythe, Blackburn, Olszewski"
@@ -41,7 +42,7 @@ struct SettingsView: View {
     @AppStorage("pitSize") private var pitSize: String = "8.0"
     @AppStorage("pitFrequency") private var pitFrequency: String = "134.2"
     @AppStorage("pitTagType") private var pitTagType: String = "Passive"
-    @AppStorage("pitTagPrefix") private var pitTagPrefix: String = ""
+    @AppStorage("pitTagPrefix") private var pitTagPrefix: String = "3D6."
     @AppStorage("pitTagSuffix") private var pitTagSuffix: String = ""
     @AppStorage("pitTagPlacement") private var pitTagPlacement: String = "Dorsal"
 
@@ -100,7 +101,7 @@ struct SettingsView: View {
                     }
                     .listRowBackground(Color("CardBackground"))
                     
-                    Section(header: Text("Trip Defaults \(tripTripType)").font(.title2).foregroundStyle(.white)) {
+                    Section(header: Text("Trip Defaults").font(.title2).foregroundStyle(.white)) {
                         LabeledContent {
                             Picker("", selection: $tripTripType) {
                                 ForEach(tripType, id: \.code) { type in
@@ -130,6 +131,17 @@ struct SettingsView: View {
                         } label: {
                             Text("Watershed:")
                         }.frame(width: 600, height: 40)
+                        
+                        LabeledContent {
+                            TextField("", text: $tripTurbidity)
+                                .foregroundColor(Color("TextForeground"))
+                                .textFieldStyle(.roundedBorder)
+                                .border(Color.gray, width: 1)
+                                .frame(width: 100)
+                                .multilineTextAlignment(.leading)
+                        } label: {
+                            Text("Turbidity")
+                        }.frame(width: 600)
                         
                         LabeledContent {
                             TextField("", text: $tripGear)

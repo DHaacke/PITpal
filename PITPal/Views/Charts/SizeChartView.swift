@@ -406,7 +406,8 @@ struct SizeBarChartView: View {
                 }
                 Text("Total fish:  \(filteredFish.count)")
                     .font(.headline)
-                    .foregroundColor(Color("TextForegroundWhite"))
+                    .foregroundColor(colorScheme == .dark ? Color("TextForegroundWhite") : Color("TextFieldBlackOnWhite"))
+                
             }
             .frame(minWidth: 300, maxWidth: .infinity, minHeight: 300, maxHeight: .infinity)
             .background(Color("TextForegroundWhite"))

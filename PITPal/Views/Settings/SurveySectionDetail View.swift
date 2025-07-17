@@ -67,7 +67,7 @@ struct SurveySectionDetailView: View {
                     .numbersOnly($latDownText, includeDecimal: true)
                     .disableAutocorrection(true)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width: 100)
+                    .frame(width: 140)
                     .foregroundColor(Color("TextForeground"))
                 Spacer()
             }
@@ -80,7 +80,7 @@ struct SurveySectionDetailView: View {
                     .numbersOnly($lonDownText, includeDecimal: true)
                     .disableAutocorrection(true)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width: 100)
+                    .frame(width: 140)
                     .foregroundColor(Color("TextForeground"))
                 Spacer()
             }
@@ -93,7 +93,7 @@ struct SurveySectionDetailView: View {
                     .numbersOnly($latUpText, includeDecimal: true)
                     .disableAutocorrection(true)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width: 100)
+                    .frame(width: 140)
                     .foregroundColor(Color("TextForeground"))
                 Spacer()
             }
@@ -106,7 +106,7 @@ struct SurveySectionDetailView: View {
                     .numbersOnly($lonUpText, includeDecimal: true)
                     .disableAutocorrection(true)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width: 100)
+                    .frame(width: 140)
                     .foregroundColor(Color("TextForeground"))
                 Spacer()
             }
@@ -197,10 +197,6 @@ struct SurveySectionDetailView: View {
         .onChange(of: $surveySection.name.wrappedValue) {
             isChanged = true
         }
-        .onChange(of: radiusText) {
-            surveySection.radius = Double(radiusText) ?? 0.0
-            isChanged = true
-        }
         .onChange(of: latUpText) {
             surveySection.latUp   = Double(latUpText) ?? 0.0
             isChanged = true
@@ -217,6 +213,10 @@ struct SurveySectionDetailView: View {
             surveySection.lonDown = Double(lonDownText) ?? 0.0
             isChanged = true
         }
+        .onChange(of: radiusText) {
+            surveySection.radius = Double(radiusText) ?? 0.0
+            isChanged = true
+        }
         .onChange(of: isActive) {
             surveySection.active = isActive == true ? "Y" : "N"
             isChanged = true
@@ -226,6 +226,7 @@ struct SurveySectionDetailView: View {
             lonDownText = String(format: "%.8f", surveySection.lonDown)
             latUpText   = String(format: "%.8f", surveySection.latUp)
             lonUpText   = String(format: "%.8f", surveySection.lonUp)
+            radiusText  = String(format: "%.2f", surveySection.radius)
             
             isActive = surveySection.active == "Y" ? true : false
         }

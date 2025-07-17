@@ -250,15 +250,15 @@ struct TripHeaderView: View {
                                  .offset(x:-10)
                              Spacer()
                          }
-                         .foregroundColor(.yellow)
-                         .padding(.horizontal, 10)
-                         .frame(height : 30)
+                         .frame(height : 24)
+                         .foregroundColor(Color("TroutYellow"))
                          .onTapGesture {
                              isShowingTripExtras.toggle()
                          }
+                         .padding(.top, 8)
                          .padding(.horizontal, 10)
-                         .padding(.bottom, 8)
-                         .frame(height : 24)
+                         .padding(.bottom, 4)
+                         
                          
                          if isShowingTripExtras {
                               // Text("Trip is \(tripData.isClosed == "Y" ? "CLOSED" : "OPEN")")
@@ -329,7 +329,18 @@ struct TripHeaderView: View {
                                        .multilineTextAlignment(.leading)
                                  } label: {
                                      Text("Shock Time")
-                                 }.frame(width: 300)
+                                 }.frame(width: 300).padding(.trailing, 30)
+                                 LabeledContent {
+                                     TextField("", text: $tripData.turbidity)
+                                       .foregroundColor(Color("TextForeground"))
+                                       .textFieldStyle(.roundedBorder)
+                                       .border(Color.gray, width: 1)
+                                       .frame(width: 100)
+                                       .multilineTextAlignment(.leading)
+                                 } label: {
+                                     Text("Tubidity")
+                                 }.frame(width: 260)
+                                 
                                  Spacer()
                              }
                              .padding(.horizontal, 20)

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		916A88512E25C1A30025F694 /* JiggleKit in Frameworks */ = {isa = PBXBuildFile; productRef = 916A88502E25C1A30025F694 /* JiggleKit */; };
 		91D43ACF2DFCC11600067F7D /* notes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 91D43ACE2DFCC10E00067F7D /* notes.txt */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				916A88512E25C1A30025F694 /* JiggleKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +86,7 @@
 			);
 			name = PITPal;
 			packageProductDependencies = (
+				916A88502E25C1A30025F694 /* JiggleKit */,
 			);
 			productName = PITPal;
 			productReference = 913BF86F2DFA443F0009BB22 /* PITPal.app */;
@@ -114,6 +117,7 @@
 			mainGroup = 913BF8662DFA443F0009BB22;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				916A884F2E25C1A30025F694 /* XCRemoteSwiftPackageReference "JiggleKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 913BF8702DFA443F0009BB22 /* Products */;
@@ -274,11 +278,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = GM5X4JR465;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PITPal/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App needs Bluetooth to communicate with the PIT tag Reader";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "App needs Bluetooth to communicate with the PIT tag Reader";
@@ -313,11 +318,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = GM5X4JR465;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PITPal/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "App needs Bluetooth to communicate with the PIT tag Reader";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "App needs Bluetooth to communicate with the PIT tag Reader";
@@ -368,6 +374,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		916A884F2E25C1A30025F694 /* XCRemoteSwiftPackageReference "JiggleKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/visfitness/JiggleKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.5;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		916A88502E25C1A30025F694 /* JiggleKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 916A884F2E25C1A30025F694 /* XCRemoteSwiftPackageReference "JiggleKit" */;
+			productName = JiggleKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 913BF8672DFA443F0009BB22 /* Project object */;
 }

@@ -17,7 +17,7 @@ struct NumbersOnlyViewModifier: ViewModifier {
         content
             .keyboardType(includeDecimal ? .decimalPad : .numberPad)
             .onReceive(Just(text)) { newValue in
-                var numbers = "0123456789"
+                var numbers = "0123456789.-"
                 let decimalSeparator: String = Locale.current.decimalSeparator ?? "."
                 if includeDecimal {
                     numbers += decimalSeparator

@@ -17,6 +17,7 @@ struct PopulationEstimateView: View {
     @State private var startDate: Date = "2024-04-01".toDate(format: "yyyy-MM-dd") // Date()
     @State private var endDate:   Date = "2024-04-30".toDate(format: "yyyy-MM-dd") // Date()
     @State private var selectedSurveySection: String = "U"
+    @State private var selectedMethod: String = "SC" // "LS" for Lincolm-Petersen, "SC" for Schnabel
     
     @State private var populationEstimate: Double = 0.0
     @State private var totalMarkingRun: Int = 0
@@ -35,6 +36,7 @@ struct PopulationEstimateView: View {
     
     @Query(filter: #Predicate<Fish> { f in f.species == "RB" || f.species == "LL"},  sort: \Fish.species) var fishList: [Fish]
     @Query(sort: \SurveySection.name, order: .forward) var surveySectionList: [SurveySection]
+    @Query(sort: \Trip.date, order: .forward) var tripList: [Trip]
     
     let q = Queries()
     
@@ -58,6 +60,7 @@ struct PopulationEstimateView: View {
             .padding(.top, 8)
             .padding(.horizontal, 100)
             
+           
             HStack {
                 LabeledContent {
                     Picker("", selection: $selectedSurveySection) {
@@ -71,14 +74,66 @@ struct PopulationEstimateView: View {
                 }.frame(width: 400, height: 40)
             }.padding(.leading, 100)
             
+            HStack {
+                LabeledContent {
+                    Picker("", selection: $selectedMethod) {
+                        Text("Lincoln-Petersen").tag("LP")
+                        Text("Schnabel").tag("SC")
+                    }.tint(colorScheme == .dark ? Color("TextForegroundWhite") : Color.black)
+                } label: {
+                    Text("Method:")
+                }.frame(width: 400, height: 40)
+            }.padding(.leading, 100)
+            
             
             HStack {
                 Button( action: {
-                    self.totalMarkingRun = fishList.filter { ($0.trip?.surveySection == selectedSurveySection && $0.trip?.tripType == "M" && $0.species == "RB" || $0.species == "LL") && ($0.date >= startDate && $0.date <= endDate) }.count
-                    self.totalRecapRun   = fishList.filter { ($0.trip?.surveySection == selectedSurveySection && $0.trip?.tripType == "R" && $0.species == "RB" || $0.species == "LL") && ($0.date >= startDate && $0.date <= endDate) }.count
-                    self.totalRecaptured = fishList.filter { ($0.trip?.surveySection == selectedSurveySection && $0.species == "RB" || $0.species == "LL") && ($0.date >= startDate && $0.date <= endDate) && $0.mc != 0 }.count
-                    if totalRecaptured > 0 {
-                        self.populationEstimate = (((Double(totalMarkingRun) * Double(totalRecapRun)) / Double(totalRecaptured)) * 3) / 13.0 // (18,800 * 3) / 13
+                    
+                    if selectedMethod == "LP" {
+                        self.totalMarkingRun = fishList.filter { $0.trip?.surveySection == selectedSurveySection && $0.trip?.tripType == "M" && ($0.species == "RB" || $0.species == "LL") && ($0.date >= startDate && $0.date <= endDate) }.count
+                        self.totalRecapRun   = fishList.filter { $0.trip?.surveySection == selectedSurveySection && $0.trip?.tripType == "R" && ($0.species == "RB" || $0.species == "LL") && ($0.date >= startDate && $0.date <= endDate) }.count
+                        self.totalRecaptured = fishList.filter { $0.trip?.surveySection == selectedSurveySection && ($0.species == "RB" || $0.species == "LL") && ($0.date >= startDate && $0.date <= endDate) && $0.mc != 0 }.count
+                        if totalRecaptured > 0 {
+                            self.populationEstimate = (((Double(totalMarkingRun) * Double(totalRecapRun)) / Double(totalRecaptured)) * 3) / 13.0 // (18,800 * 3) / 13
+                        } else {
+                            self.populationEstimate = 0
+                        }
+                    } else if selectedMethod == "SC" {
+                        let filteredTrips = filterTripsByDateAndSection()
+                        if filteredTrips.count > 0 {
+                            var capturedArray:   [Int] = []
+                            var markedArray:     [Int] = []
+                            var recapturedArray: [Int] = []
+                            var captured    = 0
+                            var marked      = 0
+                            var recaptured  = 0
+                            var index       = 0
+                            for t in filteredTrips {
+                                print("Trip: \(t.date.description)")
+                                for f in t.fish {
+                                    if f.species == "RB" || f.species == "LL" {
+                                        if t.tripType == "M" && f.mc == 0 {
+                                            captured += 1
+                                            if index > 0 {
+                                                marked += 1
+                                            }
+                                        }
+                                        if t.tripType == "R" && f.mc != 0 {
+                                            recaptured += 1
+                                        }
+                                    }
+                                }
+                                index += 1
+                                capturedArray.append(captured)
+                                markedArray.append(marked)
+                                recapturedArray.append(recaptured)
+                            }
+                            captured   = capturedArray.reduce(0, +)
+                            marked     = markedArray.reduce(0, +)
+                            recaptured = capturedArray.reduce(0, +)
+                            
+                            self.populationEstimate = (Double(marked) * Double(captured)) / Double(recaptured)
+                        }
                     }
                     self.camera = .region(MKCoordinateRegion(center: self.midPoint, span: MKCoordinateSpan(latitudeDelta: 0.09, longitudeDelta: 0.05)))
                 }) {
@@ -95,15 +150,19 @@ struct PopulationEstimateView: View {
             if self.populationEstimate > 0 {
                 HStack {
                     Spacer()
-                    Text("Estimated Population: \(Int(populationEstimate)) fish per mile for \(q.fetchNameFromCode(context: modelContext, model: "SurveySection", code: selectedSurveySection)) section")
-                        .font(.system(size: 20, weight: .medium))
+                    if populationEstimate > 0 {
+                        Text("Estimated Population: \(Int(populationEstimate)) fish per mile for \(q.fetchNameFromCode(context: modelContext, model: "SurveySection", code: selectedSurveySection)) section")
+                            .font(.system(size: 20, weight: .medium))
+                    } else {
+                        Text("Population could not be determined.")
+                    }
                     Spacer()
                 }
                 
                 VStack {
                     MapReader { mapProxy in
                         Map(position: $camera, bounds: .none, interactionModes: .all, selection: .constant(nil)) {
-                            MapCircle(center: midPoint, radius: 3800)
+                            MapCircle(center: midPoint, radius: self.radius)
                                 .stroke(.blue.opacity(0.8), style: StrokeStyle(lineWidth: 1))
                                 .mapOverlayLevel(level: .aboveRoads)
                                 .foregroundStyle(.blue.opacity(0.1))
@@ -146,6 +205,15 @@ struct PopulationEstimateView: View {
             filteredFish = list
             setMidPoint()
         }
+    }
+    
+    func filterTripsByDateAndSection() -> [TripData] {
+        let trips: [Trip] = tripList.filter { $0.date >= startDate && $0.date <= endDate && $0.surveySection == selectedSurveySection }
+        var filteredTrips : [TripData] = []
+        for t in trips {
+            filteredTrips.append(t.deepCopy())
+        }
+        return filteredTrips
     }
     
     func filterFishByCoordinate() -> [FishData] {
@@ -196,8 +264,7 @@ struct PopulationEstimateView: View {
 }
 
 /*
-
- Upper: (latDown, lonDown, latUp, lonUp) VALUES (45.39395000, -107.80418000, 45.34681000, 45.34681000);
- Lower: (latDown, lonDown, latUp, lonUp) VALUES (45.34681000, -107.87468000, 45.36251400, -107.83085200);
-  */
+ -- upper  45.39395000,-107.80418000,45.34681000,-107.874680
+ -- lower  45.52620000,-107.72570000,45.47820000,-107.736600
+*/
 
