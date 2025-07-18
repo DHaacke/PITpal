@@ -11,27 +11,6 @@ import SwiftData
 import MapKit
 import CoreLocation
 
-struct EventSample {
-    var time: Int  // Sampling event number (e.g., 1, 2, 3)
-    var n: Double  // Number of individuals captured at time t
-    var m: Double  // Number of marked individuals recaptured at time t
-    var R: Double  // Number of individuals released at time t
-    var z: Double  // Number of individuals captured before and after t, but not at t
-    var r: Double  // Number of individuals released at t and recaptured later
-    
-    init(time: Int = 0, n: Double = 0, m: Double = 0, R: Double = 0, z: Double = 0, r: Double = 0) {
-        self.time = time
-        self.n = n
-        self.m = m
-        self.R = R
-        self.z = z
-        self.r = r
-    }
-    
-    mutating func updateZ(newZ: Double) {
-        self.z = Double(newZ)
-    }
-}
 
 
 struct PopulationEstimateView: View {
@@ -170,7 +149,7 @@ struct PopulationEstimateView: View {
                         }
                     } else if selectedMethod == "JS" {
 //                        struct SamplingEvent {
-//                            var time: Int      // Sampling event number (e.g., 1, 2, 3)
+//                            var time: Int     // Sampling event number (e.g., 1, 2, 3)
 //                            var n: Double     // Number of individuals captured at time t
 //                            var m: Double     // Number of marked individuals recaptured at time t
 //                            var R: Double     // Number of individuals released at time t
@@ -194,7 +173,7 @@ struct PopulationEstimateView: View {
                         
                         var index = 0
                         for t in filteredTrips {
-                            print("Trip: \(t.date.description) - \(t.tripType) - \(t.surveySection)")
+                            print("Trip: \(t.date.description) - \(t.tripType) - \(t.surveySection) - Fish: \(t.fish.count)")
                             var n = 0.0
                             var m = 0.0
                             var R = 0.0
@@ -203,17 +182,21 @@ struct PopulationEstimateView: View {
                             for f in t.fish {
                                 if f.species == "RB" || f.species == "LL" {
                                     n += 1.0
-                                    m += 1.0
+                                    m += f.mc > 0 ? 1.0 : 0.0
                                     R += 1.0
                                     r += f.mc > 0 ? 1.0 : 0.0
                                 }
                             }
                             z = totaln - n
-                            eventList.append(EventSample(time: index + 1, n: n, m: m, R: R, z: z, r: r))
+                            let event = EventSample(time: index + 1, n: n, m: m, R: R, z: z, r: r)
+                            print("\(event)")
+                            eventList.append(event)
                             index += 1
                         }
                         
-                        // runJollySeberMultipleEvents(events: eventList)
+                        
+                        
+                        runJollySeberMultipleEvents(events: eventList)
                         
                     }
                     self.camera = .region(MKCoordinateRegion(center: self.midPoint, span: MKCoordinateSpan(latitudeDelta: 0.09, longitudeDelta: 0.05)))
@@ -385,6 +368,24 @@ struct JollySeberResult {
     var p: Double?     // Capture probability
     var phi: Double?   // Survival probability to next time point
     var B: Double?     // Recruitment (new individuals) to next time point
+}
+
+struct EventSample {
+    var time: Int  // Sampling event number (e.g., 1, 2, 3)
+    var n: Double  // Number of individuals captured at time t
+    var m: Double  // Number of marked individuals recaptured at time t
+    var R: Double  // Number of individuals released at time t
+    var z: Double  // Number of individuals captured before and after t, but not at t
+    var r: Double  // Number of individuals released at t and recaptured later
+    
+    init(time: Int = 0, n: Double = 0, m: Double = 0, R: Double = 0, z: Double = 0, r: Double = 0) {
+        self.time = time
+        self.n = n
+        self.m = m
+        self.R = R
+        self.z = z
+        self.r = r
+    }
 }
 
 
