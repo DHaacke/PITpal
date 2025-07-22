@@ -55,12 +55,7 @@ struct ChooseTripView: View {
                     isAddingTrip.toggle()
                 }) {
                     Text("Add New Trip")
-                        .font(.system(size: 24, weight: .bold))
-                        .frame(maxWidth: 160, minHeight: 36)
-                        .foregroundColor(Color("TextForegroundWhite"))
-                        .shadow(color: Color(.black), radius: 2, x: 1, y: 2)
-                        .cornerRadius(10)
-                }
+                }.modifier(ActionButton())
                 .padding(.bottom, 10)
                 .buttonStyle(.borderedProminent)
                   

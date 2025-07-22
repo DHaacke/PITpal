@@ -9,12 +9,13 @@ import SwiftData
 import SwiftUI
 
 @Model
-final class Trip: Codable {
-    #Unique<Trip>([\.date])  // , [\.tripType], [\.surveySection], [\.watershed]
+final class Trip: Codable, Identifiable {
+    // #Unique<Trip>([\.date])  // , [\.tripType], [\.surveySection], [\.watershed]
+    #Unique<Trip>([\.date, \.watershed, \.tripType, \.surveySection])
     var date: Date
+    var watershed: String
     var tripType: String  // M or R
     var surveySection: String
-    var watershed: String
     var gear: String
     var rectifyingunit: String
     var volts: String

@@ -104,12 +104,21 @@ struct ContentView: View {
                         .navigationBarTitleDisplayMode(.inline)
                 }
                 else if navigation == K.POPULATION_ESTIMATE {
-                    // FontPreview()
                     PopulationEstimateView()
                         .tint(Color("AccentColor"))
                         .navigationBarBackButtonHidden(false)
                         .navigationBarHidden(false)
                         .navigationTitle("Population Estimates").foregroundStyle(Color("TextForegroundWhite"))
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbarBackground(Color("AppBackground"), for: .navigationBar)
+                        .toolbarBackground(.visible, for: .navigationBar) // Ensure it's visible
+                }
+                else if navigation == K.ARCHIVE {
+                    ArchiveView(path: $path)
+                        .tint(Color("AccentColor"))
+                        .navigationBarBackButtonHidden(false)
+                        .navigationBarHidden(false)
+                        .navigationTitle("Archive").foregroundStyle(Color("TextForegroundWhite"))
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbarBackground(Color("AppBackground"), for: .navigationBar)
                         .toolbarBackground(.visible, for: .navigationBar) // Ensure it's visible
@@ -165,7 +174,7 @@ struct ContentView: View {
 //                                latUp: surveySection.latUp,
 //                                lonUp: surveySection.lonUp,
 //                                radius: surveySection.radius,
-//                                startDate: : surveySection.startDate,
+//                                startDate: surveySection.startDate,
 //                                endDate: surveySection.endDate,
 //                                active: surveySection.active
 //                            )

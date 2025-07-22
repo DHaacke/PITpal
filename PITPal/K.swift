@@ -21,7 +21,8 @@ struct K {
     static let TESTVIEW: String                     = "TESTVIEW"
     static let SURVEY_SUMMARY: String               = "SURVEY_SUMMARY"
     static let POPULATION_ESTIMATE: String          = "POPULATION_ESTIMATE"
-
+    static let ARCHIVE: String                      = "ARCHIVE"
+    
     // bluetooth
     static let BLUETOOTH_OFF: Int            = 0
     static let BLUETOOTH_UNAUTHORIZED: Int   = 1

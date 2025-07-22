@@ -93,7 +93,7 @@ struct SpeciesDetailView: View {
             HStack {
                 Spacer()
                 if isAddingSpecies {
-                    AddButton(onAddButtonTapped: {
+                    Button(action: {
                         let dupes = speciesList.filter { $0.code == species.code }
                         if !species.code.isEmpty && !species.name.isEmpty && !species.fwpCode.isEmpty && dupes.isEmpty {
                             print("Adding species: \(species.code)")
@@ -103,13 +103,19 @@ struct SpeciesDetailView: View {
                         } else {
                             isShowingAddAlert = true
                         }
-                    })
+                    }) {
+                        Text("Add")
+                            .padding(.horizontal, 10)
+                            .shadow(color: .black, radius: 2, x: 2, y: 2)
+                        
+                    }
+                    .modifier(ActionButton())
                     .alert("Oops! You must enter a unique code and at least a name and FWP code.", isPresented: $isShowingAddAlert) {
                         Button("OK", role: .cancel) { }
                     }
                 }
                 if !isAddingSpecies {
-                    DeleteButton(onDeleteButtonTapped: {
+                    Button(action: {
                         let exists = fishList.filter { $0.species == species.code }
                         if exists.isEmpty {
                             modelContext.delete(species)
@@ -118,7 +124,12 @@ struct SpeciesDetailView: View {
                         } else {
                             isShowingDeleteAlert = true
                         }
-                    })
+                    }) {
+                        Text("Delete")
+                            .padding(.horizontal, 10)
+                            .shadow(color: .black, radius: 2, x: 2, y: 2)
+                    }
+                    .modifier(ActionButton(backgroundColor: Color.red) )
                     .alert("Oops! You cannot delete a species that is currently used in a fish record.", isPresented: $isShowingDeleteAlert) {
                         Button("OK", role: .cancel) { }
                     }
@@ -127,12 +138,17 @@ struct SpeciesDetailView: View {
             }
             HStack {
                 Spacer()
-                EditDoneButton(onEditDoneButtonTapped: {
+                Button(action: {
                     if isChanged {
                         try! modelContext.save()
                     }
                     dismiss()
-                })
+                }) {
+                    Text("Save")
+                        .padding(.horizontal, 10)
+                        .shadow(color: .black, radius: 2, x: 2, y: 2)
+                }
+                .modifier(ActionButton())
                 Spacer()
             }
             .padding(.top, 20)

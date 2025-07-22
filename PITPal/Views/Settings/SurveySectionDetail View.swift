@@ -164,7 +164,7 @@ struct SurveySectionDetailView: View {
             HStack {
                 Spacer()
                 if isAddingSurveySection {
-                    AddButton(onAddButtonTapped: {
+                    Button(action: {
                         let dupes = surveySectionList.filter { $0.code == surveySection.code }
                         if !surveySection.code.isEmpty && dupes.isEmpty {
                             print("Adding survey section: \(surveySection.code)")
@@ -174,13 +174,18 @@ struct SurveySectionDetailView: View {
                         } else {
                             isShowingAddAlert = true
                         }
-                    })
+                    }) {
+                        Text("Add")
+                            .padding(.horizontal, 10)
+                            .shadow(color: Color(.black), radius: 2, x: 2, y: 2)
+                    }
+                    .modifier(ActionButton())
                     .alert("Oops! You must enter a unique code.", isPresented: $isShowingAddAlert) {
                         Button("OK", role: .cancel) { }
                     }
                 }
                 if !isAddingSurveySection {
-                    DeleteButton(onDeleteButtonTapped: {
+                    Button(action: {
                         let exists = surveySectionList.filter { $0.code == surveySection.code }
                         if exists.isEmpty {
                             modelContext.delete(surveySection)
@@ -189,7 +194,12 @@ struct SurveySectionDetailView: View {
                         } else {
                             isShowingDeleteAlert = true
                         }
-                    })
+                    }) {
+                        Text("Delete")
+                            .padding(.horizontal, 10)
+                            .shadow(color: Color(.black), radius: 2, x: 2, y: 2)
+                    }
+                    .modifier(ActionButton())
                     .alert("Oops! You cannot delete a survey section that is currently used.", isPresented: $isShowingDeleteAlert) {
                         Button("OK", role: .cancel) { }
                     }
@@ -198,12 +208,17 @@ struct SurveySectionDetailView: View {
             }
             HStack {
                 Spacer()
-                EditDoneButton(onEditDoneButtonTapped: {
+                Button(action: {
                     if isChanged {
                         try! modelContext.save()
                     }
                     dismiss()
-                })
+                }) {
+                    Text("Done")
+                        .padding(.horizontal, 10)
+                        .shadow(color: Color(.black), radius: 2, x: 2, y: 2)
+                }
+                .modifier(ActionButton())
                 Spacer()
             }
             .padding(.top, 20)

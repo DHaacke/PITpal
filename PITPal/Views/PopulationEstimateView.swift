@@ -202,12 +202,8 @@ struct PopulationEstimateView: View {
                     self.camera = .region(MKCoordinateRegion(center: self.midPoint, span: MKCoordinateSpan(latitudeDelta: 0.09, longitudeDelta: 0.05)))
                 }) {
                     Text("Estimate")
-                        .font(.system(size: 24, weight: .bold))
-                        .frame(maxWidth: 160, minHeight: 36)
-                        .foregroundColor(Color("TextForegroundWhite"))
-                        .shadow(color: Color(.black), radius: 2, x: 1, y: 2)
-                        .cornerRadius(10)
                 }
+                .modifier(ActionButton())
                 .padding(.bottom, 10)
                 .buttonStyle(.borderedProminent)
             }

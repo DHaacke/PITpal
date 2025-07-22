@@ -47,14 +47,14 @@ struct MainMenuView: View {
                     .frame(width: 400)
                 Spacer()
             }
-                .padding(.bottom, 40)
+                .padding(.bottom, 30)
             HStack {
                 Spacer()
                 MenuCardView(path: $path, text: "Settings and Defaults", subText: "", newPath: "SETTINGS")
                     .frame(width: 400)
                 Spacer()
             }
-                .padding(.bottom, 40)
+                .padding(.bottom, 30)
           
             Text("Data Export and Visualization")
                 .font(.system(size: 32, weight: .bold, design: .default))
@@ -88,6 +88,13 @@ struct MainMenuView: View {
                 Spacer()
                 MenuCardView(path: $path, text: "Population Estimator", subText: "", newPath: "POPULATION_ESTIMATE")
                     .frame(width: 500)
+                Spacer()
+            }
+                .padding(.bottom, 20)
+            HStack {
+                Spacer()
+                MenuCardView(path: $path, text: "Archive", subText: "", newPath: "ARCHIVE")
+                    .frame(width: 400)
                 Spacer()
             }
                 .padding(.bottom, 20)

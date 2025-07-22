@@ -21,6 +21,9 @@ struct NumberedButtonView: View {
                     Image(systemName: "delete.left")
                         .resizable()
                         .frame(width: 32, height: 30)
+                } else if buttonText == "MAX" {
+                    Text(buttonText)
+                        .font(.system(size: 14, weight: .regular, design: .default))
                 } else {
                     Text(buttonText)
                         .font(.system(size: 36, weight: .regular, design: .default))

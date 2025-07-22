@@ -239,12 +239,8 @@ struct ExportView: View {
                         }
                     }) {
                         Text("Export")
-                            .font(.system(size: 24, weight: .bold))
-                            .frame(maxWidth: 80, minHeight: 36)
-                            .foregroundColor(Color("TextForegroundWhite"))
-                            .shadow(color: Color(.black), radius: 2, x: 1, y: 2)
-                            .cornerRadius(10)
-                    }
+                            .shadow(color: Color(.black), radius: 2, x: 2, y: 2)
+                    }.modifier(ActionButton())
                     .padding(.bottom, 10)
                     .buttonStyle(.borderedProminent)
                     Spacer()

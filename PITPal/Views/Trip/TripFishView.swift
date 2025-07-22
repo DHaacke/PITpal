@@ -433,9 +433,8 @@ struct TripFishView: View {
                             
                             //   S A V E
                             HStack {
-                                SaveButton(onSaveButtonTapped: {
+                                Button(action: {
                                     print("Save button tapped")
-                                  
                                     // verify trip is not already saved
                                     if self.isAddingTrip == true {
                                         let existingTripList = existingTrips.filter { isSameDay(firstDate: $0.date, secondDate: tripData.date) && $0.tripType == tripData.tripType && $0.watershed == tripData.watershed && $0.surveySection == tripData.surveySection }
@@ -511,8 +510,13 @@ struct TripFishView: View {
                                             self.tripData = trip.deepCopy()
                                         }
                                     }
-                                })
-                                    .padding(.vertical, 8)
+                                }) {
+                                    Text("Save")
+                                        .shadow(color: Color(.black), radius: 2, x: 2, y: 2)
+                                        .padding(.horizontal, 10)
+                                }
+                                    .modifier(ActionButton())
+                                    .padding(.top, 8)
                                     .opacity(selectedSpecies.isEmpty ? 0.2 : 1)
                                     .disabled(!isValidSpecies)
                                     .alert("Oops!", isPresented: $isShowingDuplicateAlert) {

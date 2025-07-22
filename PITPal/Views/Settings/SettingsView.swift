@@ -503,7 +503,14 @@ struct SettingsView: View {
                 }
                 
                 Spacer()
-                DoneButton(path: $path, nextView: K.MAINMENU)
+                Button(action: {
+                    self.path = [K.MAINMENU]
+                }, label: {
+                    Text("Done")
+                    .padding(.horizontal, 10)
+                })
+                .modifier(ActionButton())
+
                 
             } // end of VStack
             .background(Color("AppBackground"))
