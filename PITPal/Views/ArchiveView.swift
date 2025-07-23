@@ -10,6 +10,7 @@ import SwiftData
 
 struct ArchiveView: View {
     @Environment(\.scenePhase) var scenePhase
+    @Environment(\.colorScheme) var colorScheme
     @Environment(\.modelContext) var modelContext
     @Environment(NetworkMonitor.self) var networkMonitor
     @Environment(JSONManager.self) var jsonManager
@@ -18,6 +19,7 @@ struct ArchiveView: View {
     
     @State private var selectedTripId: Trip.ID? = nil
     @State private var isArchiving: Bool = false
+    @State private var isStatusChanged: Bool = false
 
     @Query(sort: \Trip.date, order: .reverse) var tripList: [Trip]
     @Query(sort: \Watershed.name, order: .forward) var watersheds: [Watershed]
@@ -34,13 +36,19 @@ struct ArchiveView: View {
                     TableColumn("Watershed") { trip in Text("\(q.fetchNameFromCode(context: modelContext, model: "Watershed", code: trip.watershed))") }
                     TableColumn("Section") { trip in Text("\(trip.surveySection)") }.width(60)
                     TableColumn("Type") { trip in Text("\(trip.tripType)") }.width(60)
-                    TableColumn("Close") { trip in
+                    TableColumn("Status") { trip in
                         if trip.isClosed == "N" {
-                            Button("Close") {
+                            Button("Open") {
                                 selectedTripId = trip.id
-                                print("Close!")
+                                if let trip = tripList.first(where: { $0.id == selectedTripId }) {
+                                    trip.isClosed = "Y"
+                                    try! modelContext.save()
+                                }
                             }
                             .buttonStyle(.bordered)
+                        } else {
+                            Text("Closed")
+                                .foregroundColor(colorScheme == .dark ? .gray : .black)
                         }
                     }.width(80)
                     TableColumn("Archive") { trip in
@@ -50,6 +58,10 @@ struct ArchiveView: View {
                             Task {
                                 archiveTrip(trip: trip)
                             }
+//                            if let trip = tripList.first(where: { $0.id == selectedTripId }) {
+//                                trip.isClosed = "N"
+//                                try! modelContext.save()
+//                            }
                         }
                         .buttonStyle(.bordered)
                     }.width(100)
