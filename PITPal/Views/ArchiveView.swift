@@ -108,6 +108,29 @@ struct ArchiveView: View {
         } catch {
             print("JSON: \(error.localizedDescription)")
         }
+        
+        Task(priority: .high) {
+            let url = URL(string: "https://data.bighornriver.org/pitpal-trip")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            let uploadData = buffer.data(using: .utf8)
+            let task = URLSession.shared.uploadTask(with: request, from: uploadData) { (data, response, error) in
+                if let error = error {
+                    print ("Upload error: \(error.localizedDescription)")
+                    return
+                }
+                guard let response = response as? HTTPURLResponse,
+                    (200...299).contains(response.statusCode) else {
+                    print ("Server error")
+                    print(response.debugDescription)
+                    return
+                }
+            }
+            task.resume()
+            print("Upload completed")
+        }
         isArchiving = false
     }
         
