@@ -21,7 +21,7 @@ struct PITPalApp: App {
     @State private var networkMonitor   = NetworkMonitor()
 
     @State private var isWaitingForLaunchView = true
-    @State private var launchTimer  = Timer.publish(every: 5.0, on: .main, in: .common).autoconnect()
+    @State private var launchTimer  = Timer.publish(every:3.6, on: .main, in: .common).autoconnect()
     @State private var audioPlayer: AVAudioPlayer?
     @State private var hasPlayedSound = false
     
@@ -157,7 +157,7 @@ struct PITPalApp: App {
                 // Schedule the next flash after a random interval (0.5 to 3 seconds)
                 if isFlashing {
                     stopFlashing()
-                    let nextFlashDelay = Double.random(in: 0.1...0.5)
+                    let nextFlashDelay = Double.random(in: 0.1...0.3)
                     flashTimer = Timer.scheduledTimer(withTimeInterval: nextFlashDelay, repeats: false) { _ in
                         startFlashing()
                     }

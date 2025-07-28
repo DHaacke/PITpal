@@ -143,15 +143,12 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     
     func restart() {
         centralManager.stopScan()
-        if let cp = connectedPeripheral {
-          centralManager.cancelPeripheralConnection(cp)
-        }
-        peripherals.removeAll()
-        discoveredDevices.removeAll()
-        centralManager = nil
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-            self.centralManager = CBCentralManager(delegate: self, queue: nil)
-        }
+        self.isScanning = false
+        self.discoveredDevices.removeAll()
+        self.peripherals.removeAll()
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+//            self.centralManager = CBCentralManager(delegate: self, queue: nil)
+//        }
     }
     
     func enableBackgroundMode() {

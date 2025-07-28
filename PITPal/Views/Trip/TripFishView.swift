@@ -140,6 +140,13 @@ struct TripFishView: View {
                                                 .shadow(radius: 8)
                                                 .frame(width: 30, height: 30)
                                                 .padding(0)
+                                        } else {
+                                            Image("BluetoothGray")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .shadow(radius: 8)
+                                                .frame(width: 30, height: 30)
+                                                .padding(0)
                                         }
 //                                        Button {
 //                                            if bluetoothManager.isConnected == false || bluetoothManager.connectionStatus == K.DISCONNECTED {
@@ -529,6 +536,12 @@ struct TripFishView: View {
                          .padding(.bottom, 20)
                         
                     }
+                    .onChange(of: bluetoothManager.isConnected) {
+                        if usingPitTags && !bluetoothManager.isConnected {
+                            restartBluetooth()
+                        }
+                    }
+                        
                     .onChange(of: bluetoothManager.pitTagNumber) {
                         if bluetoothManager.pitTagNumber.isEmpty { return }
                         self.pitTagNumber = pitTagPrefix + bluetoothManager.pitTagNumber
@@ -589,6 +602,11 @@ struct TripFishView: View {
         }
         .padding(.vertical, 12)
         .frame(height: 290)
+    }
+    
+    func restartBluetooth() {
+        bluetoothManager.restart()
+        bluetoothManager = BluetoothManager() // Reinitialize the BluetoothManager to reset its state
     }
     
     func validatePitTag(tag: String) -> Bool {

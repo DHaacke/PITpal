@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct ArchiveView: View {
+    @Environment(\.dismiss) var dismiss
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.modelContext) var modelContext
@@ -20,6 +21,7 @@ struct ArchiveView: View {
     @State private var selectedTripId: Trip.ID? = nil
     @State private var isArchiving: Bool = false
     @State private var isStatusChanged: Bool = false
+    @State private var isShowingDeleteAlert: Bool = false
 
     @Query(sort: \Trip.date, order: .reverse) var tripList: [Trip]
     @Query(sort: \Watershed.name, order: .forward) var watersheds: [Watershed]
@@ -50,7 +52,7 @@ struct ArchiveView: View {
                             Text("Closed")
                                 .foregroundColor(colorScheme == .dark ? .gray : .black)
                         }
-                    }.width(80)
+                    }.width(90)
                     TableColumn("Archive") { trip in
                         Button("Archive") {
                             isArchiving.toggle()
@@ -58,17 +60,36 @@ struct ArchiveView: View {
                             Task {
                                 archiveTrip(trip: trip)
                             }
-//                            if let trip = tripList.first(where: { $0.id == selectedTripId }) {
-//                                trip.isClosed = "N"
-//                                try! modelContext.save()
-//                            }
                         }
                         .buttonStyle(.bordered)
-                    }.width(100)
+                    }.width(90)
+                    TableColumn("Delete") { trip in
+                        Button("Delete") {
+                            selectedTripId = trip.id
+                            Task {
+                                if let trip = tripList.first(where: { $0.id == selectedTripId }) {
+                                    if trip.fish.count > 0 {
+                                        isShowingDeleteAlert = true
+                                        print("Cannot delete trip with fish data")
+                                    } else {
+                                        modelContext.delete(trip)
+                                    }
+
+                                }
+                            }
+                        }
+                        .buttonStyle(.bordered)
+                    }.width(80)
                 }
                 .scrollContentBackground(.hidden)
                 .foregroundColor(Color("TextForegroundWhite"))
                 .background(Color("CardBackground").gradient)
+                .alert("Oops! You cannot delete a Trip that has fish data.", isPresented: $isShowingDeleteAlert) {
+                    Button("OK", role: .cancel) {
+                        isShowingDeleteAlert = false
+                        dismiss()
+                    }
+                }
             }
             VStack {
                 HStack {
