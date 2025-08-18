@@ -28,6 +28,7 @@ struct TripFishView: View {
     @Binding var isAddingTrip: Bool
     
     @AppStorage("usingPitTags") private var usingPitTags: Bool = true
+    @AppStorage("usingBluetooth") private var usingBluetooth: Bool = true
     @AppStorage("tripGear") private var tripGear: String = "Jet Boat, Anodes boom"
     @AppStorage("tripRectifyingunit") private var tripRectifyingunit: String = "SR Model VVP-15B"
     @AppStorage("tripVolts") private var tripVolts: String = "150"
@@ -101,7 +102,7 @@ struct TripFishView: View {
                             HStack {
                                 LabeledContent {
                                     TextField("", text: $pitTagNumber)
-                                        .disabled(true)
+                                        .disabled(usingBluetooth && bluetoothManager.isConnected ? true : false)
                                         .border(Color.gray, width: 1)
                                         .foregroundColor(Color("TextForeground"))
                                         .textFieldStyle(.roundedBorder)
@@ -131,7 +132,7 @@ struct TripFishView: View {
                                 
                                 Spacer()
                                 
-                                if usingPitTags {
+                                if usingPitTags && usingBluetooth {
                                     VStack {
                                         if bluetoothManager.isConnected {
                                             Image("Bluetooth")
@@ -148,33 +149,6 @@ struct TripFishView: View {
                                                 .frame(width: 30, height: 30)
                                                 .padding(0)
                                         }
-//                                        Button {
-//                                            if bluetoothManager.isConnected == false || bluetoothManager.connectionStatus == K.DISCONNECTED {
-//                                                print(getBluetoothStatus())
-//                                                print("* * Restarting Bluetooth * *")
-//                                                bluetoothManager.restart()
-//                                            }
-//                                        } label: {
-//                                            Image("Bluetooth")
-//                                                .resizable()
-//                                                .aspectRatio(contentMode: .fit)
-//                                                .shadow(radius: 8)
-//                                                .frame(width: 30, height: 30)
-//                                                .padding(0)
-//                                        }
-//                                            .buttonStyle(PlainButtonStyle())
-//                                            .padding(0)
-
-//                                        HStack {
-//                                            if bluetoothManager.connectionStatus == K.SCANNING {
-//                                                ProgressView()
-//                                                    .frame(width: 12, height: 12)
-//                                            }
-//                                            Text(getBluetoothStatus())
-//                                                .foregroundColor(Color("TextForegroundWhite"))  // getBluetoothColor()
-//                                                .font(.system(size: 10, weight: .regular, design: .default))
-//                                                .shadow(radius: 3)
-//                                        }
                                     }
                                     .frame(width: 140)
                                 }

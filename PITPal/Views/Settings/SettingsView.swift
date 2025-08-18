@@ -38,6 +38,7 @@ struct SettingsView: View {
   
     //   P I T   T A G S
     @AppStorage("usingPitTags") private var usingPitTags: Bool = true
+    @AppStorage("usingBluetooth") private var usingBluetooth: Bool = true
     @AppStorage("pitManufacturer") private var pitManufacturer: String = "Biomark"
     @AppStorage("pitSize") private var pitSize: String = "8.0"
     @AppStorage("pitFrequency") private var pitFrequency: String = "134.2"
@@ -262,6 +263,17 @@ struct SettingsView: View {
                         } label: {
                             Text("Using PIT tags")
                             Text("Enable this if you are using PIT tags for tagging fish.")
+                                .font(.footnote)
+                        }.frame(width: 600)
+                        
+                        LabeledContent {
+                            Toggle("", isOn: $usingBluetooth)
+                                .frame(width: 50, height: 40)
+                                .tint(Color.green)
+                                .shadow(radius: 2)
+                        } label: {
+                            Text("Using Bluetooth")
+                            Text("Is disabled, will default to 2.4G wireless (Dongle required).")
                                 .font(.footnote)
                         }.frame(width: 600)
                         
