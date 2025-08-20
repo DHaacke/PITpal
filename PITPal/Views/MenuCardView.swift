@@ -18,9 +18,9 @@ struct MenuCardView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                RoundedRectangle(cornerRadius: 25)
-                    .fill(Color("CardBackground"))
-                    .shadow(radius: 6, x: 1, y: 3)
+//                RoundedRectangle(cornerRadius: 25)
+//                    .fill(Color("CardBackground"))
+//                    .shadow(radius: 6, x: 1, y: 3)
                 VStack {
                     Text(text)
                         // .font(.title)
@@ -35,6 +35,7 @@ struct MenuCardView: View {
                 .multilineTextAlignment(.center)
             }
             .frame(width: geometry.size.width - 40, height: 80)
+            .glassEffect(.clear, in: .rect(cornerRadius: 10))
             .onTapGesture {
                 // print("Initial path: \(path)")
                 self.path = [K.MAINMENU, newPath]

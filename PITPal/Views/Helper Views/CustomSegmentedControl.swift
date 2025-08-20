@@ -30,8 +30,8 @@ struct CustomSegmentedControl: View {
         NavigationStack {
             VStack {
                 HStack(spacing: 0) {
-                    Text("Species \(selectedItem)")
-                        .padding(.horizontal, 20)
+//                    Text("Species \(selectedItem)")
+//                        .padding(.horizontal, 20)
                     ForEach(FishSpecies.allCases, id: \.rawValue) { sp in
                         Text(sp.rawValue)
                             .padding(.vertical, 10)

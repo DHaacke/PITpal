@@ -33,7 +33,11 @@ struct SegmentedPickerSpecies: View {
                     HStack(spacing: 0) {
                         VStack {
                             if isValidSpecies {
-                                Text(Image(systemName: "checkmark.circle.fill")) + Text(" Species: ")
+                                HStack {
+                                    Image(systemName: "checkmark.circle.fill")
+                                    Text(" Species:")
+                                    Spacer()
+                                }                                 
                             } else {
                                 Text("Species:")
                             }

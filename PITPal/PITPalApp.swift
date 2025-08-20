@@ -21,12 +21,16 @@ struct PITPalApp: App {
     @State private var networkMonitor   = NetworkMonitor()
 
     @State private var isWaitingForLaunchView = true
-    @State private var launchTimer  = Timer.publish(every:3.6, on: .main, in: .common).autoconnect()
+    
+    @State private var launchTimer = Timer.publish(every:3.0, on: .main, in: .common).autoconnect()
+    @State private var isGrayScale = false
+    @State private var isFlashing  = false
+
+    private let totalDuration = 4.0
+    private let flashDuration = 0.35
+
     @State private var audioPlayer: AVAudioPlayer?
     @State private var hasPlayedSound = false
-    
-    @State private var isFlashing = false
-    @State private var flashTimer: Timer?
     
     var body: some Scene {
         WindowGroup {
@@ -43,9 +47,11 @@ struct PITPalApp: App {
                 } else {
                     Image("ShockingTrout")
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .grayscale(isFlashing ? 0.0 : 1.0)
+                        // .aspectRatio(contentMode: .fit)
+                        .scaledToFit()
                         .frame(width: 720, height: 960)
+                        .saturation(isGrayScale ? 0 : 1)
+                        .animation(.easeInOut(duration: flashDuration), value: isGrayScale)
                         .padding(.bottom, 30)
                     Text("Loading PIT Pal \(getAppVersion()) (Build \(getBuildNumber()))")
                     ProgressView()
@@ -54,30 +60,29 @@ struct PITPalApp: App {
             // .environment(\.colorScheme, darkMode == true ? .dark : .light)
             // .preferredColorScheme(darkMode == true ? .dark : .light)
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-            // .background(Color("AppBackground"))
             .background(Color.black)
+            
             .onReceive(launchTimer) { time in
-                stopFlashing()
+                isFlashing = false
+                print("Timers cancelled")
                 isWaitingForLaunchView = false
                 launchTimer.upstream.connect().cancel()
             }
             .onAppear {
+                print("Start flashing");
+                startFlashing()
                 print("Autosave disabled: \(modelContext.autosaveEnabled)")
                 setupAudioPlayer()
                 playSound()
                 hasPlayedSound = true
-                startFlashing()
-                print("Start flashing")
-            }
-            .onDisappear {
-                print("Stop flashing")
-                stopFlashing()
             }
             .task {
+                // DispatchQueue.main.async {
+
+                // }
                 print(modelContext.sqliteCommand)
                 locationsHandler.updatesStarted = true
                 // networkManager.checkNetworkConnection()
-                
             }
         }
         .modelContainer(for: [Trip.self, Fish.self, Species.self, Gender.self, SurveySection.self, Watershed.self, TripType.self, Comment.self])
@@ -105,9 +110,10 @@ struct PITPalApp: App {
             print("MP3 file not found in the bundle")
         }
     }
-
+    
     // Function to play the sound
     func playSound() {
+        print("Play sound")
         guard !hasPlayedSound else { return }
         guard let player = audioPlayer else {
             print("Audio player not initialized")
@@ -118,69 +124,77 @@ struct PITPalApp: App {
         player.play()
     }
     
-    func toggleFlashing() {
-        if isFlashing {
-            stopFlashing()
-        } else {
-            startFlashing()
-        }
-    }
-
     // Function to start the flashing effect
-    func startFlashing() {
-        guard let device = AVCaptureDevice.default(for: .video), device.hasTorch else {
-            print("No flashlight available")
-            return
-        }
+    private func startFlashing() {
+        guard !isFlashing else { return }
         isFlashing = true
-        do {
-            try device.lockForConfiguration()
-            // Random intensity (0.3 to 1.0) for realism, if supported
-            let intensity = Float.random(in: 0.3...1.0)
-            if device.isTorchModeSupported(.on) {
-                try device.setTorchModeOn(level: intensity)
-            } else {
-                device.torchMode = .on // Fallback to full brightness
-            }
-            device.unlockForConfiguration()
-
-            // Turn off flashlight after a brief random duration (0.1 to 0.3 seconds)
-            let flashDuration = Double.random(in: 0.1...0.3)
-            DispatchQueue.main.asyncAfter(deadline: .now() + flashDuration) {
-                do {
-                    try device.lockForConfiguration()
-                    device.torchMode = .off
-                    device.unlockForConfiguration()
-                } catch {
-                    print("Error turning off flashlight: \(error.localizedDescription)")
-                }
-                // Schedule the next flash after a random interval (0.5 to 3 seconds)
-                if isFlashing {
-                    stopFlashing()
-                    let nextFlashDelay = Double.random(in: 0.1...0.3)
-                    flashTimer = Timer.scheduledTimer(withTimeInterval: nextFlashDelay, repeats: false) { _ in
-                        startFlashing()
-                    }
-                }
-            }
-        } catch {
-            print("Error starting flashlight: \(error.localizedDescription)")
+        print("Is flashing: \(isFlashing)")
+        
+        // Timer to toggle between color and grayscale
+        let timer = Timer.scheduledTimer(withTimeInterval: flashDuration, repeats: true) { _ in
+            isGrayScale.toggle()
+        }
+        
+        // Stop flashing after totalDuration
+        DispatchQueue.main.asyncAfter(deadline: .now() + totalDuration) {
+            timer.invalidate()
+            isGrayScale = false // Ensure it ends in color
+            isFlashing = false
         }
     }
     
-    func stopFlashing() {
-        guard let device = AVCaptureDevice.default(for: .video), device.hasTorch else { return }
-
-        isFlashing = false
-        flashTimer?.invalidate()
-        flashTimer = nil
-
-        do {
-            try device.lockForConfiguration()
-            device.torchMode = .off // Ensure flashlight is off
-            device.unlockForConfiguration()
-        } catch {
-            print("Error turning off flashlight: \(error.localizedDescription)")
-        }
-    }
 }
+
+
+/*
+ 
+ struct SoundPlayerView: View {
+     @StateObject private var audioManager = AudioManager()
+     
+     var body: some View {
+         VStack {
+             Button(action: {
+                 audioManager.playSoundForFiveSeconds()
+             }) {
+                 Text("Play Sound for 5 Seconds")
+                     .padding()
+                     .background(Color.blue)
+                     .foregroundColor(.white)
+                     .clipShape(RoundedRectangle(cornerRadius: 10))
+             }
+         }
+     }
+ }
+
+ class AudioManager: ObservableObject {
+     private var audioPlayer: AVAudioPlayer?
+     
+     init() {
+         // Load the audio file
+         if let soundURL = Bundle.main.url(forResource: "sound", withExtension: "mp3") {
+             do {
+                 audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
+                 audioPlayer?.prepareToPlay()
+             } catch {
+                 print("Error loading audio file: \(error.localizedDescription)")
+             }
+         } else {
+             print("Audio file not found")
+         }
+     }
+     
+     func playSoundForFiveSeconds() {
+         guard let player = audioPlayer else { return }
+         
+         // Play the sound
+         player.play()
+         
+         // Stop the sound after 5 seconds
+         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+             player.stop()
+             player.currentTime = 0 // Reset to start for next play
+         }
+     }
+ }
+ 
+ */

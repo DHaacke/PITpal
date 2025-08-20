@@ -118,10 +118,10 @@ class LocationsHandler {
         backgroundUpdates = false
     }
     
-    func getLocationName(for location: CLLocation) async -> String {
-        let name = try? await CLGeocoder().reverseGeocodeLocation(location).first?.locality
-        return name ?? ""
-    }
+//    func getLocationName(for location: CLLocation) async -> String {
+//        let name = try? await CLGeocoder().reverseGeocodeLocation(location).first?.locality
+//        return name ?? ""
+//    }
 }
 
 // ============================================================================

@@ -114,7 +114,11 @@ struct TripFishView: View {
                                         }
                                 } label: {
                                     if isValidPitTag {
-                                        Text(Image(systemName: "checkmark.circle.fill")) + Text(" PIT Tag #:")
+                                        HStack {
+                                            Image(systemName: "checkmark.circle.fill")
+                                            Text(" PIT Tag #:")
+                                            Spacer()
+                                        }
                                     } else {
                                         Text(" PIT Tag #:")
                                     }
@@ -211,7 +215,11 @@ struct TripFishView: View {
                                         }
                                 } label: {
                                     if isValidLength {
-                                        Text(Image(systemName: "checkmark.circle.fill")) + Text(" Fish Length: ")
+                                        HStack {
+                                            Image(systemName: "checkmark.circle.fill")
+                                            Text(" Fish Length: ")
+                                            Spacer()
+                                        }
                                     } else {
                                         Text("Fish Length: ")
                                     }
@@ -250,7 +258,11 @@ struct TripFishView: View {
                                         }
                                 } label: {
                                     if isValidWeight {
-                                        Text(Image(systemName: "checkmark.circle.fill")) + Text(" Fish Weight: ")
+                                        HStack {
+                                            Image(systemName: "checkmark.circle.fill")
+                                            Text(" Fish Weight: ")
+                                            Spacer()
+                                        }
                                     } else {
                                         Text("Fish Weight: ")
                                     }

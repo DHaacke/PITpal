@@ -367,31 +367,41 @@ struct SettingsView: View {
                         }.frame(width: 600, height: 40)
                         
                         LabeledContent {
-                            TextField("", text: $lengthMinText)
-                                .focused($focusedField, equals: .int)
-                                .numbersOnly($lengthMinText, includeDecimal: false)
-                                .disableAutocorrection(true)
-                                .foregroundColor(Color("TextForeground"))
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: 100)
-                            Text(uomFishLength).frame(width: 40, alignment: .leading)
+                            Group {
+                                HStack {
+                                    TextField("", text: $lengthMinText)
+                                        .focused($focusedField, equals: .int)
+                                        .numbersOnly($lengthMinText, includeDecimal: false)
+                                        .disableAutocorrection(true)
+                                        .foregroundColor(Color("TextForeground"))
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: 100)
+                                    Text(uomFishLength).frame(width: 40, alignment: .leading)
+                                    Spacer()
+                                }
+                            }.frame(width: 140)
                         } label: {
                             Text("Min Length")
-                        }.frame(width: 600)
+                        }.frame(width: 640)
 
                         LabeledContent {
-                            TextField("", text: $lengthMaxText)
-                                .focused($focusedField, equals: .int)
-                                .numbersOnly($lengthMaxText, includeDecimal: false)
-                                .disableAutocorrection(true)
-                                .foregroundColor(Color("TextForeground"))
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: 100)
-                                .multilineTextAlignment(.leading)
-                            Text(uomFishLength).frame(width: 40, alignment: .leading)
+                            Group {
+                                HStack {
+                                    TextField("", text: $lengthMaxText)
+                                        .focused($focusedField, equals: .int)
+                                        .numbersOnly($lengthMaxText, includeDecimal: false)
+                                        .disableAutocorrection(true)
+                                        .foregroundColor(Color("TextForeground"))
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: 100)
+                                        .multilineTextAlignment(.leading)
+                                    Text(uomFishLength).frame(width: 40, alignment: .leading)
+                                    Spacer()
+                                }
+                            }.frame(width: 140)
                         } label: {
                             Text("Max Length")
-                        }.frame(width: 600)
+                        }.frame(width: 640)
                         
                         LabeledContent {
                             Toggle("", isOn: $useBluetoothLength)
@@ -418,31 +428,43 @@ struct SettingsView: View {
                         }.frame(width: 600, height: 40)
                         
                         LabeledContent {
-                            TextField("", text: $weightMinText)
-                                .focused($focusedField, equals: .int)
-                                .numbersOnly($weightMinText, includeDecimal: false)
-                                .disableAutocorrection(true)
-                                .foregroundColor(Color("TextForeground"))
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: 100)
-                                .multilineTextAlignment(.leading)
-                            Text(uomFishWeight).frame(width: 40, alignment: .leading)
+                            Group {
+                                HStack {
+                                    TextField("", text: $weightMinText)
+                                        .focused($focusedField, equals: .int)
+                                        .numbersOnly($weightMinText, includeDecimal: false)
+                                        .disableAutocorrection(true)
+                                        .foregroundColor(Color("TextForeground"))
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: 100)
+                                        .multilineTextAlignment(.leading)
+                                    Text(uomFishWeight).frame(width: 40, alignment: .leading)
+                                    Spacer()
+                                }
+                            }
+                            .frame(width: 140)
                         } label: {
                             Text("Min Weight")
-                        }.frame(width: 600)
+                        }.frame(width: 640)
                         LabeledContent {
-                            TextField("", text: $weightMaxText)
-                                .focused($focusedField, equals: .int)
-                                .numbersOnly($weightMinText, includeDecimal: false)
-                                .disableAutocorrection(true)
-                                .foregroundColor(Color("TextForeground"))
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: 100)
-                                .multilineTextAlignment(.leading)
-                            Text(uomFishWeight).frame(width: 40, alignment: .leading)
+                            Group {
+                                HStack {
+                                    TextField("", text: $weightMaxText)
+                                        .focused($focusedField, equals: .int)
+                                        .numbersOnly($weightMinText, includeDecimal: false)
+                                        .disableAutocorrection(true)
+                                        .foregroundColor(Color("TextForeground"))
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: 100)
+                                        .multilineTextAlignment(.leading)
+                                    Text(uomFishWeight).frame(width: 40, alignment: .leading)
+                                    Spacer()
+                                }
+                            }
+                            .frame(width: 140)
                         } label: {
                             Text("Max Weight")
-                        }.frame(width: 600)
+                        }.frame(width: 640)
                         LabeledContent {
                             Toggle("", isOn: $useBluetoothWeight)
                                 .frame(width: 50, height: 40)
